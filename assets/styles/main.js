@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
   login_title: {
     fontSize: 28,
     fontWeight: "bold",
+    // fontFamily: "NanumBarunGothic",
     color: color.blue,
   },
   location: {
@@ -27,19 +28,19 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  location_btn: {
-    margin: 3,
-    width: "50%",
-    height: 40,
-    backgroundColor: color.gray,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 5,
-  },
-  location_btn_title: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
+  // location_btn: {
+  //   margin: 3,
+  //   width: "50%",
+  //   height: 40,
+  //   backgroundColor: color.gray,
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   borderRadius: 5,
+  // },
+  // location_btn_title: {
+  //   fontSize: 18,
+  //   fontWeight: "bold",
+  // },
   logo: {
     flex: 1,
     width: "100%",
@@ -88,5 +89,26 @@ export const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontWeight: "bold",
+  },
+  checkbox: {
+    width: "100%",
+    justifyContent: "flex-start",
+    paddingLeft: 5,
+    marginBottom: 10,
+  },
+  dropdown: {
+    margin: 5,
+    width: "100%",
+    height: 40,
+    backgroundColor: "transparent",
+    borderBottomColor: "gray",
+    borderBottomWidth: 0.5,
+    padding: 10,
+  },
+  icon: {
+    marginRight: 10,
+  },
+  placeholderStyle: {
+    fontSize: 14,
   },
 });
