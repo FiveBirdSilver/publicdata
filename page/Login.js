@@ -1,27 +1,33 @@
 import { useState } from "react";
 import { Text, TextInput, View, Image, TouchableOpacity } from "react-native";
-// import BouncyCheckbox from "react-native-bouncy-checkbox";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { styles } from "../assets/styles/main.js";
-import { color } from "../assets/styles/color.js";
+import { styles } from "../assets/styles/login.js";
 import logo from "../assets/img/gp_logo.png";
 
 export default function Login() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const [location, setLoaction] = useState(null);
+  const [location, setLoaction] = useState("대구");
   const [idfocus, setIdFocus] = useState(false);
   const [pwfocus, setPwFocus] = useState(false);
 
   const [isChecked, setIsChecked] = useState(false);
+  const [logged, setLogged] = useState(false);
 
   const handleOnSubmit = () => {
     if (id === "" || password === "") {
       alert("아이디와 비밀번호를 모두 입력해주세요");
+    } else {
+      AsyncStorage.setItem("User", JSON.stringify({ id: id, location: location, isChecked: isChecked }), () => {
+        console.log("유저 정보 저장 완료");
+      });
     }
   };
+
   const data = [
     { label: "대구", value: "대구" },
     { label: "포항", value: "포항" },
@@ -80,7 +86,7 @@ export default function Login() {
           ></TextInput>
         </View>
         <View style={styles.checkbox}>
-          {/* <BouncyCheckbox
+          <BouncyCheckbox
             size={15}
             fillColor="#659ec7"
             onPress={() => setIsChecked(!isChecked)}
@@ -89,7 +95,7 @@ export default function Login() {
             textStyle={{
               textDecorationLine: "none",
             }}
-          /> */}
+          />
         </View>
         <TouchableOpacity onPress={handleOnSubmit} style={styles.submit_btn}>
           <Text style={styles.submit_btn_title}>로그인</Text>
