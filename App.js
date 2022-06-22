@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Login from "./page/Login";
 import Home from "./page/Home";
 import Collection from "./page/Collection";
+import Area from "./page/Area";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -27,13 +28,13 @@ export default function App() {
       }
     });
   }, []);
-  console.log(isChecked.isChecked);
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={isChecked.isChecked ? "Home" : "Login"}>
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Collection" component={Collection} />
+        <Stack.Screen name="Area" component={Area} />
       </Stack.Navigator>
     </NavigationContainer>
   );
