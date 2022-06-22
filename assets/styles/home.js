@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     justifyContent: "center",
-    marginTop: 25,
+    marginBottom: 10,
     padding: 16,
   },
 
@@ -80,6 +80,9 @@ export const styles = StyleSheet.create({
     width: "100%",
     paddingLeft: 16,
     flexDirection: "column",
+  },
+  today_item_title: {
+    fontSize: 20,
   },
   item_text: {
     fontSize: 20,

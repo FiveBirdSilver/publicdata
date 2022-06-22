@@ -4,18 +4,19 @@ import { color } from "./color";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
   login: {
     flex: 9,
-    width: "70%",
+    width: "75%",
     justifyContent: "center",
     alignItems: "center",
   },
   login_title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "bold",
     // fontFamily: "NanumBarunGothic",
     color: color.blue,
@@ -28,19 +29,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  // location_btn: {
-  //   margin: 3,
-  //   width: "50%",
-  //   height: 40,
-  //   backgroundColor: color.gray,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   borderRadius: 5,
-  // },
-  // location_btn_title: {
-  //   fontSize: 18,
-  //   fontWeight: "bold",
-  // },
+
   logo: {
     flex: 1,
     width: "100%",
@@ -78,7 +67,7 @@ export const styles = StyleSheet.create({
   submit_btn: {
     width: "100%",
     height: 40,
-    marginTop: 10,
+    marginTop: 30,
     backgroundColor: color.blue,
     borderRadius: 5,
     justifyContent: "center",
@@ -94,7 +83,7 @@ export const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     paddingLeft: 5,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   dropdown: {
     margin: 5,
@@ -110,5 +99,15 @@ export const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 14,
+  },
+  item: {
+    padding: 17,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  textItem: {
+    flex: 1,
+    fontSize: 16,
   },
 });

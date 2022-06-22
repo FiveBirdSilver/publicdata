@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Text, TextInput, View, Image, TouchableOpacity } from "react-native";
+import { useState, useEffect } from "react";
+import { Text, TextInput, View, Image, TouchableOpacity, Alert } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -8,23 +8,28 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "../assets/styles/login.js";
 import logo from "../assets/img/gp_logo.png";
 
-export default function Login() {
+export default function Login({ navigation }) {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const [location, setLoaction] = useState("대구");
+  const [location, setLoaction] = useState(null);
   const [idfocus, setIdFocus] = useState(false);
   const [pwfocus, setPwFocus] = useState(false);
 
   const [isChecked, setIsChecked] = useState(false);
-  const [logged, setLogged] = useState(false);
 
   const handleOnSubmit = () => {
     if (id === "" || password === "") {
-      alert("아이디와 비밀번호를 모두 입력해주세요");
+      Alert.alert("알림", "아이디와 비밀번호를 모두 입력해주세요");
+    } else if (location === null) {
+      Alert.alert("알림", "지역을 선택해주세요");
     } else {
-      AsyncStorage.setItem("User", JSON.stringify({ id: id, location: location, isChecked: isChecked }), () => {
+      AsyncStorage.setItem("User", JSON.stringify({ id: id, location: location }), () => {
         console.log("유저 정보 저장 완료");
       });
+      AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }), () => {
+        console.log("로그인 완료");
+      });
+      navigation.push("Home");
     }
   };
 
@@ -34,7 +39,7 @@ export default function Login() {
   ];
 
   return (
-    <>
+    <View style={styles.container}>
       <View style={styles.login}>
         <Text style={styles.login_title}>User Login</Text>
         <View style={styles.location}>
@@ -42,10 +47,12 @@ export default function Login() {
             style={styles.dropdown}
             placeholderStyle={styles.placeholderStyle}
             data={data}
+            maxHeight={300}
             search={false}
             labelField="label"
-            valueField="location"
+            valueField="value"
             placeholder="지역을 선택하세요"
+            value={location}
             onChange={(item) => {
               setLoaction(item.value);
             }}
@@ -88,7 +95,7 @@ export default function Login() {
         <View style={styles.checkbox}>
           <BouncyCheckbox
             size={15}
-            fillColor="#659ec7"
+            fillColor="#00acb1"
             onPress={() => setIsChecked(!isChecked)}
             text="자동 로그인"
             iconStyle={{ borderRadius: 0 }}
@@ -104,6 +111,6 @@ export default function Login() {
       <View style={styles.logo}>
         <Image source={logo} style={{ width: 200, height: 55 }} />
       </View>
-    </>
+    </View>
   );
 }
