@@ -10,6 +10,9 @@ import Home from "./page/Home";
 import Collection from "./page/Collection";
 import Area from "./page/Area";
 
+import Basic_P from "./page/Pohang/Basic";
+import Recommend_P from "./page/Pohang/Recommend";
+
 export default function App() {
   const Stack = createNativeStackNavigator();
 
@@ -35,6 +38,8 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Collection" component={Collection} />
         <Stack.Screen name="Area" component={Area} />
+        <Stack.Screen name="Basic_P" component={Basic_P} />
+        <Stack.Screen name="Recommend_P" component={Recommend_P} />
       </Stack.Navigator>
     </NavigationContainer>
   );

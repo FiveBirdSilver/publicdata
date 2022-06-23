@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
 
   title: {
     textAlign: "left",
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: "bold",
   },
 
