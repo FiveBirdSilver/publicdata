@@ -16,23 +16,37 @@ export default function Login({ navigation }) {
   const [pwfocus, setPwFocus] = useState(false);
 
   const [isChecked, setIsChecked] = useState(false);
+  const [loggin, setLoggin] = useState(false);
 
+  useEffect(() => {
+    // AsyncStorage.getItem("User", (err, result) => {
+    //   if (result) {
+    //     console.log(result);
+    //   }
+    // }); 자동 로그인 시 추후에 아이디 비밀번호 확인하는 과정으로 필요함
+
+    AsyncStorage.getItem("IsChecked", (err, result) => {
+      if (result) {
+        let AutoLog = JSON.parse(result);
+        if (AutoLog.isChecked) {
+          navigation.push("Home");
+        }
+      }
+    });
+  }, []);
   const handleOnSubmit = () => {
     if (id === "" || password === "") {
       Alert.alert("알림", "아이디와 비밀번호를 모두 입력해주세요");
     } else if (location === null) {
       Alert.alert("알림", "지역을 선택해주세요");
     } else {
-      AsyncStorage.setItem("User", JSON.stringify({ id: id, location: location }), () => {
-        console.log("유저 정보 저장 완료");
-      });
-      AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }), () => {
-        console.log("로그인 완료");
-      });
+      setLoggin(true);
+      AsyncStorage.setItem("User", JSON.stringify({ id: id, location: location }));
+      AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }));
+      AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: loggin }));
       navigation.push("Home");
     }
   };
-
   const data = [
     { label: "대구", value: "대구" },
     { label: "포항", value: "포항" },

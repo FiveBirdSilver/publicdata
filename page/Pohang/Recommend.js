@@ -11,14 +11,13 @@ export default function Recommend({ route, navigation }) {
   const { item } = route.params;
   const [cos, setCos] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  let Season = [];
+
   const imagePickerOption = {
     mediaType: "photo",
     maxWidth: 768,
     maxHeight: 768,
     includeBase64: Platform.OS === "android",
   };
-  console.log(Season);
   const onLaunchCamera = () => {
     launchCamera(imagePickerOption, onPickImage);
   };
@@ -27,6 +26,7 @@ export default function Recommend({ route, navigation }) {
   const onLaunchImageLibrary = () => {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
+
   return (
     <View style={styles.container}>
       <Header title="데이터 수집" subtitle="데이터 만들기" />
@@ -80,54 +80,6 @@ export default function Recommend({ route, navigation }) {
                 } else Season.pop("봄");
               }}
               text="봄"
-              iconStyle={{ borderRadius: 30 }}
-              textStyle={{
-                textDecorationLine: "none",
-              }}
-              style={{ marginRight: 10 }}
-            />
-            <BouncyCheckbox
-              size={15}
-              fillColor="black"
-              onPress={() => {
-                setIsChecked(() => !isChecked);
-                if (isChecked) {
-                  Season.push("여름");
-                } else Season.pop("여름");
-              }}
-              text="여름"
-              iconStyle={{ borderRadius: 30 }}
-              textStyle={{
-                textDecorationLine: "none",
-              }}
-              style={{ marginRight: 10 }}
-            />
-            <BouncyCheckbox
-              size={15}
-              fillColor="black"
-              onPress={() => {
-                setIsChecked(() => !isChecked);
-                if (isChecked) {
-                  Season.push("가을");
-                } else Season.pop("가을");
-              }}
-              text="가을"
-              iconStyle={{ borderRadius: 30 }}
-              textStyle={{
-                textDecorationLine: "none",
-              }}
-              style={{ marginRight: 10 }}
-            />
-            <BouncyCheckbox
-              size={15}
-              fillColor="black"
-              onPress={() => {
-                setIsChecked(() => !isChecked);
-                if (isChecked) {
-                  Season.push("겨울");
-                } else Season.pop("겨울");
-              }}
-              text="겨울"
               iconStyle={{ borderRadius: 30 }}
               textStyle={{
                 textDecorationLine: "none",

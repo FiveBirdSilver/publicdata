@@ -9,15 +9,19 @@ import Header from "../component/Header";
 
 export default function Home({ navigation }) {
   const [userInfo, setUserInfo] = useState("");
-
+  const [isChecked, setIsChecked] = useState(null);
   useEffect(() => {
     AsyncStorage.getItem("User", (err, result) => {
       if (result) {
         setUserInfo(JSON.parse(result));
       }
     });
+    AsyncStorage.getItem("IsChecked", (err, result) => {
+      if (result) {
+        setIsChecked(JSON.parse(result));
+      }
+    });
   }, []);
-
   const handleOnLogOut = () => {
     Alert.alert("Alert", "로그아웃 하시겠습니까?", [
       {

@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   header: {
-    flex: 1,
+    // flex: 1,
     width: "100%",
     justifyContent: "center",
     marginBottom: 10,
@@ -19,14 +19,14 @@ export const styles = StyleSheet.create({
 
   title: {
     textAlign: "left",
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: "bold",
   },
 
   subtitle: {
     textAlign: "left",
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 16,
     color: color.darkgray,
   },
   userinfo: {

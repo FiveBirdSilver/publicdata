@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   area: {
-    flex: 0.7,
+    // flex: 0.7,
     width: "100%",
     backgroundColor: "orange",
     alignItems: "center",
@@ -20,8 +20,11 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  scrollview: {
+    width: "100%",
+  },
   area_container: {
-    flex: 5,
+    // flex: 5,
     width: "100%",
     padding: 16,
   },

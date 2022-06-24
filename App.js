@@ -8,7 +8,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Login from "./page/Login";
 import Home from "./page/Home";
 import Collection from "./page/Collection";
-import Area from "./page/Area";
+import Area_P from "./page/Pohang/Area";
+import Area_D from "./page/Daegu/Area";
 
 import Basic_P from "./page/Pohang/Basic";
 import Recommend_P from "./page/Pohang/Recommend";
@@ -16,30 +17,18 @@ import Recommend_P from "./page/Pohang/Recommend";
 export default function App() {
   const Stack = createNativeStackNavigator();
 
-  const [userInfo, setUserInfo] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
-
-  useEffect(() => {
-    AsyncStorage.getItem("User", (err, result) => {
-      if (result) {
-        setUserInfo(JSON.parse(result));
-      }
-    });
-    AsyncStorage.getItem("IsChecked", (err, result) => {
-      if (result) {
-        setIsChecked(JSON.parse(result));
-      }
-    });
-  }, []);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={isChecked.isChecked ? "Home" : "Login"}>
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Collection" component={Collection} />
-        <Stack.Screen name="Area" component={Area} />
+
+        <Stack.Screen name="Area_P" component={Area_P} />
         <Stack.Screen name="Basic_P" component={Basic_P} />
         <Stack.Screen name="Recommend_P" component={Recommend_P} />
+
+        <Stack.Screen name="Area_D" component={Area_D} />
       </Stack.Navigator>
     </NavigationContainer>
   );
