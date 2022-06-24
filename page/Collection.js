@@ -19,7 +19,6 @@ export default function Collection({ navigation }) {
       }
     }); // 수집기 항목이 상이하기 때문에 지역 확인
   }, []);
-  console.log(user.location);
   return (
     <View style={styles.container}>
       <Header title="데이터 수집" subtitle="데이터 만들기" />

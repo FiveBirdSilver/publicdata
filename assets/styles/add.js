@@ -19,6 +19,7 @@ export const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: color.darkgray,
     borderRadius: 5,
+    marginTop: 30,
     marginBottom: 30,
     shadowColor: "#000",
     shadowOffset: {
@@ -34,12 +35,11 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   add_title_container: {
-    width: "100%",
+    width: "80%",
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingLeft: 16,
-    paddingRight: 16,
+    marginTop: 20,
   },
   add_title_wrapper: {
     alignItems: "center",
@@ -87,6 +87,12 @@ export const styles = StyleSheet.create({
     width: 45,
     marginBottom: 5,
   },
+  img: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+  },
   img_container: {
     width: "50%",
     marginTop: 16,
@@ -98,10 +104,11 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   imgchoose: {
-    height: 180,
+    height: 150,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: color.gray,
+    margin: 5,
   },
   season: {
     flexDirection: "row",
@@ -112,5 +119,16 @@ export const styles = StyleSheet.create({
   season_title: {
     fontSize: 18,
     marginRight: 20,
+  },
+  radio: {
+    flexDirection: "row",
+    width: "50%",
+  },
+  radio_wrap: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  scrollview: {
+    width: "100%",
   },
 });

@@ -13,6 +13,8 @@ import Area_D from "./page/Daegu/Area";
 
 import Basic_P from "./page/Pohang/Basic";
 import Recommend_P from "./page/Pohang/Recommend";
+import ServiceDog_P from "./page/Pohang/ServiceDog";
+import Ad_P from "./page/Pohang/Ad";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -27,6 +29,8 @@ export default function App() {
         <Stack.Screen name="Area_P" component={Area_P} />
         <Stack.Screen name="Basic_P" component={Basic_P} />
         <Stack.Screen name="Recommend_P" component={Recommend_P} />
+        <Stack.Screen name="ServiceDog_P" component={ServiceDog_P} />
+        <Stack.Screen name="Ad_P" component={Ad_P} />
 
         <Stack.Screen name="Area_D" component={Area_D} />
       </Stack.Navigator>

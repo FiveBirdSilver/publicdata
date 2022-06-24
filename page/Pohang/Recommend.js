@@ -2,7 +2,6 @@ import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import Header from "../../component/Header";
 import { styles } from "../../assets/styles/add";
@@ -10,7 +9,7 @@ import { styles } from "../../assets/styles/add";
 export default function Recommend({ route, navigation }) {
   const { item } = route.params;
   const [cos, setCos] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
+  const [season, setSeason] = useState("");
 
   const imagePickerOption = {
     mediaType: "photo",
@@ -18,6 +17,8 @@ export default function Recommend({ route, navigation }) {
     maxHeight: 768,
     includeBase64: Platform.OS === "android",
   };
+
+  // 카메라 촬영
   const onLaunchCamera = () => {
     launchCamera(imagePickerOption, onPickImage);
   };
@@ -26,31 +27,48 @@ export default function Recommend({ route, navigation }) {
   const onLaunchImageLibrary = () => {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
+  const SeasonData = [
+    {
+      id: "0",
+      label: "봄",
+    },
+    {
+      id: "1",
+      label: "여름",
+    },
+    {
+      id: "2",
+      label: "가을",
+    },
+    {
+      id: "3",
+      label: "겨울",
+    },
+  ];
 
   return (
     <View style={styles.container}>
-      <Header title="데이터 수집" subtitle="데이터 만들기" />
-      <View style={styles.add}>
-        <View style={styles.add_title_container}>
-          <View style={styles.add_title_wrapper}>
-            <View style={styles.icon_wrap}>
-              <TouchableOpacity style={styles.footer_title}>
-                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
-              </TouchableOpacity>
-            </View>
-            <Text>뒤로</Text>
+      <View style={styles.add_title_container}>
+        <View style={styles.add_title_wrapper}>
+          <View style={styles.icon_wrap}>
+            <TouchableOpacity style={styles.footer_title}>
+              <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+            </TouchableOpacity>
           </View>
-          <Text style={styles.add_title}>{item}</Text>
-
-          <View style={styles.add_title_wrapper}>
-            <View style={styles.icon_wrap}>
-              <TouchableOpacity style={styles.footer_title}>
-                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
-              </TouchableOpacity>
-            </View>
-            <Text>저장</Text>
-          </View>
+          <Text>뒤로</Text>
         </View>
+        <Text style={styles.add_title}>{item}</Text>
+
+        <View style={styles.add_title_wrapper}>
+          <View style={styles.icon_wrap}>
+            <TouchableOpacity style={styles.footer_title}>
+              <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+            </TouchableOpacity>
+          </View>
+          <Text>저장</Text>
+        </View>
+      </View>
+      <View style={styles.add}>
         <View style={styles.add_wrapper}>
           <View style={styles.add_container}>
             <Text style={styles.add_subtitle}>추천코스</Text>
@@ -70,22 +88,6 @@ export default function Recommend({ route, navigation }) {
           </View>
           <View style={styles.season}>
             <Text style={styles.season_title}>추천 계절</Text>
-            <BouncyCheckbox
-              size={15}
-              fillColor="black"
-              onPress={() => {
-                setIsChecked(() => !isChecked);
-                if (isChecked) {
-                  Season.push("봄");
-                } else Season.pop("봄");
-              }}
-              text="봄"
-              iconStyle={{ borderRadius: 30 }}
-              textStyle={{
-                textDecorationLine: "none",
-              }}
-              style={{ marginRight: 10 }}
-            />
           </View>
           <Text>* 중복 선택 가능</Text>
         </View>

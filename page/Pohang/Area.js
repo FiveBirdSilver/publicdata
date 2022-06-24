@@ -4,10 +4,9 @@ import { styles } from "../../assets/styles/area";
 
 export default function Area({ route, navigation }) {
   const { area } = route.params;
-
   const essential = {
     label: ["기본정보", "추천", "보조견", "보조기기 대여유무", "체험 프로그램", "안내 가이드 유무", "보조시설 유무"],
-    value: ["Basic_P", "Recommend_P", "ServiceDog_P", "Device_P", "Program_P", "Giude_P", "Facility_P"],
+    value: ["Basic_P", "Recommend_P", "ServiceDog_P", "Ad_P", "Program_P", "Giude_P", "Facility_P"],
   };
   const flow = ["보행로", "기타", "계단", "경사로", "턱", "승강기", "보조시설 유무"];
   const park = ["기본정보", "주차구역", "보행로"];

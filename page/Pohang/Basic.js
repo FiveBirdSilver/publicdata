@@ -15,28 +15,27 @@ export default function Basic({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <Header title="데이터 수집" subtitle="데이터 만들기" />
-      <View style={styles.add}>
-        <View style={styles.add_title_container}>
-          <View style={styles.add_title_wrapper}>
-            <View style={styles.icon_wrap}>
-              <TouchableOpacity style={styles.footer_title}>
-                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
-              </TouchableOpacity>
-            </View>
-            <Text>뒤로</Text>
+      <View style={styles.add_title_container}>
+        <View style={styles.add_title_wrapper}>
+          <View style={styles.icon_wrap}>
+            <TouchableOpacity style={styles.footer_title}>
+              <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+            </TouchableOpacity>
           </View>
-          <Text style={styles.add_title}>{item}</Text>
-
-          <View style={styles.add_title_wrapper}>
-            <View style={styles.icon_wrap}>
-              <TouchableOpacity style={styles.footer_title}>
-                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
-              </TouchableOpacity>
-            </View>
-            <Text>저장</Text>
-          </View>
+          <Text>뒤로</Text>
         </View>
+        <Text style={styles.add_title}>{item}</Text>
+
+        <View style={styles.add_title_wrapper}>
+          <View style={styles.icon_wrap}>
+            <TouchableOpacity style={styles.footer_title}>
+              <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+            </TouchableOpacity>
+          </View>
+          <Text>저장</Text>
+        </View>
+      </View>
+      <View style={styles.add}>
         <View style={styles.add_wrapper}>
           <View style={styles.add_container}>
             <Text style={styles.add_subtitle}>관광지명</Text>
