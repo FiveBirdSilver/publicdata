@@ -9,9 +9,11 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  add: {
-    width: "90%",
+  content: {
     flex: 9,
+    width: "90%",
+  },
+  add: {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
@@ -57,7 +59,7 @@ export const styles = StyleSheet.create({
     padding: 16,
   },
   input_wrapper: {
-    width: "65%",
+    width: "50%",
     height: 40,
     alignItems: "center",
     justifyContent: "flex-end",
@@ -99,7 +101,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   img_container_title: {
-    fontSize: 18,
+    fontSize: 14,
     textAlign: "center",
     marginBottom: 10,
   },
@@ -131,4 +133,5 @@ export const styles = StyleSheet.create({
   scrollview: {
     width: "100%",
   },
+  add_input: {},
 });

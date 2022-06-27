@@ -1,5 +1,6 @@
 import { Text, View, TouchableOpacity, ScrollView } from "react-native";
-import Header from "../../component/Header";
+
+import Header from "../component/Header";
 import { styles } from "../../assets/styles/area";
 
 export default function Area({ route, navigation }) {

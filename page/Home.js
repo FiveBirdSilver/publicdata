@@ -4,12 +4,14 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { styles } from "../assets/styles/home";
-import TodayArea from "../component/TodayArea";
-import Header from "../component/Header";
+import Header from "../page/component/Header";
 
 export default function Home({ navigation }) {
   const [userInfo, setUserInfo] = useState("");
   const [isChecked, setIsChecked] = useState(null);
+
+  const item = ["항목 1", "항목 2", "항목 3"];
+
   useEffect(() => {
     AsyncStorage.getItem("User", (err, result) => {
       if (result) {
@@ -51,11 +53,20 @@ export default function Home({ navigation }) {
           <AntDesign style={styles.icon} color="white" name="user" size={40} />
         </View>
         <View>
-          <Text style={styles.userid}>{userInfo.id} 님(A123a)</Text>
+          <Text style={styles.userid}>A001</Text>
           <Text style={styles.userloc}>지역 {userInfo.location}</Text>
         </View>
       </View>
-      <TodayArea />
+      <View style={styles.today}>
+        <Text style={styles.today_title}>오늘의 구역</Text>
+      </View>
+      <View style={styles.today_item}>
+        {item.map((i) => (
+          <TouchableOpacity key={i}>
+            <Text style={styles.today_item_title}>{i}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
       <View style={styles.footer}>
         <View style={styles.footer_container}>
           <View style={styles.icon_wrap}>

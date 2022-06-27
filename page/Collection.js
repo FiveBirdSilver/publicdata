@@ -2,7 +2,7 @@ import { Text, View, TouchableOpacity, Alert } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import Header from "../component/Header";
+import Header from "../page/component/Header";
 import { styles } from "../assets/styles/home";
 import { useEffect, useState } from "react";
 
