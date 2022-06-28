@@ -9,22 +9,29 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  header: {
-    // flex: 1,
+  header_container: {
     width: "100%",
-    justifyContent: "center",
-    marginBottom: 10,
-    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 10,
   },
-
+  header: {
+    justifyContent: "flex-start",
+  },
+  logout: {
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logout_title: {
+    fontWeight: "bold",
+  },
   title: {
-    textAlign: "left",
     fontSize: 24,
     fontWeight: "bold",
   },
-
   subtitle: {
-    textAlign: "left",
     fontWeight: "bold",
     fontSize: 16,
     color: color.darkgray,
@@ -109,8 +116,8 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderStyle: "solid",
     borderColor: color.blue,
-    height: 45,
-    width: 45,
+    height: 30,
+    width: 30,
     marginBottom: 5,
   },
 });

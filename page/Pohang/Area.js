@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Text, View, TouchableOpacity, ScrollView } from "react-native";
 
 import { styles } from "../../assets/styles/area";
@@ -5,6 +6,11 @@ import Header from "../component/Header";
 
 export default function Area({ route, navigation }) {
   const { area } = route.params;
+
+  // useEffect(() => {
+  //   axios // 항목1의 키 값
+  // },[])
+
   const essential = {
     label: [
       "기본정보",
@@ -16,7 +22,8 @@ export default function Area({ route, navigation }) {
       "보조시설 유무",
       "관광지 리플렛",
     ],
-    value: ["Basic_P", "Recommend_P", "ServiceDog_P", "Ad_P", "Program_P", "Guide_P", "Facility_P", "EtoTL_P"],
+    value: ["Basic_P", "Recommend_P", "ServiceDog_P", "Ad_P", "Program_P", "Guide_P", "Facility_P", "Leaflet_P"],
+    // color : [],
   };
   const flow = {
     label: ["보행로", "기타", "계단", "경사로", "턱", "승강기"],
@@ -27,8 +34,8 @@ export default function Area({ route, navigation }) {
     value: ["ParkBasic_P", "ParkingArea_P", "ParkFootpath_P"],
   };
   const entry = {
-    label: ["기본정보", "계단", "경사로", "승강기", "턱"],
-    value: ["EtoBasic_P", "EtoStairs_P", "ETORunway_P", "ETOElevator_P", "ETORoadchin_P"],
+    label: ["기본정보", "계단", "경사로", "턱", "승강기"],
+    value: ["EtoBasic_P", "Stairs_P", "Runway_P", "Roadchin_P", "Elevator_P"],
   };
 
   const toilet = {
@@ -43,12 +50,25 @@ export default function Area({ route, navigation }) {
       "편의시설",
       "장애인 화장실",
     ],
-    value: ["TBasic_P", "TEntrance_P", "TED_P", "TIE_P", "TWashstand_P", "TUT_P", "TDT_P", "TFC_P"],
+    value: [
+      "TBasic_P",
+      "Entrance_P",
+      "EntranceDoorWay_P",
+      "InteriorEntrance_P",
+      "Washstand_P",
+      "Urinal_P",
+      "Toilet_P",
+      "Facilities_P",
+      "DisabledToilet_P",
+    ],
   };
 
   return (
     <View style={styles.container}>
-      <Header title="데이터 수집" subtitle="데이터 만들기" />
+      <View style={styles.header_container}>
+        <Header title="데이터 수집" subtitle="데이터 만들기" />
+      </View>
+
       <View style={styles.area}>
         <Text style={styles.area_title}>{area}</Text>
       </View>
@@ -89,7 +109,7 @@ export default function Area({ route, navigation }) {
             ))}
           </View>
         </View>
-        {/* <View style={styles.area_container}>
+        <View style={styles.area_container}>
           <Text style={styles.sub_title}>주차장</Text>
           <View style={styles.area_wrapper}>
             {park.label.map((i, index) => (
@@ -106,7 +126,7 @@ export default function Area({ route, navigation }) {
               </TouchableOpacity>
             ))}
           </View>
-        </View> */}
+        </View>
         <View style={styles.area_container}>
           <Text style={styles.sub_title}>입구/매표소</Text>
           <View style={styles.area_wrapper}>

@@ -7,14 +7,16 @@ import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { styles } from "../../../assets/styles/add";
 import Section from "../../component/Section";
 
-export default function Roadchin({ route, navigation }) {
+export default function EntranceDoorWay({ route, navigation }) {
   const { item } = route.params;
 
   const [value, setValue] = useState({
-    roadchin: "",
-    height: "",
     width: "",
+    roadchin: "",
+    rodechinHeight: "",
+    doortype: "",
   });
+
   const imagePickerOption = {
     mediaType: "photo",
     maxWidth: 768,
@@ -62,41 +64,52 @@ export default function Roadchin({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              {value.roadchin === "Y" ? (
-                <>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>높이</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="name"
-                        value={value.height}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, height: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>턱 높이</Text>
+                <View style={styles.input_wrapper}>
+                  <TextInput
+                    name="name"
+                    value={value.rodechinHeight}
+                    onChangeText={(text) =>
+                      setValue((prev) => {
+                        return { ...prev, rodechinHeight: text };
+                      })
+                    }
+                    style={value.roadchin === "N" || value.roadchin === "" ? null : styles.input}
+                  ></TextInput>
+                </View>
+              </View>
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>폭</Text>
+                <View style={styles.input_wrapper}>
+                  <TextInput
+                    name="name"
+                    value={value.width}
+                    onChangeText={(text) =>
+                      setValue((prev) => {
+                        return { ...prev, width: text };
+                      })
+                    }
+                    style={styles.input}
+                  ></TextInput>
+                </View>
+              </View>
 
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>폭</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="name"
-                        value={value.width}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, width: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
-                </>
-              ) : null}
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>턱 높이</Text>
+                <View style={styles.input_wrapper}>
+                  <TextInput
+                    name="name"
+                    value={value.doortype}
+                    onChangeText={(text) =>
+                      setValue((prev) => {
+                        return { ...prev, doortype: text };
+                      })
+                    }
+                    style={styles.input}
+                  ></TextInput>
+                </View>
+              </View>
             </View>
           </ScrollView>
         </View>

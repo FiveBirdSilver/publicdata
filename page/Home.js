@@ -8,9 +8,10 @@ import Header from "../page/component/Header";
 
 export default function Home({ navigation }) {
   const [userInfo, setUserInfo] = useState("");
+
   const [isChecked, setIsChecked] = useState(null);
 
-  const item = ["항목 1", "항목 2", "항목 3"];
+  const item = ["항목 1", "항목 2", "항목 3", "항목 4", "항목 5", "항목 6", "항목 7", "항목 8", "항목 9"];
 
   useEffect(() => {
     AsyncStorage.getItem("User", (err, result) => {
@@ -39,15 +40,20 @@ export default function Home({ navigation }) {
       },
     ]);
   };
-  const handleGoHome = () => {
-    navigation.push("Home");
-  };
-  const handleGoCollection = () => {
-    navigation.push("Collection");
-  };
+
   return (
     <View style={styles.container}>
-      <Header title="Home" subtitle="사용자정보" />
+      <View style={styles.header_container}>
+        <Header title="Home" subtitle="사용자정보" />
+        <View style={styles.logout}>
+          <View style={styles.icon_wrap}>
+            <TouchableOpacity style={styles.footer_title} onPress={handleOnLogOut}>
+              <AntDesign style={styles.icon} color="#00acb1" name="logout" size={20} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.logout_title}>로그아웃</Text>
+        </View>
+      </View>
       <View style={styles.userinfo}>
         <View style={styles.userimg}>
           <AntDesign style={styles.icon} color="white" name="user" size={40} />
@@ -62,12 +68,23 @@ export default function Home({ navigation }) {
       </View>
       <View style={styles.today_item}>
         {item.map((i) => (
-          <TouchableOpacity key={i}>
+          <TouchableOpacity
+            key={i}
+            onPress={() => {
+              userInfo.location === "포항"
+                ? navigation.push("Area_P", {
+                    area: i,
+                  })
+                : navigation.push("Area_D", {
+                    area: i,
+                  });
+            }}
+          >
             <Text style={styles.today_item_title}>{i}</Text>
           </TouchableOpacity>
         ))}
       </View>
-      <View style={styles.footer}>
+      {/* <View style={styles.footer}>
         <View style={styles.footer_container}>
           <View style={styles.icon_wrap}>
             <TouchableOpacity style={styles.footer_title} onPress={handleGoHome}>
@@ -92,7 +109,7 @@ export default function Home({ navigation }) {
           </View>
           <Text>로그아웃</Text>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 }

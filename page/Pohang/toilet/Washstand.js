@@ -7,15 +7,16 @@ import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { styles } from "../../../assets/styles/add";
 import Section from "../../component/Section";
 
-export default function Elevator({ route, navigation }) {
+export default function Washstand({ route, navigation }) {
   const { item } = route.params;
 
   const [value, setValue] = useState({
-    elevator: "",
-    doorWidth: "",
-    wheelchair: "",
-    braile: "",
-    emergencybell: "",
+    washstand: "",
+    height: "",
+    handle: "",
+    temperatureBraile: "",
+    childwashstand: "",
+    wheelchairPossible: "",
   });
 
   const imagePickerOption = {
@@ -43,14 +44,14 @@ export default function Elevator({ route, navigation }) {
           <ScrollView style={styles.scrollview}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>승강기 유무</Text>
+                <Text style={styles.add_subtitle}>세면대 유무</Text>
                 <RadioButton.Group
                   onValueChange={(v) =>
                     setValue((prev) => {
-                      return { ...prev, elevator: v };
+                      return { ...prev, washstand: v };
                     })
                   }
-                  value={value.elevator}
+                  value={value.washstand}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -66,92 +67,109 @@ export default function Elevator({ route, navigation }) {
                 </RadioButton.Group>
               </View>
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>휠체어 탑승 가능 유무</Text>
+                <Text style={styles.add_subtitle}>세면대 높이</Text>
+                <View style={styles.input_wrapper}>
+                  <TextInput
+                    name="name"
+                    value={value.height}
+                    onChangeText={(text) =>
+                      setValue((prev) => {
+                        return { ...prev, height: text };
+                      })
+                    }
+                    style={value.washstand === "N" || value.washstand === "" ? null : styles.input}
+                  ></TextInput>
+                </View>
+              </View>
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>세면대 손잡이</Text>
                 <RadioButton.Group
                   onValueChange={(v) =>
                     setValue((prev) => {
-                      return { ...prev, wheelchair: v };
+                      return { ...prev, handle: v };
                     })
                   }
-                  value={value.wheelchair}
+                  value={value.handle}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="Y"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
+                      <RadioButton value="Y" disabled={value.washstand === "N" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="N"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
+                      <RadioButton value="N" disabled={value.washstand === "N" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
               </View>
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>조작버튼 점자표시 유무</Text>
+                <Text style={styles.add_subtitle}>냉온수 점자 구분 여부</Text>
                 <RadioButton.Group
                   onValueChange={(v) =>
                     setValue((prev) => {
-                      return { ...prev, braile: v };
+                      return { ...prev, temperatureBraile: v };
                     })
                   }
-                  value={value.braile}
+                  value={value.temperatureBraile}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="Y"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
+                      <RadioButton value="Y" disabled={value.washstand === "N" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="N"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
+                      <RadioButton value="N" disabled={value.washstand === "N" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
               </View>
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>비상벨 유무</Text>
+                <Text style={styles.add_subtitle}>어린이용 세면대 유무</Text>
                 <RadioButton.Group
                   onValueChange={(v) =>
                     setValue((prev) => {
-                      return { ...prev, emergencybell: v };
+                      return { ...prev, childwashstand: v };
                     })
                   }
-                  value={value.emergencybell}
+                  value={value.childwashstand}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="Y"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
+                      <RadioButton value="Y" disabled={value.washstand === "N" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="N"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
+                      <RadioButton value="N" disabled={value.washstand === "N" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
               </View>
-
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>휠체어 탑승 세면대 사용 가능 여부</Text>
+                <RadioButton.Group
+                  onValueChange={(v) =>
+                    setValue((prev) => {
+                      return { ...prev, wheelchairPossible: v };
+                    })
+                  }
+                  value={value.wheelchairPossible}
+                  style={styles.yesorno}
+                >
+                  <View style={styles.radio}>
+                    <View style={styles.radio_wrap}>
+                      <RadioButton value="Y" disabled={value.washstand === "N" ? true : false} />
+                    </View>
+                    <View style={styles.radio_wrap}>
+                      <RadioButton value="N" disabled={value.washstand === "N" ? true : false} />
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
               <View style={styles.img}>
-                {value.elevator === "Y" ? (
+                {value.washstand === "Y" ? (
                   <>
                     <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>승강기 유무</Text>
+                      <Text style={styles.img_container_title}>세면대 유무</Text>
                       <TouchableOpacity
                         style={styles.imgchoose}
                         onLaunchCamera={onLaunchCamera}
@@ -161,7 +179,7 @@ export default function Elevator({ route, navigation }) {
                       </TouchableOpacity>
                     </View>
                     <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>휠체어 탑승 가능 유무</Text>
+                      <Text style={styles.img_container_title}>세면대 손잡이</Text>
                       <TouchableOpacity
                         style={styles.imgchoose}
                         onLaunchCamera={onLaunchCamera}
@@ -171,7 +189,7 @@ export default function Elevator({ route, navigation }) {
                       </TouchableOpacity>
                     </View>
                     <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>조작버튼 점자표시 유무</Text>
+                      <Text style={styles.img_container_title}>냉온수 점자 구분 여부</Text>
                       <TouchableOpacity
                         style={styles.imgchoose}
                         onLaunchCamera={onLaunchCamera}
@@ -181,7 +199,17 @@ export default function Elevator({ route, navigation }) {
                       </TouchableOpacity>
                     </View>
                     <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>비상벨 유무</Text>
+                      <Text style={styles.img_container_title}>어린이용 세면대 유무</Text>
+                      <TouchableOpacity
+                        style={styles.imgchoose}
+                        onLaunchCamera={onLaunchCamera}
+                        onLaunchImageLibrary={onLaunchImageLibrary}
+                      >
+                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.img_container}>
+                      <Text style={styles.img_container_title}>휠체어 탑승 세면대 사용 가능 여부</Text>
                       <TouchableOpacity
                         style={styles.imgchoose}
                         onLaunchCamera={onLaunchCamera}
@@ -191,27 +219,6 @@ export default function Elevator({ route, navigation }) {
                       </TouchableOpacity>
                     </View>
                   </>
-                ) : null}
-              </View>
-              <View>
-                {value.elevator === "Y" ? (
-                  <View style={styles.add_input}>
-                    <View style={styles.add_container}>
-                      <Text style={styles.add_subtitle}>승강기 문 폭</Text>
-                      <View style={styles.input_wrapper}>
-                        <TextInput
-                          name="doorWidth"
-                          value={value.doorWidth}
-                          onChangeText={(text) =>
-                            setValue((prev) => {
-                              return { ...prev, doorWidth: text };
-                            })
-                          }
-                          style={styles.input}
-                        ></TextInput>
-                      </View>
-                    </View>
-                  </View>
                 ) : null}
               </View>
             </View>

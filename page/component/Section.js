@@ -20,7 +20,6 @@ export default function Section({ item }) {
         <Text>뒤로</Text>
       </View>
       <Text style={styles.add_title}>{item}</Text>
-
       <View style={styles.add_title_wrapper}>
         <View style={styles.icon_wrap}>
           <TouchableOpacity style={styles.footer_title}>

@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: color.darkgray,
     borderRadius: 5,
-    marginTop: 30,
+    marginTop: 20,
     marginBottom: 30,
     shadowColor: "#000",
     shadowOffset: {
@@ -115,12 +115,21 @@ export const styles = StyleSheet.create({
   season: {
     flexDirection: "row",
     alignContent: "center",
-    justifyContent: "space-between",
+    height: 30,
     marginTop: 16,
   },
   season_title: {
     fontSize: 18,
     marginRight: 20,
+  },
+  season_ps: {
+    marginBottom: 10,
+    fontSize: 12,
+    color: "orange",
+  },
+  season_container: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   radio: {
     flexDirection: "row",
@@ -133,5 +142,4 @@ export const styles = StyleSheet.create({
   scrollview: {
     width: "100%",
   },
-  add_input: {},
 });

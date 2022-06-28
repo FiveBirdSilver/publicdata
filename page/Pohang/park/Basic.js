@@ -134,6 +134,7 @@ export default function Basic({ route, navigation }) {
                       <View style={styles.input_wrapper}>
                         <TextInput
                           name="name"
+                          placeholder="EX. 아스팔트 , 흙"
                           value={value.material}
                           onChangeText={(text) =>
                             setValue((prev) => {

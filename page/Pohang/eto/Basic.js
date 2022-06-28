@@ -86,6 +86,7 @@ export default function Basic({ route, navigation }) {
                       <TextInput
                         name="name"
                         value={value.material}
+                        placeholder="EX. 아스팔트, 흙"
                         onChangeText={(text) =>
                           setValue((prev) => {
                             return { ...prev, material: text };

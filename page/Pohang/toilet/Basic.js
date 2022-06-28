@@ -81,10 +81,10 @@ export default function Basic({ route, navigation }) {
                 >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={toilet === "N" || toilet === "" ? true : false} />
+                      <RadioButton value="Y" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={toilet === "N" || toilet === "" ? true : false} />
+                      <RadioButton value="N" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -102,10 +102,10 @@ export default function Basic({ route, navigation }) {
                 >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={toilet === "N" || toilet === "" ? true : false} />
+                      <RadioButton value="Y" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={toilet === "N" || toilet === "" ? true : false} />
+                      <RadioButton value="N" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -123,10 +123,10 @@ export default function Basic({ route, navigation }) {
                 >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={toilet === "N" || toilet === "" ? true : false} />
+                      <RadioButton value="Y" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={toilet === "N" || toilet === "" ? true : false} />
+                      <RadioButton value="N" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -144,10 +144,10 @@ export default function Basic({ route, navigation }) {
                 >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={toilet === "N" || toilet === "" ? true : false} />
+                      <RadioButton value="Y" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={toilet === "N" || toilet === "" ? true : false} />
+                      <RadioButton value="N" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -165,18 +165,85 @@ export default function Basic({ route, navigation }) {
                 >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={toilet === "N" || toilet === "" ? true : false} />
+                      <RadioButton value="Y" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={toilet === "N" || toilet === "" ? true : false} />
+                      <RadioButton value="N" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
               </View>
+
+              <View style={styles.img}>
+                {value.toilet === "Y" ? (
+                  <>
+                    <View style={styles.img_container}>
+                      <Text style={styles.img_container_title}>화장실 유무</Text>
+                      <TouchableOpacity
+                        style={styles.imgchoose}
+                        onLaunchCamera={onLaunchCamera}
+                        onLaunchImageLibrary={onLaunchImageLibrary}
+                      >
+                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.img_container}>
+                      <Text style={styles.img_container_title}>남녀별도 사용 가능 유무</Text>
+                      <TouchableOpacity
+                        style={styles.imgchoose}
+                        onLaunchCamera={onLaunchCamera}
+                        onLaunchImageLibrary={onLaunchImageLibrary}
+                      >
+                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.img_container}>
+                      <Text style={styles.img_container_title}>출입구 남/녀 구분 점자표지판 설치 유무</Text>
+                      <TouchableOpacity
+                        style={styles.imgchoose}
+                        onLaunchCamera={onLaunchCamera}
+                        onLaunchImageLibrary={onLaunchImageLibrary}
+                      >
+                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.img_container}>
+                      <Text style={styles.img_container_title}>출입구 전면 바닥 점형 블록 설치 유무</Text>
+                      <TouchableOpacity
+                        style={styles.imgchoose}
+                        onLaunchCamera={onLaunchCamera}
+                        onLaunchImageLibrary={onLaunchImageLibrary}
+                      >
+                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.img_container}>
+                      <Text style={styles.img_container_title}>화장실 사용 여부 외부 표시 확인 기능 유무</Text>
+                      <TouchableOpacity
+                        style={styles.imgchoose}
+                        onLaunchCamera={onLaunchCamera}
+                        onLaunchImageLibrary={onLaunchImageLibrary}
+                      >
+                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.img_container}>
+                      <Text style={styles.img_container_title}>비상벨 설치 유무</Text>
+                      <TouchableOpacity
+                        style={styles.imgchoose}
+                        onLaunchCamera={onLaunchCamera}
+                        onLaunchImageLibrary={onLaunchImageLibrary}
+                      >
+                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                ) : null}
+              </View>
               {value.toilet === "Y" ? (
                 <>
                   <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>입구•매표소 이름</Text>
+                    <Text style={styles.add_subtitle}>화장실 이름</Text>
                     <View style={styles.input_wrapper}>
                       <TextInput
                         name="name"
@@ -191,14 +258,14 @@ export default function Basic({ route, navigation }) {
                     </View>
                   </View>
                   <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>바닥 재질</Text>
+                    <Text style={styles.add_subtitle}>화장실 주소</Text>
                     <View style={styles.input_wrapper}>
                       <TextInput
                         name="name"
-                        value={value.material}
+                        value={value.address}
                         onChangeText={(text) =>
                           setValue((prev) => {
-                            return { ...prev, material: text };
+                            return { ...prev, address: text };
                           })
                         }
                         style={styles.input}
@@ -207,33 +274,6 @@ export default function Basic({ route, navigation }) {
                   </View>
                 </>
               ) : null}
-
-              <View style={styles.img}>
-                {value.toilet === "Y" ? (
-                  <>
-                    <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>입구•매표소</Text>
-                      <TouchableOpacity
-                        style={styles.imgchoose}
-                        onLaunchCamera={onLaunchCamera}
-                        onLaunchImageLibrary={onLaunchImageLibrary}
-                      >
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>바닥 재질</Text>
-                      <TouchableOpacity
-                        style={styles.imgchoose}
-                        onLaunchCamera={onLaunchCamera}
-                        onLaunchImageLibrary={onLaunchImageLibrary}
-                      >
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
-                    </View>
-                  </>
-                ) : null}
-              </View>
             </View>
           </ScrollView>
         </View>

@@ -1,13 +1,16 @@
-import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 
 import { styles } from "../../../assets/styles/add";
 
 export default function Recommend({ route, navigation }) {
   const { item } = route.params;
+
   const [cos, setCos] = useState("");
+  const [season, setSeoson] = useState([]);
 
   const imagePickerOption = {
     mediaType: "photo",
@@ -25,24 +28,6 @@ export default function Recommend({ route, navigation }) {
   const onLaunchImageLibrary = () => {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
-  const SeasonData = [
-    {
-      id: "0",
-      label: "봄",
-    },
-    {
-      id: "1",
-      label: "여름",
-    },
-    {
-      id: "2",
-      label: "가을",
-    },
-    {
-      id: "3",
-      label: "겨울",
-    },
-  ];
 
   return (
     <View style={styles.container}>
@@ -68,33 +53,117 @@ export default function Recommend({ route, navigation }) {
       </View>
       <View style={styles.content}>
         <View style={styles.add}>
-          <View style={styles.add_wrapper}>
-            <View style={styles.add_container}>
-              <Text style={styles.add_subtitle}>추천코스</Text>
-              <View style={styles.input_wrapper}>
-                <TextInput
-                  name="cos"
-                  value={cos}
-                  onChangeText={(text) => setCos(text)}
-                  style={styles.input}
-                ></TextInput>
+          <ScrollView style={styles.scrollview}>
+            <View style={styles.add_wrapper}>
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>추천코스</Text>
+                <View style={styles.input_wrapper}>
+                  <TextInput
+                    name="cos"
+                    value={cos}
+                    onChangeText={(text) => setCos(text.split(","))}
+                    style={styles.input}
+                  ></TextInput>
+                </View>
+              </View>
+              <View style={styles.img}>
+                {cos !== ""
+                  ? cos.map((i) => (
+                      <View style={styles.img_container}>
+                        <Text style={styles.img_container_title} key={i}>
+                          {i}
+                        </Text>
+                        <TouchableOpacity
+                          style={styles.imgchoose}
+                          onLaunchCamera={onLaunchCamera}
+                          onLaunchImageLibrary={onLaunchImageLibrary}
+                        >
+                          <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                        </TouchableOpacity>
+                      </View>
+                    ))
+                  : null}
+              </View>
+              <View style={styles.season}>
+                <Text style={styles.season_title}>추천 계절</Text>
+              </View>
+              <Text style={styles.season_ps}>* 중복 선택 가능</Text>
+              <View style={styles.season_container}>
+                <BouncyCheckbox
+                  size={15}
+                  fillColor="#00acb1"
+                  onPress={(v) =>
+                    v
+                      ? setSeoson((prev) => {
+                          return [...prev, 0];
+                        })
+                      : setSeoson((prev) => {
+                          return prev.filter((i) => i !== 0);
+                        })
+                  }
+                  text="봄"
+                  iconStyle={{ borderRadius: 30 }}
+                  textStyle={{
+                    textDecorationLine: "none",
+                  }}
+                />
+                <BouncyCheckbox
+                  size={15}
+                  fillColor="#00acb1"
+                  onPress={(v) =>
+                    v
+                      ? setSeoson((prev) => {
+                          return [...prev, 1];
+                        })
+                      : setSeoson((prev) => {
+                          return prev.filter((i) => i !== 1);
+                        })
+                  }
+                  text="여름"
+                  iconStyle={{ borderRadius: 30 }}
+                  textStyle={{
+                    textDecorationLine: "none",
+                  }}
+                />
+                <BouncyCheckbox
+                  size={15}
+                  fillColor="#00acb1"
+                  onPress={(v) =>
+                    v
+                      ? setSeoson((prev) => {
+                          return [...prev, 2];
+                        })
+                      : setSeoson((prev) => {
+                          return prev.filter((i) => i !== 2);
+                        })
+                  }
+                  text="가을"
+                  iconStyle={{ borderRadius: 30 }}
+                  textStyle={{
+                    textDecorationLine: "none",
+                  }}
+                />
+                <BouncyCheckbox
+                  size={15}
+                  fillColor="#00acb1"
+                  onPress={(v) =>
+                    v
+                      ? setSeoson((prev) => {
+                          return [...prev, 3];
+                        })
+                      : setSeoson((prev) => {
+                          return prev.filter((i) => i !== 3);
+                        })
+                  }
+                  text="겨울"
+                  iconStyle={{ borderRadius: 30 }}
+                  textStyle={{
+                    textDecorationLine: "none",
+                  }}
+                />
               </View>
             </View>
-            <View style={styles.img_container}>
-              <Text style={styles.img_container_title}>코스 1</Text>
-              <TouchableOpacity
-                style={styles.imgchoose}
-                onLaunchCamera={onLaunchCamera}
-                onLaunchImageLibrary={onLaunchImageLibrary}
-              >
-                <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.season}>
-              <Text style={styles.season_title}>추천 계절</Text>
-            </View>
-            <Text>* 중복 선택 가능</Text>
-          </View>
+          </ScrollView>
         </View>
       </View>
     </View>

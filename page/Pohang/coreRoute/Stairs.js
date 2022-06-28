@@ -64,10 +64,10 @@ export default function Staris({ route, navigation }) {
                 <RadioButton.Group onValueChange={(v) => setHandle(v)} value={handle} style={styles.yesorno}>
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={stairs === "N" ? true : false} />
+                      <RadioButton value="Y" disabled={stairs === "N" || stairs === "" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={stairs === "N" ? true : false} />
+                      <RadioButton value="N" disabled={stairs === "N" || stairs === "" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -82,10 +82,10 @@ export default function Staris({ route, navigation }) {
                 >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={stairs === "N" ? true : false} />
+                      <RadioButton value="Y" disabled={stairs === "N" || stairs === "" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={stairs === "N" ? true : false} />
+                      <RadioButton value="N" disabled={stairs === "N" || stairs === "" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -95,10 +95,10 @@ export default function Staris({ route, navigation }) {
                 <RadioButton.Group onValueChange={(v) => setDotBlock(v)} value={dotBlock} style={styles.yesorno}>
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={stairs === "N" ? true : false} />
+                      <RadioButton value="Y" disabled={stairs === "N" || stairs === "" ? true : false} />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={stairs === "N" ? true : false} />
+                      <RadioButton value="N" disabled={stairs === "N" || stairs === "" ? true : false} />
                     </View>
                   </View>
                 </RadioButton.Group>
