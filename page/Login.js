@@ -65,7 +65,7 @@ export default function Login({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.login}>
-        <Text style={styles.login_title}>User Login</Text>
+        <Text style={styles.login_title}>User Login</Text>``
         <View style={styles.location}>
           <Dropdown
             style={styles.dropdown}
