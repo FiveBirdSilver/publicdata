@@ -15,7 +15,6 @@ export default function Runway({ route, navigation }) {
     handle: "",
     handleBraille: "",
     slope: "",
-    length: "",
   });
 
   const imagePickerOption = {
@@ -161,21 +160,6 @@ export default function Runway({ route, navigation }) {
                           onChangeText={(text) =>
                             setValue((prev) => {
                               return { ...prev, slope: text };
-                            })
-                          }
-                          style={styles.input}
-                        ></TextInput>
-                      </View>
-                    </View>
-                    <View style={styles.add_container}>
-                      <Text style={styles.add_subtitle}>경사로 길이</Text>
-                      <View style={styles.input_wrapper}>
-                        <TextInput
-                          name="length"
-                          value={value.length}
-                          onChangeText={(text) =>
-                            setValue((prev) => {
-                              return { ...prev, length: text };
                             })
                           }
                           style={styles.input}

@@ -26,16 +26,16 @@ export default function Home({ navigation }) {
     });
   }, []);
   const handleOnLogOut = () => {
-    Alert.alert("Alert", "로그아웃 하시겠습니까?", [
+    Alert.alert("알림", "로그아웃 하시겠습니까?", [
       {
-        text: "YES",
+        text: "예",
         onPress: () => {
           AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: false }));
           navigation.push("Login");
         },
       },
       {
-        text: "NO",
+        text: "아니오",
         style: "cancel",
       },
     ]);
@@ -71,7 +71,7 @@ export default function Home({ navigation }) {
           <TouchableOpacity
             key={i}
             onPress={() => {
-              userInfo.location === "포항"
+              userInfo.location === 3002
                 ? navigation.push("Area_P", {
                     area: i,
                   })

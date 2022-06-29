@@ -4,6 +4,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 import { styles } from "../assets/styles/login.js";
 import logo from "../assets/img/gp_logo.png";
@@ -44,14 +45,23 @@ export default function Login({ navigation }) {
       AsyncStorage.setItem("User", JSON.stringify({ id: id, location: location }));
       AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }));
       AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: loggin }));
+      axios
+        .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/login", {
+          regionCode: location,
+          userId: id,
+          userPw: password,
+        })
+        .then((res) => {
+          console.log("성공", res.data);
+        })
+        .catch((err) => console.log("실패", err));
       navigation.push("Home");
     }
   };
   const data = [
-    { label: "대구", value: "대구" },
-    { label: "포항", value: "포항" },
+    { label: "대구", value: 3001 },
+    { label: "포항", value: 3002 },
   ];
-
   return (
     <View style={styles.container}>
       <View style={styles.login}>
