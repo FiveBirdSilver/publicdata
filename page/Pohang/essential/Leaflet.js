@@ -15,7 +15,6 @@ export default function Leaflet({ route, navigation }) {
     disabledFacility: "",
     dotLeaflet: "",
   });
-  console.log(value);
   const imagePickerOption = {
     mediaType: "photo",
     maxWidth: 768,
@@ -34,11 +33,11 @@ export default function Leaflet({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>관광지 리플렛 유무</Text>
@@ -144,9 +143,9 @@ export default function Leaflet({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

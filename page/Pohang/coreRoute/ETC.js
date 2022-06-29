@@ -9,8 +9,11 @@ import Section from "../../component/Section";
 
 export default function ETC({ route, navigation }) {
   const { item } = route.params;
-  const [emergencybell, setEmergencybell] = useState("");
-  const [lightalarmdevice, setLightalarmdevice] = useState("");
+
+  const [value, setValue] = useState({
+    emergencybell: "",
+    lightalarmdevice: "",
+  });
 
   const imagePickerOption = {
     mediaType: "photo",
@@ -30,17 +33,21 @@ export default function ETC({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>비상벨 유무</Text>
                 <RadioButton.Group
-                  onValueChange={(v) => setEmergencybell(v)}
-                  value={emergencybell}
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, emergencybell: text };
+                    })
+                  }
+                  value={value.emergencybell}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -58,8 +65,12 @@ export default function ETC({ route, navigation }) {
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>빛 확인 경보장치 유무</Text>
                 <RadioButton.Group
-                  onValueChange={(v) => setLightalarmdevice(v)}
-                  value={lightalarmdevice}
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, lightalarmdevice: text };
+                    })
+                  }
+                  value={value.lightalarmdevice}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -74,7 +85,7 @@ export default function ETC({ route, navigation }) {
               </View>
 
               <View style={styles.img}>
-                {emergencybell === "Y" ? (
+                {value.emergencybell === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>비상벨 유무</Text>
                     <TouchableOpacity
@@ -86,7 +97,7 @@ export default function ETC({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {lightalarmdevice === "Y" ? (
+                {value.lightalarmdevice === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>빛 확인 경보장치 유무</Text>
                     <TouchableOpacity
@@ -100,9 +111,9 @@ export default function ETC({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

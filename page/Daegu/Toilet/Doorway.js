@@ -11,10 +11,8 @@ export default function Doorway({ route, navigation }) {
   const { item } = route.params;
 
   const [value, setValue] = useState({
-    wheelchair: "",
-    actSpace: "",
+    doorway: "",
     width: "",
-    distance: "",
     height: "",
   });
 
@@ -43,14 +41,14 @@ export default function Doorway({ route, navigation }) {
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>휠체어 출입가능 유무</Text>
+                <Text style={styles.add_subtitle}>입구 턱 유무</Text>
                 <RadioButton.Group
                   onValueChange={(v) =>
                     setValue((prev) => {
-                      return { ...prev, wheelchair: v };
+                      return { ...prev, doorway: v };
                     })
                   }
-                  value={value.wheelchair}
+                  value={value.doorway}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -65,30 +63,9 @@ export default function Doorway({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>활동 공간 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, actSpace: v };
-                    })
-                  }
-                  value={value.actSpace}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
 
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>출입구 폭</Text>
+                <Text style={styles.add_subtitle}>입구 폭</Text>
                 <View style={styles.input_wrapper}>
                   <TextInput
                     name="name"
@@ -97,6 +74,22 @@ export default function Doorway({ route, navigation }) {
                     onChangeText={(text) =>
                       setValue((prev) => {
                         return { ...prev, width: text };
+                      })
+                    }
+                    style={styles.input}
+                  ></TextInput>
+                </View>
+              </View>
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>턱 높이</Text>
+                <View style={styles.input_wrapper}>
+                  <TextInput
+                    name="name"
+                    placeholder="cm"
+                    value={value.height}
+                    onChangeText={(text) =>
+                      setValue((prev) => {
+                        return { ...prev, height: text };
                       })
                     }
                     style={styles.input}

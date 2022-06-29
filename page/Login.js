@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Text, TextInput, View, Image, TouchableOpacity, Alert } from "react-native";
+import { Text, TextInput, View, Image, TouchableOpacity, Alert, ScrollView } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -122,8 +122,9 @@ export default function Login({ navigation }) {
           <Text style={styles.submit_btn_title}>로그인</Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.logo}>
-        <Image source={logo} style={{ width: 200, height: 55 }} />
+        <Image source={logo} style={{ width: 150, height: 40 }} />
       </View>
     </View>
   );

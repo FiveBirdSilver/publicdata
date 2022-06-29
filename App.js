@@ -38,8 +38,20 @@ import Toilet_P from "./page/Pohang/toilet/Toilet";
 import Facilities_P from "./page/Pohang/toilet/Facilities";
 import DisabledToilet_P from "./page/Pohang/toilet/DisabledToilet";
 
+import Basic_D from "./page/Daegu/company/Basic";
 import Door_D from "./page/Daegu/company/Door";
 import Doorway_D from "./page/Daegu/company/Doorway";
+import Ramp_D from "./page/Daegu/company/Ramp";
+import Inside_D from "./page/Daegu/company/Inside";
+import Outside_D from "./page/Daegu/company/Outside";
+
+import Type_D from "./page/Daegu/Toilet/Type";
+import TDoor_D from "./page/Daegu/Toilet/Door";
+import TDoorway_D from "./page/Daegu/Toilet/Doorway";
+import TRamp_D from "./page/Daegu/Toilet/Ramp";
+import Washstand_D from "./page/Daegu/Toilet/Washstand";
+import Handle_D from "./page/Daegu/Toilet/Handle";
+import Backrest_D from "./page/Daegu/Toilet/Backrest";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -47,45 +59,57 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Home" options={{ headerShown: false }} component={Home} />
+        <Stack.Screen name="Login" options={{ headerShown: false }} component={Login} />
 
-        <Stack.Screen name="Area_P" component={Area_P} />
-        <Stack.Screen name="Basic_P" component={Basic_P} />
-        <Stack.Screen name="Recommend_P" component={Recommend_P} />
-        <Stack.Screen name="ServiceDog_P" component={ServiceDog_P} />
-        <Stack.Screen name="Ad_P" component={Ad_P} />
-        <Stack.Screen name="Program_P" component={Program_P} />
-        <Stack.Screen name="Guide_P" component={Guide_P} />
-        <Stack.Screen name="Facility_P" component={Facility_P} />
-        <Stack.Screen name="Leaflet_P" component={Leaflet_P} />
+        <Stack.Screen name="Area_P" options={{ headerShown: false }} component={Area_P} />
+        <Stack.Screen name="Basic_P" options={{ headerShown: false }} component={Basic_P} />
+        <Stack.Screen name="Recommend_P" options={{ headerShown: false }} component={Recommend_P} />
+        <Stack.Screen name="ServiceDog_P" options={{ headerShown: false }} component={ServiceDog_P} />
+        <Stack.Screen name="Ad_P" options={{ headerShown: false }} component={Ad_P} />
+        <Stack.Screen name="Program_P" options={{ headerShown: false }} component={Program_P} />
+        <Stack.Screen name="Guide_P" options={{ headerShown: false }} component={Guide_P} />
+        <Stack.Screen name="Facility_P" options={{ headerShown: false }} component={Facility_P} />
+        <Stack.Screen name="Leaflet_P" options={{ headerShown: false }} component={Leaflet_P} />
 
-        <Stack.Screen name="Footpath_P" component={Footpath_P} />
-        <Stack.Screen name="ETC_P" component={ETC_P} />
-        <Stack.Screen name="Stairs_P" component={Stairs_P} />
-        <Stack.Screen name="Runway_P" component={Runway_P} />
-        <Stack.Screen name="Roadchin_P" component={Roadchin_P} />
-        <Stack.Screen name="Elevator_P" component={Elevator_P} />
+        <Stack.Screen name="Footpath_P" options={{ headerShown: false }} component={Footpath_P} />
+        <Stack.Screen name="ETC_P" options={{ headerShown: false }} component={ETC_P} />
+        <Stack.Screen name="Stairs_P" options={{ headerShown: false }} component={Stairs_P} />
+        <Stack.Screen name="Runway_P" options={{ headerShown: false }} component={Runway_P} />
+        <Stack.Screen name="Roadchin_P" options={{ headerShown: false }} component={Roadchin_P} />
+        <Stack.Screen name="Elevator_P" options={{ headerShown: false }} component={Elevator_P} />
 
-        <Stack.Screen name="ParkBasic_P" component={ParkBasic_P} />
-        <Stack.Screen name="ParkingArea_P" component={ParkingArea_P} />
-        <Stack.Screen name="ParkFootpath_P" component={ParkFootpath_P} />
+        <Stack.Screen name="ParkBasic_P" options={{ headerShown: false }} component={ParkBasic_P} />
+        <Stack.Screen name="ParkingArea_P" options={{ headerShown: false }} component={ParkingArea_P} />
+        <Stack.Screen name="ParkFootpath_P" options={{ headerShown: false }} component={ParkFootpath_P} />
 
-        <Stack.Screen name="EtoBasic_P" component={EtoBasic_P} />
+        <Stack.Screen name="EtoBasic_P" options={{ headerShown: false }} component={EtoBasic_P} />
 
-        <Stack.Screen name="TBasic_P" component={TBasic_P} />
-        <Stack.Screen name="Entrance_P" component={Entrance_P} />
-        <Stack.Screen name="EntranceDoorWay_P" component={EntranceDoorWay_P} />
-        <Stack.Screen name="InteriorEntrance_P" component={InteriorEntrance_P} />
-        <Stack.Screen name="Washstand_P" component={Washstand_P} />
-        <Stack.Screen name="Urinal_P" component={Urinal_P} />
-        <Stack.Screen name="Toilet_P" component={Toilet_P} />
-        <Stack.Screen name="Facilities_P" component={Facilities_P} />
-        <Stack.Screen name="DisabledToilet_P" component={DisabledToilet_P} />
+        <Stack.Screen name="TBasic_P" options={{ headerShown: false }} component={TBasic_P} />
+        <Stack.Screen name="Entrance_P" options={{ headerShown: false }} component={Entrance_P} />
+        <Stack.Screen name="EntranceDoorWay_P" options={{ headerShown: false }} component={EntranceDoorWay_P} />
+        <Stack.Screen name="InteriorEntrance_P" options={{ headerShown: false }} component={InteriorEntrance_P} />
+        <Stack.Screen name="Washstand_P" options={{ headerShown: false }} component={Washstand_P} />
+        <Stack.Screen name="Urinal_P" options={{ headerShown: false }} component={Urinal_P} />
+        <Stack.Screen name="Toilet_P" options={{ headerShown: false }} component={Toilet_P} />
+        <Stack.Screen name="Facilities_P" options={{ headerShown: false }} component={Facilities_P} />
+        <Stack.Screen name="DisabledToilet_P" options={{ headerShown: false }} component={DisabledToilet_P} />
 
-        <Stack.Screen name="Area_D" component={Area_D} />
-        <Stack.Screen name="Door_D" component={Door_D} />
-        <Stack.Screen name="Doorway_D" component={Doorway_D} />
+        <Stack.Screen name="Area_D" options={{ headerShown: false }} component={Area_D} />
+        <Stack.Screen name="Basic_D" options={{ headerShown: false }} component={Basic_D} />
+        <Stack.Screen name="Door_D" options={{ headerShown: false }} component={Door_D} />
+        <Stack.Screen name="Doorway_D" options={{ headerShown: false }} component={Doorway_D} />
+        <Stack.Screen name="Ramp_D" options={{ headerShown: false }} component={Ramp_D} />
+        <Stack.Screen name="Inside_D" options={{ headerShown: false }} component={Inside_D} />
+        <Stack.Screen name="Outside_D" options={{ headerShown: false }} component={Outside_D} />
+
+        <Stack.Screen name="Type_D" options={{ headerShown: false }} component={Type_D} />
+        <Stack.Screen name="TDoor_D" options={{ headerShown: false }} component={TDoor_D} />
+        <Stack.Screen name="TDoorway_D" options={{ headerShown: false }} component={TDoorway_D} />
+        <Stack.Screen name="TRamp_D" options={{ headerShown: false }} component={TRamp_D} />
+        <Stack.Screen name="Washstand_D" options={{ headerShown: false }} component={Washstand_D} />
+        <Stack.Screen name="Handle_D" options={{ headerShown: false }} component={Handle_D} />
+        <Stack.Screen name="Backrest_D" options={{ headerShown: false }} component={Backrest_D} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -33,11 +33,11 @@ export default function Roadchin({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>턱 유무</Text>
@@ -98,9 +98,9 @@ export default function Roadchin({ route, navigation }) {
                 </>
               ) : null}
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

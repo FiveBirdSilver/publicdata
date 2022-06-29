@@ -39,11 +39,11 @@ export default function Basic({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>화장실 유무</Text>
@@ -68,111 +68,115 @@ export default function Basic({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>남녀별도 사용 가능 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, genderDiv: v };
-                    })
-                  }
-                  value={value.genderDiv}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
-                    </View>
+              {value.toilet === "Y" ? (
+                <>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>남녀별도 사용 가능 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, genderDiv: v };
+                        })
+                      }
+                      value={value.genderDiv}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>출입구 남/녀 구분 점자표지판 설치 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, genderDivSign: v };
-                    })
-                  }
-                  value={value.genderDivSign}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>출입구 남/녀 구분 점자표지판 설치 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, genderDivSign: v };
+                        })
+                      }
+                      value={value.genderDivSign}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>출입구 전면 바닥 점형 블록 설치 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, dotblock: v };
-                    })
-                  }
-                  value={value.dotblock}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>출입구 전면 바닥 점형 블록 설치 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, dotblock: v };
+                        })
+                      }
+                      value={value.dotblock}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>화장실 사용 여부 외부 표시 확인 기능 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, useSign: v };
-                    })
-                  }
-                  value={value.useSign}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>화장실 사용 여부 외부 표시 확인 기능 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, useSign: v };
+                        })
+                      }
+                      value={value.useSign}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>비상벨 설치 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, emergencybell: v };
-                    })
-                  }
-                  value={value.emergencybell}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={value.toilet === "N" || value.toilet === "" ? true : false} />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>비상벨 설치 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, emergencybell: v };
+                        })
+                      }
+                      value={value.emergencybell}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
+                </>
+              ) : null}
 
               <View style={styles.img}>
                 {value.toilet === "Y" ? (
@@ -275,9 +279,9 @@ export default function Basic({ route, navigation }) {
                 </>
               ) : null}
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

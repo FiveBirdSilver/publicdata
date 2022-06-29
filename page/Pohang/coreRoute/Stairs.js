@@ -10,16 +10,16 @@ import Section from "../../component/Section";
 export default function Staris({ route, navigation }) {
   const { item } = route.params;
 
-  const [stairs, setStairs] = useState("");
-  const [handle, setHandle] = useState("");
-  const [handleBraille, setHandleBraille] = useState("");
-  const [dotBlock, setDotBlock] = useState("");
-
-  const [count, setCount] = useState("");
-  const [width, setWidth] = useState("");
-  const [height, setHeight] = useState("");
-  const [handleStructure, setHandleStructure] = useState("");
-
+  const [value, setValue] = useState({
+    stairs: "",
+    handle: "",
+    handleBraille: "",
+    dotBlock: "",
+    count: "",
+    width: "",
+    height: "",
+    handleStructure: "",
+  });
   const imagePickerOption = {
     mediaType: "photo",
     maxWidth: 768,
@@ -36,17 +36,25 @@ export default function Staris({ route, navigation }) {
   const onLaunchImageLibrary = () => {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
-
+  console.log(value);
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>계단 유무</Text>
-                <RadioButton.Group onValueChange={(v) => setStairs(v)} value={stairs} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(v) =>
+                    setValue((prev) => {
+                      return { ...prev, stairs: v };
+                    })
+                  }
+                  value={value.stairs}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <Text>있다</Text>
@@ -59,52 +67,76 @@ export default function Staris({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>계단 손잡이 유무</Text>
-                <RadioButton.Group onValueChange={(v) => setHandle(v)} value={handle} style={styles.yesorno}>
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={stairs === "N" || stairs === "" ? true : false} />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={stairs === "N" || stairs === "" ? true : false} />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
 
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>계단 손잡이 점자 유무(시작과 끝)</Text>
-                <RadioButton.Group
-                  onValueChange={(v) => setHandleBraille(v)}
-                  value={handleBraille}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={stairs === "N" || stairs === "" ? true : false} />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={stairs === "N" || stairs === "" ? true : false} />
-                    </View>
+              {value.stairs === "Y" ? (
+                <>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>계단 손잡이 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, handle: v };
+                        })
+                      }
+                      value={value.handle}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>계단 상하부 점형 블록 설치 유무</Text>
-                <RadioButton.Group onValueChange={(v) => setDotBlock(v)} value={dotBlock} style={styles.yesorno}>
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={stairs === "N" || stairs === "" ? true : false} />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={stairs === "N" || stairs === "" ? true : false} />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>계단 손잡이 점자 유무(시작과 끝)</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, handleBraille: v };
+                        })
+                      }
+                      value={value.handleBraille}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>계단 상하부 점형 블록 설치 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, dotBlock: v };
+                        })
+                      }
+                      value={value.dotBlock}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
+                  </View>
+                </>
+              ) : null}
               <View style={styles.img}>
-                {stairs === "Y" ? (
+                {value.stairs === "Y" ? (
                   <>
                     <View style={styles.img_container}>
                       <Text style={styles.img_container_title}>계단 유무</Text>
@@ -150,15 +182,19 @@ export default function Staris({ route, navigation }) {
                 ) : null}
               </View>
               <View>
-                {stairs === "Y" ? (
+                {value.stairs === "Y" ? (
                   <View style={styles.add_input}>
                     <View style={styles.add_container}>
                       <Text style={styles.add_subtitle}>계단 개수</Text>
                       <View style={styles.input_wrapper}>
                         <TextInput
                           name="count"
-                          value={count}
-                          onChangeText={(text) => setCount(text)}
+                          value={value.count}
+                          onChangeText={(text) =>
+                            setValue((prev) => {
+                              return { ...prev, count: text };
+                            })
+                          }
                           style={styles.input}
                         ></TextInput>
                       </View>
@@ -168,8 +204,12 @@ export default function Staris({ route, navigation }) {
                       <View style={styles.input_wrapper}>
                         <TextInput
                           name="width"
-                          value={width}
-                          onChangeText={(text) => setWidth(text)}
+                          value={value.width}
+                          onChangeText={(text) =>
+                            setValue((prev) => {
+                              return { ...prev, width: text };
+                            })
+                          }
                           style={styles.input}
                         ></TextInput>
                       </View>
@@ -179,8 +219,12 @@ export default function Staris({ route, navigation }) {
                       <View style={styles.input_wrapper}>
                         <TextInput
                           name="height"
-                          value={height}
-                          onChangeText={(text) => setHeight(text)}
+                          value={value.height}
+                          onChangeText={(text) =>
+                            setValue((prev) => {
+                              return { ...prev, height: text };
+                            })
+                          }
                           style={styles.input}
                         ></TextInput>
                       </View>
@@ -190,8 +234,12 @@ export default function Staris({ route, navigation }) {
                       <View style={{ width: "100%" }}>
                         <TextInput
                           name="handleStructure"
-                          value={handleStructure}
-                          onChangeText={(text) => setHandleStructure(text)}
+                          value={value.handleStructure}
+                          onChangeText={(text) =>
+                            setValue((prev) => {
+                              return { ...prev, handleStructure: text };
+                            })
+                          }
                           style={styles.input}
                         ></TextInput>
                       </View>
@@ -200,9 +248,9 @@ export default function Staris({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

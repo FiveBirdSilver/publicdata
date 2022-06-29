@@ -9,10 +9,13 @@ import Section from "../../component/Section";
 
 export default function Facility({ route, navigation }) {
   const { item } = route.params;
-  const [cartService, setCartService] = useState("");
-  const [wheelchairLift, setWheelchairLift] = useState("");
-  const [restPossible, setRestPossible] = useState("");
 
+  const [value, setValue] = useState({
+    cartService: "",
+    wheelchairLift: "",
+    time: "",
+    restPossible: "",
+  });
   const imagePickerOption = {
     mediaType: "photo",
     maxWidth: 768,
@@ -30,15 +33,23 @@ export default function Facility({ route, navigation }) {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>이동 카트 서비스 제공</Text>
-                <RadioButton.Group onValueChange={(v) => setCartService(v)} value={cartService} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, cartService: text };
+                    })
+                  }
+                  value={value.cartService}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <Text>있다</Text>
@@ -54,8 +65,12 @@ export default function Facility({ route, navigation }) {
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>휠체어 승하차용 리프트</Text>
                 <RadioButton.Group
-                  onValueChange={(v) => setWheelchairLift(v)}
-                  value={wheelchairLift}
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, wheelchairLift: text };
+                    })
+                  }
+                  value={value.wheelchairLift}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -71,8 +86,12 @@ export default function Facility({ route, navigation }) {
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>장애인 동반 휴식 가능 시설</Text>
                 <RadioButton.Group
-                  onValueChange={(v) => setRestPossible(v)}
-                  value={restPossible}
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, restPossible: text };
+                    })
+                  }
+                  value={value.restPossible}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -87,7 +106,7 @@ export default function Facility({ route, navigation }) {
               </View>
 
               <View style={styles.img}>
-                {cartService === "Y" ? (
+                {value.cartService === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>이동 카트 서비스 제공</Text>
                     <TouchableOpacity
@@ -99,7 +118,7 @@ export default function Facility({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {wheelchairLift === "Y" ? (
+                {value.wheelchairLift === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>휠체어 승하차용 리프트</Text>
                     <TouchableOpacity
@@ -111,7 +130,7 @@ export default function Facility({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {restPossible === "Y" ? (
+                {value.restPossible === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>장애인 동반 휴식 가능 시설</Text>
                     <TouchableOpacity
@@ -125,9 +144,9 @@ export default function Facility({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

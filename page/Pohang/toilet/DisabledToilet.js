@@ -41,11 +41,11 @@ export default function DisabledToilet({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>장애인 화장실 유무</Text>
@@ -70,130 +70,111 @@ export default function DisabledToilet({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>문 유형</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    value={value.doortype}
-                    placeholder="EX. 여닫이 문"
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, doortype: text };
-                      })
-                    }
-                    style={value.disabledToilet === "N" || value.disabledToilet === "" ? null : styles.input}
-                  ></TextInput>
-                </View>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>소변기 좌우 손잡이 설치 여부</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, urinalHandle: v };
-                    })
-                  }
-                  value={value.urinalHandle}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="Y"
-                        disabled={value.disabledToilet === "N" || value.disabledToilet === "" ? true : false}
-                      />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="N"
-                        disabled={value.disabledToilet === "N" || value.disabledToilet === "" ? true : false}
-                      />
+              {value.disabledToilet === "Y" ? (
+                <>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>문 유형</Text>
+                    <View style={styles.input_wrapper}>
+                      <TextInput
+                        name="name"
+                        value={value.doortype}
+                        placeholder="EX. 여닫이 문"
+                        onChangeText={(text) =>
+                          setValue((prev) => {
+                            return { ...prev, doortype: text };
+                          })
+                        }
+                        style={styles.input}
+                      ></TextInput>
                     </View>
                   </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>대변기 좌우 손잡이 설치 여부</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, toiletHandle: v };
-                    })
-                  }
-                  value={value.toiletHandle}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="Y"
-                        disabled={value.disabledToilet === "N" || value.disabledToilet === "" ? true : false}
-                      />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="N"
-                        disabled={value.disabledToilet === "N" || value.disabledToilet === "" ? true : false}
-                      />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>소변기 좌우 손잡이 설치 여부</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, urinalHandle: v };
+                        })
+                      }
+                      value={value.urinalHandle}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>버튼식/자동센서 물 내림 여부</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, automaticeSensor: v };
-                    })
-                  }
-                  value={value.automaticeSensor}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="Y"
-                        disabled={value.disabledToilet === "N" || value.disabledToilet === "" ? true : false}
-                      />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="N"
-                        disabled={value.disabledToilet === "N" || value.disabledToilet === "" ? true : false}
-                      />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>대변기 좌우 손잡이 설치 여부</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, toiletHandle: v };
+                        })
+                      }
+                      value={value.toiletHandle}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>세정장치</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, cleandevice: v };
-                    })
-                  }
-                  value={value.cleandevice}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="Y"
-                        disabled={value.disabledToilet === "N" || value.disabledToilet === "" ? true : false}
-                      />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="N"
-                        disabled={value.disabledToilet === "N" || value.disabledToilet === "" ? true : false}
-                      />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>버튼식/자동센서 물 내림 여부</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, automaticeSensor: v };
+                        })
+                      }
+                      value={value.automaticeSensor}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>세정장치</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, cleandevice: v };
+                        })
+                      }
+                      value={value.cleandevice}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
+                  </View>
+                </>
+              ) : null}
+
               <View style={styles.img}>
                 {value.disabledToilet === "Y" ? (
                   <>
@@ -319,9 +300,9 @@ export default function DisabledToilet({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

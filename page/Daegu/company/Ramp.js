@@ -7,15 +7,16 @@ import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { styles } from "../../../assets/styles/add";
 import Section from "../../component/Section";
 
-export default function Doorway({ route, navigation }) {
+export default function Ramp({ route, navigation }) {
   const { item } = route.params;
 
   const [value, setValue] = useState({
-    wheelchair: "",
-    actSpace: "",
-    width: "",
-    distance: "",
-    height: "",
+    ramp: "",
+    rampHandle: "",
+    rampBraile: "",
+    rampAntislip: "",
+    rampWidth: "",
+    rampAngle: "",
   });
 
   const imagePickerOption = {
@@ -43,14 +44,14 @@ export default function Doorway({ route, navigation }) {
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>휠체어 출입가능 유무</Text>
+                <Text style={styles.add_subtitle}>입구 경사 유무</Text>
                 <RadioButton.Group
                   onValueChange={(v) =>
                     setValue((prev) => {
-                      return { ...prev, wheelchair: v };
+                      return { ...prev, ramp: v };
                     })
                   }
-                  value={value.wheelchair}
+                  value={value.ramp}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -66,14 +67,14 @@ export default function Doorway({ route, navigation }) {
                 </RadioButton.Group>
               </View>
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>활동 공간 유무</Text>
+                <Text style={styles.add_subtitle}>손잡이 유무</Text>
                 <RadioButton.Group
                   onValueChange={(v) =>
                     setValue((prev) => {
-                      return { ...prev, actSpace: v };
+                      return { ...prev, rampHandle: v };
                     })
                   }
-                  value={value.actSpace}
+                  value={value.rampHandle}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -86,17 +87,74 @@ export default function Doorway({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>출입구 폭</Text>
+                <Text style={styles.add_subtitle}>손잡이 점자표기 유무</Text>
+                <RadioButton.Group
+                  onValueChange={(v) =>
+                    setValue((prev) => {
+                      return { ...prev, rampBraile: v };
+                    })
+                  }
+                  value={value.rampBraile}
+                  style={styles.yesorno}
+                >
+                  <View style={styles.radio}>
+                    <View style={styles.radio_wrap}>
+                      <RadioButton value="Y" />
+                    </View>
+                    <View style={styles.radio_wrap}>
+                      <RadioButton value="N" />
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>미끄럼 방지판 유무</Text>
+                <RadioButton.Group
+                  onValueChange={(v) =>
+                    setValue((prev) => {
+                      return { ...prev, rampAntislip: v };
+                    })
+                  }
+                  value={value.rampAntislip}
+                  style={styles.yesorno}
+                >
+                  <View style={styles.radio}>
+                    <View style={styles.radio_wrap}>
+                      <RadioButton value="Y" />
+                    </View>
+                    <View style={styles.radio_wrap}>
+                      <RadioButton value="N" />
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>가로폭</Text>
                 <View style={styles.input_wrapper}>
                   <TextInput
                     name="name"
                     placeholder="cm"
-                    value={value.width}
+                    value={value.rampWidth}
                     onChangeText={(text) =>
                       setValue((prev) => {
-                        return { ...prev, width: text };
+                        return { ...prev, rampWidth: text };
+                      })
+                    }
+                    style={styles.input}
+                  ></TextInput>
+                </View>
+              </View>
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>경사면 각도</Text>
+                <View style={styles.input_wrapper}>
+                  <TextInput
+                    name="name"
+                    placeholder="◦"
+                    value={value.rampAngle}
+                    onChangeText={(text) =>
+                      setValue((prev) => {
+                        return { ...prev, rampAngle: text };
                       })
                     }
                     style={styles.input}

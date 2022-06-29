@@ -37,11 +37,11 @@ export default function InteriorEntrance({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>문 유형</Text>
@@ -138,25 +138,27 @@ export default function InteriorEntrance({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>턱 높이</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    value={value.rodechinHeight}
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, rodechinHeight: text };
-                      })
-                    }
-                    style={value.roadchin === "N" || value.roadchin === "" ? null : styles.input}
-                  ></TextInput>
+              {value.roadchin === "Y" ? (
+                <View style={styles.add_container}>
+                  <Text style={styles.add_subtitle}>턱 높이</Text>
+                  <View style={styles.input_wrapper}>
+                    <TextInput
+                      name="name"
+                      value={value.rodechinHeight}
+                      onChangeText={(text) =>
+                        setValue((prev) => {
+                          return { ...prev, rodechinHeight: text };
+                        })
+                      }
+                      style={styles.input}
+                    ></TextInput>
+                  </View>
                 </View>
-              </View>
+              ) : null}
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

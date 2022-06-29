@@ -38,11 +38,11 @@ export default function ParkingArea({ route, navigation }) {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View>
                 <View style={styles.add_input}>
@@ -203,9 +203,9 @@ export default function ParkingArea({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

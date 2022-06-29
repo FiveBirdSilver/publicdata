@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: 30,
   },
   content: {
     flex: 9,
@@ -140,6 +141,8 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   scrollview: {
+    flex: 1,
     width: "100%",
+    backgroundColor: "white",
   },
 });

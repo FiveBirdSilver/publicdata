@@ -9,13 +9,15 @@ import Section from "../../component/Section";
 
 export default function Program({ route, navigation }) {
   const { item } = route.params;
-  const [wheelchairP, setWheelchairP] = useState("");
-  const [visuallyImpairedP, setVisuallyImpairedP] = useState("");
-  const [deafP, setDeafP] = useState("");
-  const [devdisabledP, setDevdisabledP] = useState("");
-  const [seniorP, setSeniorP] = useState("");
-  const [infantP, setInfantP] = useState("");
 
+  const [value, setValue] = useState({
+    wheelchairP: "",
+    visuallyImpairedP: "",
+    deafP: "",
+    devdisabledP: "",
+    seniorP: "",
+    infantP: "",
+  });
   const imagePickerOption = {
     mediaType: "photo",
     maxWidth: 768,
@@ -34,15 +36,23 @@ export default function Program({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>휠체어 이용자 체험 프로그램</Text>
-                <RadioButton.Group onValueChange={(v) => setWheelchairP(v)} value={wheelchairP} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, wheelchairP: text };
+                    })
+                  }
+                  value={value.wheelchairP}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <Text>있다</Text>
@@ -58,8 +68,12 @@ export default function Program({ route, navigation }) {
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>시각장애인 체험 프로그램</Text>
                 <RadioButton.Group
-                  onValueChange={(v) => setVisuallyImpairedP(v)}
-                  value={visuallyImpairedP}
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, visuallyImpairedP: text };
+                    })
+                  }
+                  value={value.visuallyImpairedP}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -74,7 +88,15 @@ export default function Program({ route, navigation }) {
               </View>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>청각장애인 체험 프로그램</Text>
-                <RadioButton.Group onValueChange={(v) => setDeafP(v)} value={deafP} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, deafP: text };
+                    })
+                  }
+                  value={value.deafP}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <RadioButton value="Y" />
@@ -88,8 +110,12 @@ export default function Program({ route, navigation }) {
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>발달장애인 체험 프로그램</Text>
                 <RadioButton.Group
-                  onValueChange={(v) => setDevdisabledP(v)}
-                  value={devdisabledP}
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, devdisabledP: text };
+                    })
+                  }
+                  value={value.devdisabledP}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -104,7 +130,15 @@ export default function Program({ route, navigation }) {
               </View>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>시니어 체험 프로그램</Text>
-                <RadioButton.Group onValueChange={(v) => setSeniorP(v)} value={seniorP} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, seniorP: text };
+                    })
+                  }
+                  value={value.seniorP}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <RadioButton value="Y" />
@@ -117,7 +151,15 @@ export default function Program({ route, navigation }) {
               </View>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>영유아 체험 프로그램</Text>
-                <RadioButton.Group onValueChange={(v) => setInfantP(v)} value={infantP} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, infantP: text };
+                    })
+                  }
+                  value={value.infantP}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <RadioButton value="Y" />
@@ -129,7 +171,7 @@ export default function Program({ route, navigation }) {
                 </RadioButton.Group>
               </View>
               <View style={styles.img}>
-                {wheelchairP === "Y" ? (
+                {value.wheelchairP === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>휠체어 이용자 체험 프로그램</Text>
                     <TouchableOpacity
@@ -141,7 +183,7 @@ export default function Program({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {visuallyImpairedP === "Y" ? (
+                {value.visuallyImpairedP === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>시각장애인 체험 프로그램</Text>
                     <TouchableOpacity
@@ -153,7 +195,7 @@ export default function Program({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {deafP === "Y" ? (
+                {value.deafP === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>청각장애인 체험 프로그램</Text>
                     <TouchableOpacity
@@ -165,7 +207,7 @@ export default function Program({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {devdisabledP === "Y" ? (
+                {value.devdisabledP === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>발달장애인 체험 프로그램</Text>
                     <TouchableOpacity
@@ -177,7 +219,7 @@ export default function Program({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {seniorP === "Y" ? (
+                {value.seniorP === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>시니어 체험 프로그램</Text>
                     <TouchableOpacity
@@ -189,7 +231,7 @@ export default function Program({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {infantP === "Y" ? (
+                {value.infantP === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>영유아 체험 프로그램</Text>
                     <TouchableOpacity
@@ -203,9 +245,9 @@ export default function Program({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

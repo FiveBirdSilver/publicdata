@@ -2,6 +2,9 @@ import { StyleSheet } from "react-native";
 import { color } from "./color";
 
 export const styles = StyleSheet.create({
+  scrollview: {
+    width: "100%",
+  },
   container: {
     flex: 1,
     width: "100%",

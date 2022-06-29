@@ -10,12 +10,13 @@ import Section from "../../component/Section";
 export default function Runway({ route, navigation }) {
   const { item } = route.params;
 
-  const [runway, setRunway] = useState("");
-  const [handle, setHandle] = useState("");
-  const [handleBraille, setHandleBraille] = useState("");
-
-  const [slope, setSlope] = useState("");
-  const [length, setLength] = useState("");
+  const [value, setValue] = useState({
+    runway: "",
+    handle: "",
+    handleBraille: "",
+    slope: "",
+    length: "",
+  });
 
   const imagePickerOption = {
     mediaType: "photo",
@@ -35,15 +36,23 @@ export default function Runway({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>경사로 유무</Text>
-                <RadioButton.Group onValueChange={(v) => setRunway(v)} value={runway} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(v) =>
+                    setValue((prev) => {
+                      return { ...prev, runway: v };
+                    })
+                  }
+                  value={value.runway}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <Text>있다</Text>
@@ -56,40 +65,56 @@ export default function Runway({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>경사로 손잡이 유무</Text>
-                <RadioButton.Group onValueChange={(v) => setHandle(v)} value={handle} style={styles.yesorno}>
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={runway === "N" || runway === "" ? true : false} />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={runway === "N" || runway === "" ? true : false} />
-                    </View>
+              {value.runway === "Y" ? (
+                <>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>경사로 손잡이 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, handle: v };
+                        })
+                      }
+                      value={value.handle}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
 
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>경사로 손잡이 점자 유무 (시작과 끝)</Text>
-                <RadioButton.Group
-                  onValueChange={(v) => setHandleBraille(v)}
-                  value={handleBraille}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" disabled={runway === "N" || runway === "" ? true : false} />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" disabled={runway === "N" || runway === "" ? true : false} />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>경사로 손잡이 점자 유무 (시작과 끝)</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, handleBraille: v };
+                        })
+                      }
+                      value={value.handleBraille}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
+                </>
+              ) : null}
 
               <View style={styles.img}>
-                {runway === "Y" ? (
+                {value.runway === "Y" ? (
                   <>
                     <View style={styles.img_container}>
                       <Text style={styles.img_container_title}>경사로 유무</Text>
@@ -125,15 +150,19 @@ export default function Runway({ route, navigation }) {
                 ) : null}
               </View>
               <View>
-                {runway === "Y" ? (
+                {value.runway === "Y" ? (
                   <View style={styles.add_input}>
                     <View style={styles.add_container}>
                       <Text style={styles.add_subtitle}>경사로 경사</Text>
                       <View style={styles.input_wrapper}>
                         <TextInput
                           name="slope"
-                          value={slope}
-                          onChangeText={(text) => setSlope(text)}
+                          value={value.slope}
+                          onChangeText={(text) =>
+                            setValue((prev) => {
+                              return { ...prev, slope: text };
+                            })
+                          }
                           style={styles.input}
                         ></TextInput>
                       </View>
@@ -143,8 +172,12 @@ export default function Runway({ route, navigation }) {
                       <View style={styles.input_wrapper}>
                         <TextInput
                           name="length"
-                          value={length}
-                          onChangeText={(text) => setLength(text)}
+                          value={value.length}
+                          onChangeText={(text) =>
+                            setValue((prev) => {
+                              return { ...prev, length: text };
+                            })
+                          }
                           style={styles.input}
                         ></TextInput>
                       </View>
@@ -153,9 +186,9 @@ export default function Runway({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

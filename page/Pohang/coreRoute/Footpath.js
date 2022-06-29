@@ -9,14 +9,14 @@ import Section from "../../component/Section";
 
 export default function Footpath({ route, navigation }) {
   const { item } = route.params;
-  const [foothPath, setRoothPath] = useState("");
 
-  const [streetlamp, setStreetlamp] = useState("");
-  const [footpathMove, setFootpathMove] = useState("");
-  const [floorMaterial, setFloorMaterial] = useState("");
-  const [waterspoutWidth, setWaterspoutWidth] = useState("");
-
-  const obj = {};
+  const [value, setValue] = useState({
+    foothPath: "",
+    streetlamp: "",
+    footpathMove: "",
+    floorMaterial: "",
+    waterspoutWidth: "",
+  });
   const imagePickerOption = {
     mediaType: "photo",
     maxWidth: 768,
@@ -35,15 +35,23 @@ export default function Footpath({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>보행로 유무</Text>
-                <RadioButton.Group onValueChange={(v) => setRoothPath(v)} value={foothPath} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, foothPath: text };
+                    })
+                  }
+                  value={value.foothPath}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <Text>있다</Text>
@@ -58,7 +66,15 @@ export default function Footpath({ route, navigation }) {
               </View>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>야간 조명 유무</Text>
-                <RadioButton.Group onValueChange={(v) => setStreetlamp(v)} value={streetlamp} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, streetlamp: text };
+                    })
+                  }
+                  value={value.streetlamp}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <RadioButton value="Y" />
@@ -72,8 +88,12 @@ export default function Footpath({ route, navigation }) {
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>휠체어 이동 가능 유무</Text>
                 <RadioButton.Group
-                  onValueChange={(v) => setFootpathMove(v)}
-                  value={footpathMove}
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, footpathMove: text };
+                    })
+                  }
+                  value={value.footpathMove}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -88,7 +108,7 @@ export default function Footpath({ route, navigation }) {
               </View>
 
               <View style={styles.img}>
-                {foothPath === "Y" ? (
+                {value.foothPath === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>보행로</Text>
                     <TouchableOpacity
@@ -100,7 +120,7 @@ export default function Footpath({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {streetlamp === "Y" ? (
+                {value.streetlamp === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>야간 조명</Text>
                     <TouchableOpacity
@@ -112,7 +132,7 @@ export default function Footpath({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {footpathMove === "Y" ? (
+                {value.footpathMove === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>휠체어</Text>
                     <TouchableOpacity
@@ -126,15 +146,19 @@ export default function Footpath({ route, navigation }) {
                 ) : null}
               </View>
               <View>
-                {foothPath === "Y" ? (
+                {value.foothPath === "Y" ? (
                   <View style={styles.add_input}>
                     <View style={styles.add_container}>
                       <Text style={styles.add_subtitle}>바닥 재질</Text>
                       <View style={styles.input_wrapper}>
                         <TextInput
                           name="floorMaterial"
-                          value={floorMaterial}
-                          onChangeText={(text) => setFloorMaterial(text)}
+                          value={value.floorMaterial}
+                          onChangeText={(text) =>
+                            setValue((prev) => {
+                              return { ...prev, floorMaterial: text };
+                            })
+                          }
                           style={styles.input}
                         ></TextInput>
                       </View>
@@ -144,8 +168,12 @@ export default function Footpath({ route, navigation }) {
                       <View style={styles.input_wrapper}>
                         <TextInput
                           name="waterspoutWidth"
-                          value={waterspoutWidth}
-                          onChangeText={(text) => setWaterspoutWidth(text)}
+                          value={value.waterspoutWidth}
+                          onChangeText={(text) =>
+                            setValue((prev) => {
+                              return { ...prev, waterspoutWidth: text };
+                            })
+                          }
                           style={styles.input}
                         ></TextInput>
                       </View>
@@ -154,9 +182,9 @@ export default function Footpath({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

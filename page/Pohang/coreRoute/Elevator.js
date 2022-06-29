@@ -36,11 +36,11 @@ export default function Elevator({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>승강기 유무</Text>
@@ -65,87 +65,73 @@ export default function Elevator({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>휠체어 탑승 가능 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, wheelchair: v };
-                    })
-                  }
-                  value={value.wheelchair}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="Y"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="N"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
-                    </View>
+              {value.elevator === "Y" ? (
+                <>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>휠체어 탑승 가능 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, wheelchair: v };
+                        })
+                      }
+                      value={value.wheelchair}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>조작버튼 점자표시 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, braile: v };
-                    })
-                  }
-                  value={value.braile}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="Y"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="N"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>조작버튼 점자표시 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, braile: v };
+                        })
+                      }
+                      value={value.braile}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>비상벨 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, emergencybell: v };
-                    })
-                  }
-                  value={value.emergencybell}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="Y"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton
-                        value="N"
-                        disabled={value.elevator === "N" || value.elevator === "" ? true : false}
-                      />
-                    </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>비상벨 유무</Text>
+                    <RadioButton.Group
+                      onValueChange={(v) =>
+                        setValue((prev) => {
+                          return { ...prev, emergencybell: v };
+                        })
+                      }
+                      value={value.emergencybell}
+                      style={styles.yesorno}
+                    >
+                      <View style={styles.radio}>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="Y" />
+                        </View>
+                        <View style={styles.radio_wrap}>
+                          <RadioButton value="N" />
+                        </View>
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </RadioButton.Group>
-              </View>
+                </>
+              ) : null}
 
               <View style={styles.img}>
                 {value.elevator === "Y" ? (
@@ -215,9 +201,9 @@ export default function Elevator({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

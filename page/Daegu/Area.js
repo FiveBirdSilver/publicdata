@@ -3,16 +3,16 @@ import { Text, View, TouchableOpacity, ScrollView } from "react-native";
 import Header from "../component/Header";
 import { styles } from "../../assets/styles/area";
 
-export default function Area({ route, navigation }) {
+export default function Door({ route, navigation }) {
   const { area } = route.params;
 
   const company = {
     label: ["기본정보", "출입문", "출입구", "출입구 경사로", "내부", "외부"],
-    value: ["Basic_D", "Door_D", "Doorway_D", "Ramp_D", "Inside_D", "OutSide_D"],
+    value: ["Basic_D", "Door_D", "Doorway_D", "Ramp_D", "Inside_D", "Outside_D"],
   };
   const toilet = {
-    label: ["종류", "출입문", "출입구", "세면대", "손잡이 위치", "변기 등받이"],
-    value: ["Type_D", "TDoor_D", "TDoorway_D", "Washstand_D", "Handle_D", "Backrest_D"],
+    label: ["종류", "출입문", "출입구", "경사로", "세면대", "손잡이 위치", "변기 등받이"],
+    value: ["Type_D", "TDoor_D", "TDoorway_D", "TRamp_D", "Washstand_D", "Handle_D", "Backrest_D"],
   };
   return (
     <View style={styles.container}>

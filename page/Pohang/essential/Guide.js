@@ -9,11 +9,13 @@ import Section from "../../component/Section";
 
 export default function Guide({ route, navigation }) {
   const { item } = route.params;
-  const [guide, setGuide] = useState("");
-  const [signLanguage, setSignLanguage] = useState("");
-  const [audioGuide, setAudioGuide] = useState("");
-  const [videoGuide, setVideoGuide] = useState("");
 
+  const [value, setValue] = useState({
+    guide: "",
+    signLanguage: "",
+    audioGuide: "",
+    videoGuide: "",
+  });
   const imagePickerOption = {
     mediaType: "photo",
     maxWidth: 768,
@@ -31,15 +33,23 @@ export default function Guide({ route, navigation }) {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>안내요원(해설, 전담인력)</Text>
-                <RadioButton.Group onValueChange={(v) => setGuide(v)} value={guide} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, guide: text };
+                    })
+                  }
+                  value={value.guide}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <Text>있다</Text>
@@ -55,8 +65,12 @@ export default function Guide({ route, navigation }) {
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>수화 안내 유무</Text>
                 <RadioButton.Group
-                  onValueChange={(v) => setSignLanguage(v)}
-                  value={signLanguage}
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, signLanguage: text };
+                    })
+                  }
+                  value={value.signLanguage}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -71,7 +85,15 @@ export default function Guide({ route, navigation }) {
               </View>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>오디오 가이드</Text>
-                <RadioButton.Group onValueChange={(v) => setAudioGuide(v)} value={audioGuide} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, audioGuide: text };
+                    })
+                  }
+                  value={value.audioGuide}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <RadioButton value="Y" />
@@ -84,7 +106,15 @@ export default function Guide({ route, navigation }) {
               </View>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>비디오 가이드</Text>
-                <RadioButton.Group onValueChange={(v) => setVideoGuide(v)} value={videoGuide} style={styles.yesorno}>
+                <RadioButton.Group
+                  onValueChange={(text) =>
+                    setValue((prev) => {
+                      return { ...prev, videoGuide: text };
+                    })
+                  }
+                  value={value.videoGuide}
+                  style={styles.yesorno}
+                >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
                       <RadioButton value="Y" />
@@ -97,7 +127,7 @@ export default function Guide({ route, navigation }) {
               </View>
 
               <View style={styles.img}>
-                {guide === "Y" ? (
+                {value.guide === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>안내요원(해설, 전담인력)</Text>
                     <TouchableOpacity
@@ -109,7 +139,7 @@ export default function Guide({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {signLanguage === "Y" ? (
+                {value.signLanguage === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>수화 안내 유무</Text>
                     <TouchableOpacity
@@ -121,7 +151,7 @@ export default function Guide({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {audioGuide === "Y" ? (
+                {value.audioGuide === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>오디오 가이드</Text>
                     <TouchableOpacity
@@ -133,7 +163,7 @@ export default function Guide({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {videoGuide === "Y" ? (
+                {value.videoGuide === "Y" ? (
                   <View style={styles.img_container}>
                     <Text style={styles.img_container_title}>비디오 가이드</Text>
                     <TouchableOpacity
@@ -147,9 +177,9 @@ export default function Guide({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

@@ -7,12 +7,11 @@ import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { styles } from "../../../assets/styles/add";
 import Section from "../../component/Section";
 
-export default function ParkFootpath({ route, navigation }) {
+export default function Backrest({ route, navigation }) {
   const { item } = route.params;
 
   const [value, setValue] = useState({
-    safePath: "",
-    wheelchairMove: "",
+    backrest: "",
   });
 
   const imagePickerOption = {
@@ -40,14 +39,14 @@ export default function ParkFootpath({ route, navigation }) {
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>보행안전 통로 설치 유무</Text>
+                <Text style={styles.add_subtitle}>변기 등받이 유무</Text>
                 <RadioButton.Group
                   onValueChange={(v) =>
                     setValue((prev) => {
-                      return { ...prev, safePath: v };
+                      return { ...prev, backrest: v };
                     })
                   }
-                  value={value.safePath}
+                  value={value.backrest}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
@@ -62,26 +61,28 @@ export default function ParkFootpath({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>목적지까지 휠체어 이동 가능 여부</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, wheelchairMove: v };
-                    })
-                  }
-                  value={value.wheelchairMove}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
+
+              <View style={styles.img}>
+                <View style={styles.img_container}>
+                  <Text style={styles.img_container_title}>사진 1</Text>
+                  <TouchableOpacity
+                    style={styles.imgchoose}
+                    onLaunchCamera={onLaunchCamera}
+                    onLaunchImageLibrary={onLaunchImageLibrary}
+                  >
+                    <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.img_container}>
+                  <Text style={styles.img_container_title}>사진 2</Text>
+                  <TouchableOpacity
+                    style={styles.imgchoose}
+                    onLaunchCamera={onLaunchCamera}
+                    onLaunchImageLibrary={onLaunchImageLibrary}
+                  >
+                    <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>

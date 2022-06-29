@@ -37,11 +37,11 @@ export default function Entrance({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>경사로 유무</Text>
@@ -66,51 +66,56 @@ export default function Entrance({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>경사</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    value={value.slope}
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, slope: text };
-                      })
-                    }
-                    style={value.entrance === "N" || value.entrance === "" ? null : styles.input}
-                  ></TextInput>
-                </View>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>길이</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    value={value.length}
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, length: text };
-                      })
-                    }
-                    style={value.entrance === "N" || value.entrance === "" ? null : styles.input}
-                  ></TextInput>
-                </View>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>유효폭</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    value={value.width}
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, width: text };
-                      })
-                    }
-                    style={value.entrance === "N" || value.entrance === "" ? null : styles.input}
-                  ></TextInput>
-                </View>
-              </View>
+              {value.entrance === "Y" ? (
+                <>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>경사</Text>
+                    <View style={styles.input_wrapper}>
+                      <TextInput
+                        name="name"
+                        value={value.slope}
+                        onChangeText={(text) =>
+                          setValue((prev) => {
+                            return { ...prev, slope: text };
+                          })
+                        }
+                        style={value.entrance === "N" || value.entrance === "" ? null : styles.input}
+                      ></TextInput>
+                    </View>
+                  </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>길이</Text>
+                    <View style={styles.input_wrapper}>
+                      <TextInput
+                        name="name"
+                        value={value.length}
+                        onChangeText={(text) =>
+                          setValue((prev) => {
+                            return { ...prev, length: text };
+                          })
+                        }
+                        style={value.entrance === "N" || value.entrance === "" ? null : styles.input}
+                      ></TextInput>
+                    </View>
+                  </View>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>유효폭</Text>
+                    <View style={styles.input_wrapper}>
+                      <TextInput
+                        name="name"
+                        value={value.width}
+                        onChangeText={(text) =>
+                          setValue((prev) => {
+                            return { ...prev, width: text };
+                          })
+                        }
+                        style={value.entrance === "N" || value.entrance === "" ? null : styles.input}
+                      ></TextInput>
+                    </View>
+                  </View>
+                </>
+              ) : null}
+
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>턱 유무</Text>
                 <RadioButton.Group
@@ -132,22 +137,23 @@ export default function Entrance({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>턱 높이</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    value={value.rodechinHeight}
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, rodechinHeight: text };
-                      })
-                    }
-                    style={value.roadchin === "N" || value.roadchin === "" ? null : styles.input}
-                  ></TextInput>
+              {value.roadchin === "Y" ? (
+                <View style={styles.add_container}>
+                  <Text style={styles.add_subtitle}>턱 높이</Text>
+                  <View style={styles.input_wrapper}>
+                    <TextInput
+                      name="name"
+                      value={value.rodechinHeight}
+                      onChangeText={(text) =>
+                        setValue((prev) => {
+                          return { ...prev, rodechinHeight: text };
+                        })
+                      }
+                      style={value.roadchin === "N" || value.roadchin === "" ? null : styles.input}
+                    ></TextInput>
+                  </View>
                 </View>
-              </View>
-
+              ) : null}
               <View style={styles.img}>
                 {value.entrance === "Y" ? (
                   <View style={styles.img_container}>
@@ -175,9 +181,9 @@ export default function Entrance({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

@@ -37,11 +37,11 @@ export default function Washstand({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section item={item} />
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <Section item={item} />
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>세면대 유무</Text>
@@ -66,21 +66,24 @@ export default function Washstand({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>세면대 높이</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    value={value.height}
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, height: text };
-                      })
-                    }
-                    style={value.washstand === "N" || value.washstand === "" ? null : styles.input}
-                  ></TextInput>
+              {value.washstand === "Y" ? (
+                <View style={styles.add_container}>
+                  <Text style={styles.add_subtitle}>세면대 높이</Text>
+                  <View style={styles.input_wrapper}>
+                    <TextInput
+                      name="name"
+                      value={value.height}
+                      onChangeText={(text) =>
+                        setValue((prev) => {
+                          return { ...prev, height: text };
+                        })
+                      }
+                      style={value.washstand === "N" || value.washstand === "" ? null : styles.input}
+                    ></TextInput>
+                  </View>
                 </View>
-              </View>
+              ) : null}
+
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>세면대 손잡이</Text>
                 <RadioButton.Group
@@ -222,9 +225,9 @@ export default function Washstand({ route, navigation }) {
                 ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

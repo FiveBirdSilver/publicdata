@@ -30,30 +30,30 @@ export default function Recommend({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.add_title_container}>
-        <View style={styles.add_title_wrapper}>
-          <View style={styles.icon_wrap}>
-            <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
-              <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
-            </TouchableOpacity>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <View style={styles.add_title_container}>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>뒤로</Text>
           </View>
-          <Text>뒤로</Text>
-        </View>
-        <Text style={styles.add_title}>{item}</Text>
+          <Text style={styles.add_title}>{item}</Text>
 
-        <View style={styles.add_title_wrapper}>
-          <View style={styles.icon_wrap}>
-            <TouchableOpacity style={styles.footer_title}>
-              <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
-            </TouchableOpacity>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title}>
+                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>저장</Text>
           </View>
-          <Text>저장</Text>
         </View>
-      </View>
-      <View style={styles.content}>
-        <View style={styles.add}>
-          <ScrollView style={styles.scrollview}>
+        <View style={styles.content}>
+          <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>추천코스</Text>
@@ -102,9 +102,10 @@ export default function Recommend({ route, navigation }) {
                         })
                   }
                   text="봄"
-                  iconStyle={{ borderRadius: 30 }}
+                  iconStyle={{ borderRadius: 0 }}
                   textStyle={{
                     textDecorationLine: "none",
+                    color: "black",
                   }}
                 />
                 <BouncyCheckbox
@@ -120,9 +121,10 @@ export default function Recommend({ route, navigation }) {
                         })
                   }
                   text="여름"
-                  iconStyle={{ borderRadius: 30 }}
+                  iconStyle={{ borderRadius: 0 }}
                   textStyle={{
                     textDecorationLine: "none",
+                    color: "black",
                   }}
                 />
                 <BouncyCheckbox
@@ -138,9 +140,10 @@ export default function Recommend({ route, navigation }) {
                         })
                   }
                   text="가을"
-                  iconStyle={{ borderRadius: 30 }}
+                  iconStyle={{ borderRadius: 0 }}
                   textStyle={{
                     textDecorationLine: "none",
+                    color: "black",
                   }}
                 />
                 <BouncyCheckbox
@@ -156,16 +159,17 @@ export default function Recommend({ route, navigation }) {
                         })
                   }
                   text="겨울"
-                  iconStyle={{ borderRadius: 30 }}
+                  iconStyle={{ borderRadius: 0 }}
                   textStyle={{
                     textDecorationLine: "none",
+                    color: "black",
                   }}
                 />
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
