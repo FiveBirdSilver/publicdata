@@ -230,7 +230,7 @@ export default function Staris({ route, navigation }) {
                       </View>
                     </View>
                     <View style={styles.add_container}>
-                      <Text style={{ marginTop: 10 }}>계단 손잡이 형태(양, 옆, 한쪽)</Text>
+                      <Text style={{ marginTop: 10 }}>계단 손잡이 형태(양 옆, 한쪽)</Text>
                       <View style={{ width: "100%" }}>
                         <TextInput
                           name="handleStructure"

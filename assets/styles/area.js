@@ -18,15 +18,15 @@ export const styles = StyleSheet.create({
     padding: 10,
   },
   area: {
-    // flex: 0.7,
     width: "100%",
     backgroundColor: "orange",
     alignItems: "center",
     justifyContent: "center",
   },
   area_title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
+    padding: 10,
   },
   scrollview: {
     width: "100%",
@@ -37,8 +37,9 @@ export const styles = StyleSheet.create({
     padding: 16,
   },
   sub_title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
+    marginBottom: 5,
   },
   area_wrapper: {
     width: "100%",
@@ -70,7 +71,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   area_btn_title: {
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: "bold",
   },
 });

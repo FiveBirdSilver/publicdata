@@ -19,26 +19,29 @@ export const styles = StyleSheet.create({
   },
   header: {
     justifyContent: "flex-start",
+    padding: 16,
   },
   logout: {
-    padding: 10,
+    paddingTop: 10,
+    paddingRight: 10,
     alignItems: "center",
     justifyContent: "center",
   },
   logout_title: {
+    fontSize: 18,
     fontWeight: "bold",
   },
   title: {
-    fontSize: 24,
+    fontSize: 40,
     fontWeight: "bold",
   },
   subtitle: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 20,
     color: color.darkgray,
   },
   userinfo: {
-    flex: 0.7,
+    flex: 0.5,
     flexDirection: "row",
     width: "100%",
     justifyContent: "flex-start",
@@ -53,26 +56,18 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderStyle: "solid",
     borderColor: "white",
-    height: 45,
-    width: 45,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
+    height: 60,
+    width: 60,
     marginRight: 20,
   },
   userid: {
     color: "white",
     fontWeight: "bold",
-    fontSize: 24,
+    fontSize: 30,
   },
   userloc: {
     color: "white",
-    fontSize: 16,
+    fontSize: 20,
   },
   today: {
     flex: 0.5,
@@ -80,7 +75,7 @@ export const styles = StyleSheet.create({
     padding: 16,
   },
   today_title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
   },
   today_item: {
@@ -117,8 +112,8 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderStyle: "solid",
     borderColor: color.blue,
-    height: 30,
-    width: 30,
+    height: 35,
+    width: 35,
     marginBottom: 5,
   },
 });

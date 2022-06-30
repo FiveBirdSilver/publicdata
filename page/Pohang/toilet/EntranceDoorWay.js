@@ -98,7 +98,7 @@ export default function EntranceDoorWay({ route, navigation }) {
               </View>
 
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>턱 높이</Text>
+                <Text style={styles.add_subtitle}>문 유형</Text>
                 <View style={styles.input_wrapper}>
                   <TextInput
                     name="name"

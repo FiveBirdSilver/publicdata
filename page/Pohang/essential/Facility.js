@@ -13,7 +13,6 @@ export default function Facility({ route, navigation }) {
   const [value, setValue] = useState({
     cartService: "",
     wheelchairLift: "",
-    time: "",
     restPossible: "",
   });
   const imagePickerOption = {

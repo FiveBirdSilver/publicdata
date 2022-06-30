@@ -45,17 +45,25 @@ export default function Login({ navigation }) {
       AsyncStorage.setItem("User", JSON.stringify({ id: id, location: location }));
       AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }));
       AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: loggin }));
-      axios
-        .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/login", {
-          regionCode: location,
-          userId: id,
-          userPw: password,
-        })
-        .then((res) => {
-          console.log("성공", res.data);
-        })
-        .catch((err) => console.log("실패", err));
       navigation.push("Home");
+      // axios
+      //   .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/login", {
+      //     regionCode: location,
+      //     userId: id,
+      //     userPw: password,
+      //   })
+      //   .then((res) => {
+      //     console.log("성공", res.data);
+      //     if (res.data === "") {
+      //       Alert.alert("아이디와 비밀번호를 다시 확인해주세요");
+      //     } else {
+      //       AsyncStorage.setItem("User", JSON.stringify({ id: id, location: location }));
+      //       AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }));
+      //       AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: loggin }));
+      //       navigation.push("Home");
+      //     }
+      //   })
+      //   .catch((err) => console.log("실패", err));
     }
   };
   const data = [
@@ -65,7 +73,7 @@ export default function Login({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.login}>
-        <Text style={styles.login_title}>User Login</Text>``
+        <Text style={styles.login_title}>User Login</Text>
         <View style={styles.location}>
           <Dropdown
             style={styles.dropdown}

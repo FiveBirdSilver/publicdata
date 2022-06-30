@@ -77,6 +77,7 @@ export default function Basic({ route, navigation }) {
                 <View style={styles.input_wrapper}>
                   <TextInput
                     name="time"
+                    placeholder="30분 단위로 입력"
                     value={value.time}
                     onChangeText={(text) =>
                       setValue((prev) => {
@@ -107,6 +108,7 @@ export default function Basic({ route, navigation }) {
                 <View style={styles.input_wrapper}>
                   <TextInput
                     name="hours"
+                    placeholder="EX. 09:00 ~ 18:00"
                     value={value.hours}
                     onChangeText={(text) =>
                       setValue((prev) => {

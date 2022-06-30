@@ -10,21 +10,19 @@ import { Camera, CameraType } from "expo-camera";
 
 export default function Ad({ route, navigation }) {
   const { item } = route.params;
-
+  const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
   const [value, setValue] = useState({
     wheelchair: "",
     stroller: "",
     babychair: "",
   });
-  // const [image, setImage] = useState({
-  //   wheelchair_Image: "",
-  //   stroller_Image: "",
-  //   babychair_Image: "",
-  // });
-  const [image, setImage] = useState("");
-  const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+  const [image, setImage] = useState({
+    wheelchair_Image: "",
+    stroller_Image: "",
+    babychair_Image: "",
+  });
 
-  const uploadImg = async () => {
+  const uploadImg = async (name) => {
     if (!status?.granted) {
       const permission = await requestPermission();
       if (!permission.granted) {
@@ -39,9 +37,40 @@ export default function Ad({ route, navigation }) {
       quality: 1,
     });
 
-    console.log("성공", result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (name === "wheelchair") {
+      setImage((image) => ({
+        ...image,
+        wheelchair_Image: result.uri,
+      }));
+    } else if (name === "stroller") {
+      setImage((image) => ({
+        ...image,
+        stroller_Image: result.uri,
+      }));
+    } else if (name === "babychair") {
+      setImage((image) => ({
+        ...image,
+        babychair_Image: result.uri,
+      }));
+    }
+  };
+
+  const cancleImg = (name) => {
+    if (name === "wheelchair") {
+      setImage((image) => ({
+        ...image,
+        wheelchair_Image: "",
+      }));
+    } else if (name === "stroller") {
+      setImage((image) => ({
+        ...image,
+        stroller_Image: "",
+      }));
+    } else if (name === "babychair") {
+      setImage((image) => ({
+        ...image,
+        babychair_Image: "",
+      }));
     }
   };
 
@@ -153,32 +182,58 @@ export default function Ad({ route, navigation }) {
                   {value.wheelchair === "Y" ? (
                     <View style={styles.img_container}>
                       <Text style={styles.img_container_title}>휠체어</Text>
-                      <TouchableOpacity style={styles.imgchoose} onPress={uploadImg}>
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
+                      {image.wheelchair_Image === "" ? (
+                        <TouchableOpacity style={styles.imgchoose} onPress={() => uploadImg("wheelchair")}>
+                          <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                        </TouchableOpacity>
+                      ) : (
+                        image.wheelchair_Image && (
+                          <View>
+                            <TouchableOpacity style={styles.imgcancle} onPress={() => cancleImg("wheelchair")}>
+                              <AntDesign style={styles.icon} color="red" name="minuscircle" size={40} />
+                            </TouchableOpacity>
+                            <Image source={{ uri: image.wheelchair_Image }} style={styles.imgchoose} />
+                          </View>
+                        )
+                      )}
                     </View>
                   ) : null}
                   {value.stroller === "Y" ? (
                     <View style={styles.img_container}>
                       <Text style={styles.img_container_title}>유모차</Text>
-                      <TouchableOpacity style={styles.imgchoose} onPress={() => uploadImg("stroller")}>
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
-                      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+                      {image.stroller_Image === "" ? (
+                        <TouchableOpacity style={styles.imgchoose} onPress={() => uploadImg("stroller")}>
+                          <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                        </TouchableOpacity>
+                      ) : (
+                        image.stroller_Image && (
+                          <View>
+                            <TouchableOpacity style={styles.imgcancle} onPress={() => cancleImg("stroller")}>
+                              <AntDesign style={styles.icon} color="red" name="minuscircle" size={40} />
+                            </TouchableOpacity>
+                            <Image source={{ uri: image.stroller_Image }} style={styles.imgchoose} />
+                          </View>
+                        )
+                      )}
                     </View>
                   ) : null}
                   {value.babychair === "Y" ? (
                     <View style={styles.img_container}>
-                      {/* <Camera style={{ flex: 1 }} type={type}> */}
                       <Text style={styles.img_container_title}>유아용 보조의자</Text>
-                      <TouchableOpacity
-                        style={styles.imgchoose}
-                        // onPress={() => uploadImg("babychair")}
-                        // onPress={__startCamera}
-                      >
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
-                      {/* </Camera> */}
+                      {image.babychair_Image === "" ? (
+                        <TouchableOpacity style={styles.imgchoose} onPress={() => uploadImg("babychair")}>
+                          <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                        </TouchableOpacity>
+                      ) : (
+                        image.babychair_Image && (
+                          <View>
+                            <TouchableOpacity style={styles.imgcancle} onPress={() => cancleImg("babychair")}>
+                              <AntDesign style={styles.icon} color="red" name="minuscircle" size={40} />
+                            </TouchableOpacity>
+                            <Image source={{ uri: image.babychair_Image }} style={styles.imgchoose} />
+                          </View>
+                        )
+                      )}
                     </View>
                   ) : null}
                 </View>

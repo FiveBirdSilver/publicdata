@@ -48,7 +48,7 @@ export default function Home({ navigation }) {
         <View style={styles.logout}>
           <View style={styles.icon_wrap}>
             <TouchableOpacity style={styles.footer_title} onPress={handleOnLogOut}>
-              <AntDesign style={styles.icon} color="#00acb1" name="logout" size={20} />
+              <AntDesign style={styles.icon} color="#00acb1" name="logout" size={24} />
             </TouchableOpacity>
           </View>
           <Text style={styles.logout_title}>로그아웃</Text>
@@ -56,7 +56,7 @@ export default function Home({ navigation }) {
       </View>
       <View style={styles.userinfo}>
         <View style={styles.userimg}>
-          <AntDesign style={styles.icon} color="white" name="user" size={40} />
+          <AntDesign style={styles.icon} color="white" name="user" size={50} />
         </View>
         <View>
           <Text style={styles.userid}>A001</Text>

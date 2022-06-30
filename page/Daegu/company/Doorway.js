@@ -14,8 +14,6 @@ export default function Doorway({ route, navigation }) {
     wheelchair: "",
     actSpace: "",
     width: "",
-    distance: "",
-    height: "",
   });
 
   const imagePickerOption = {

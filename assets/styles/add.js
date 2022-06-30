@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 30,
+    paddingTop: 50,
   },
   content: {
     flex: 9,
@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   add_title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
   },
   add_title_container: {
@@ -75,7 +75,7 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
   },
   add_subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     alignItems: "center",
     justifyContent: "flex-start",
   },
@@ -102,16 +102,23 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   img_container_title: {
-    fontSize: 14,
+    fontSize: 18,
     textAlign: "center",
     marginBottom: 10,
   },
   imgchoose: {
-    height: 150,
+    height: 250,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: color.gray,
-    margin: 5,
+    margin: 10,
+  },
+  imgcancle: {
+    position: "absolute",
+    right: 0,
+    zIndex: 1,
+    backgroundColor: "white",
+    borderRadius: 30,
   },
   season: {
     flexDirection: "row",

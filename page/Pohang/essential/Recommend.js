@@ -28,7 +28,7 @@ export default function Recommend({ route, navigation }) {
   const onLaunchImageLibrary = () => {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
-
+  console.log(season);
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
