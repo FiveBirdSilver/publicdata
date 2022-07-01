@@ -230,8 +230,7 @@ export default function Staris({ route, navigation }) {
                       </View>
                     </View>
                     <View style={styles.add_container}>
-                      <Text style={{ marginTop: 10 }}>계단 손잡이 형태(양 옆, 한쪽)</Text>
-                      <View style={{ width: "100%" }}>
+                      {/* <View style={{ width: "100%" }}>
                         <TextInput
                           name="handleStructure"
                           value={value.handleStructure}
@@ -242,7 +241,35 @@ export default function Staris({ route, navigation }) {
                           }
                           style={styles.input}
                         ></TextInput>
-                      </View>
+                      </View> */}
+                    </View>
+
+                    <View style={styles.add_container}>
+                      <Text style={styles.add_subtitle}>계단 손잡이 형태(양 옆, 한쪽)</Text>
+                      <RadioButton.Group
+                        onValueChange={(v) =>
+                          setValue((prev) => {
+                            return { ...prev, handleStructure: v };
+                          })
+                        }
+                        value={value.handleStructure}
+                        style={styles.yesorno}
+                      >
+                        <View style={styles.radio}>
+                          <View style={styles.radio_wrap}>
+                            <Text>양 옆</Text>
+                            <RadioButton value="0" />
+                          </View>
+                          <View style={styles.radio_wrap}>
+                            <Text>한 쪽</Text>
+                            <RadioButton value="1" />
+                          </View>
+                          <View style={styles.radio_wrap}>
+                            <Text>없다</Text>
+                            <RadioButton value="2" />
+                          </View>
+                        </View>
+                      </RadioButton.Group>
                     </View>
                   </View>
                 ) : null}

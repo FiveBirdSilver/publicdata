@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { LogBox } from "react-native";
 
 import Login from "./page/Login";
 import Home from "./page/Home";
@@ -55,7 +56,7 @@ import Backrest_D from "./page/Daegu/Toilet/Backrest";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
-
+  LogBox.ignoreLogs(["Remote debugger"]);
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">

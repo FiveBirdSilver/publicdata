@@ -5,7 +5,7 @@ import { styles } from "../../assets/styles/area";
 import Header from "../component/Header";
 
 export default function Area({ route, navigation }) {
-  const { area } = route.params;
+  const { listName, listkey } = route.params;
 
   // useEffect(() => {
   //   axios // 항목1의 키 값
@@ -70,7 +70,7 @@ export default function Area({ route, navigation }) {
       </View>
 
       <View style={styles.area}>
-        <Text style={styles.area_title}>{area}</Text>
+        <Text style={styles.area_title}>{listName}</Text>
       </View>
       <ScrollView style={styles.scrollview}>
         <View style={styles.area_container}>

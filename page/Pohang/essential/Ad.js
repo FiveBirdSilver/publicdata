@@ -36,7 +36,6 @@ export default function Ad({ route, navigation }) {
       aspect: [1, 1],
       quality: 1,
     });
-
     if (name === "wheelchair") {
       setImage((image) => ({
         ...image,
@@ -74,18 +73,50 @@ export default function Ad({ route, navigation }) {
     }
   };
 
-  // let camera = "";
+  const cameraImg = async () => {
+    const { status } = await Camera.requestPermissionsAsync();
+    this.setHasPermission(status === "granted");
+    if (this.camera) {
+      const options = { quality: 0.5, base64: true };
+      let photo = await this.camera.takePictureAsync(options);
+      this.setState(
+        {
+          photo: photo.base64,
+          scanning: false,
+          uri: photo.uri,
+        },
+        () => this.callGoogleVIsionApi(this.state.result)
+      );
+    }
+  };
 
-  // const [startCamera, setStartCamera] = useState(false);
-  // const __startCamera = async () => {
-  //   const { status } = await Camera.requestPermissionsAsync();
-  //   if (status === "granted") {
-  //     // start the camera
-  //     setStartCamera(true);
-  //   } else {
-  //     Alert.alert("Access denied");
-  //   }
-  // };
+  const [hasPermission, setHasPermission] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+  const setSnap = async () => {
+    const options = { quality: 0.5, base64: true };
+    let photo = await this.camera.takePictureAsync(options);
+    this.setState(
+      {
+        photo: photo.base64,
+        scanning: false,
+        uri: photo.uri,
+      },
+      () => this.callGoogleVIsionApi(this.state.result)
+    );
+  };
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -182,15 +213,15 @@ export default function Ad({ route, navigation }) {
                   {value.wheelchair === "Y" ? (
                     <View style={styles.img_container}>
                       <Text style={styles.img_container_title}>휠체어</Text>
-                      {image.wheelchair_Image === "" ? (
+                      {image.wheelchair_Image === "" || image.wheelchair_Image === undefined ? (
                         <TouchableOpacity style={styles.imgchoose} onPress={() => uploadImg("wheelchair")}>
-                          <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                          <AntDesign style={styles.icon} color="white" name="pluscircle" size={30} />
                         </TouchableOpacity>
                       ) : (
                         image.wheelchair_Image && (
                           <View>
                             <TouchableOpacity style={styles.imgcancle} onPress={() => cancleImg("wheelchair")}>
-                              <AntDesign style={styles.icon} color="red" name="minuscircle" size={40} />
+                              <AntDesign style={styles.icon} color="red" name="minuscircle" size={30} />
                             </TouchableOpacity>
                             <Image source={{ uri: image.wheelchair_Image }} style={styles.imgchoose} />
                           </View>
@@ -201,15 +232,15 @@ export default function Ad({ route, navigation }) {
                   {value.stroller === "Y" ? (
                     <View style={styles.img_container}>
                       <Text style={styles.img_container_title}>유모차</Text>
-                      {image.stroller_Image === "" ? (
+                      {image.stroller_Image === "" || image.stroller_Image === undefined ? (
                         <TouchableOpacity style={styles.imgchoose} onPress={() => uploadImg("stroller")}>
-                          <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                          <AntDesign style={styles.icon} color="white" name="pluscircle" size={30} />
                         </TouchableOpacity>
                       ) : (
                         image.stroller_Image && (
                           <View>
                             <TouchableOpacity style={styles.imgcancle} onPress={() => cancleImg("stroller")}>
-                              <AntDesign style={styles.icon} color="red" name="minuscircle" size={40} />
+                              <AntDesign style={styles.icon} color="red" name="minuscircle" size={30} />
                             </TouchableOpacity>
                             <Image source={{ uri: image.stroller_Image }} style={styles.imgchoose} />
                           </View>
@@ -217,23 +248,32 @@ export default function Ad({ route, navigation }) {
                       )}
                     </View>
                   ) : null}
-                  {value.babychair === "Y" ? (
+                  {/* {value.babychair === "Y" ? (
                     <View style={styles.img_container}>
                       <Text style={styles.img_container_title}>유아용 보조의자</Text>
-                      {image.babychair_Image === "" ? (
+                      {image.babychair_Image === "" || image.babychair_Image === undefined ? (
                         <TouchableOpacity style={styles.imgchoose} onPress={() => uploadImg("babychair")}>
-                          <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
+                          <AntDesign style={styles.icon} color="white" name="pluscircle" size={30} />
                         </TouchableOpacity>
                       ) : (
                         image.babychair_Image && (
                           <View>
                             <TouchableOpacity style={styles.imgcancle} onPress={() => cancleImg("babychair")}>
-                              <AntDesign style={styles.icon} color="red" name="minuscircle" size={40} />
+                              <AntDesign style={styles.icon} color="red" name="minuscircle" size={30} />
                             </TouchableOpacity>
                             <Image source={{ uri: image.babychair_Image }} style={styles.imgchoose} />
                           </View>
                         )
                       )}
+                    </View>
+                  ) : null} */}
+                  {value.babychair === "Y" ? (
+                    <View style={styles.img_container}>
+                      <Text style={styles.img_container_title}>유아용 보조의자</Text>
+                      <TouchableOpacity style={styles.imgchoose} onPress={setSnap}>
+                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={30} />
+                      </TouchableOpacity>
+                      <Camera type={CameraType.back} style={{ width: 300, height: 400 }}></Camera>
                     </View>
                   ) : null}
                 </View>

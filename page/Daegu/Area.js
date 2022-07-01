@@ -4,7 +4,7 @@ import Header from "../component/Header";
 import { styles } from "../../assets/styles/area";
 
 export default function Door({ route, navigation }) {
-  const { area } = route.params;
+  const { listName, listkey } = route.params;
 
   const company = {
     label: ["기본정보", "출입문", "출입구", "출입구 경사로", "내부", "외부"],
@@ -20,7 +20,7 @@ export default function Door({ route, navigation }) {
         <Header title="데이터 수집" subtitle="데이터 만들기" />
       </View>
       <View style={styles.area}>
-        <Text style={styles.area_title}>{area}</Text>
+        <Text style={styles.area_title}>{listName}</Text>
       </View>
       <ScrollView style={styles.scrollview}>
         <View style={styles.area_container}>

@@ -19,13 +19,16 @@ export default function Login({ navigation }) {
   const [isChecked, setIsChecked] = useState(false);
   const [loggin, setLoggin] = useState(false);
 
+  const data = [
+    { label: "대구", value: 3001 },
+    { label: "포항", value: 3002 },
+  ];
   useEffect(() => {
     // AsyncStorage.getItem("User", (err, result) => {
     //   if (result) {
     //     console.log(result);
     //   }
-    // }); 자동 로그인 시 추후에 아이디 비밀번호 확인하는 과정으로 필요함
-
+    // }); //자동 로그인 시 추후에 아이디 비밀번호 확인하는 과정으로 필요함
     AsyncStorage.getItem("IsChecked", (err, result) => {
       if (result) {
         let AutoLog = JSON.parse(result);
@@ -35,41 +38,34 @@ export default function Login({ navigation }) {
       }
     });
   }, []);
+
   const handleOnSubmit = () => {
     if (id === "" || password === "") {
       Alert.alert("알림", "아이디와 비밀번호를 모두 입력해주세요");
     } else if (location === null) {
       Alert.alert("알림", "지역을 선택해주세요");
     } else {
-      setLoggin(true);
-      AsyncStorage.setItem("User", JSON.stringify({ id: id, location: location }));
-      AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }));
-      AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: loggin }));
-      navigation.push("Home");
-      // axios
-      //   .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/login", {
-      //     regionCode: location,
-      //     userId: id,
-      //     userPw: password,
-      //   })
-      //   .then((res) => {
-      //     console.log("성공", res.data);
-      //     if (res.data === "") {
-      //       Alert.alert("아이디와 비밀번호를 다시 확인해주세요");
-      //     } else {
-      //       AsyncStorage.setItem("User", JSON.stringify({ id: id, location: location }));
-      //       AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }));
-      //       AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: loggin }));
-      //       navigation.push("Home");
-      //     }
-      //   })
-      //   .catch((err) => console.log("실패", err));
+      axios
+        .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/login", {
+          regionCode: location,
+          userId: id,
+          userPw: password,
+        })
+        .then((res) => {
+          if (res.data === "") {
+            Alert.alert("아이디와 비밀번호를 다시 확인해주세요");
+          } else {
+            setLoggin(true);
+            AsyncStorage.setItem("User", JSON.stringify(JSON.parse(res.data)));
+            AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }));
+            AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: loggin }));
+            navigation.push("Home");
+          }
+        })
+        .catch((err) => Alert.alert("로그인에 실패했습니다. 다시 시도해주세요."));
     }
   };
-  const data = [
-    { label: "대구", value: 3001 },
-    { label: "포항", value: 3002 },
-  ];
+
   return (
     <View style={styles.container}>
       <View style={styles.login}>

@@ -8,15 +8,18 @@ import Header from "../page/component/Header";
 
 export default function Home({ navigation }) {
   const [userInfo, setUserInfo] = useState("");
-
   const [isChecked, setIsChecked] = useState(null);
-
-  const item = ["항목 1", "항목 2", "항목 3", "항목 4", "항목 5", "항목 6", "항목 7", "항목 8", "항목 9"];
+  const [listSkey, setListSkey] = useState([]);
+  const data = [
+    { label: "대구", value: 3001 },
+    { label: "포항", value: 3002 },
+  ];
 
   useEffect(() => {
     AsyncStorage.getItem("User", (err, result) => {
       if (result) {
         setUserInfo(JSON.parse(result));
+        setListSkey(JSON.parse(result).list.map((i) => i.list_skey));
       }
     });
     AsyncStorage.getItem("IsChecked", (err, result) => {
@@ -25,6 +28,7 @@ export default function Home({ navigation }) {
       }
     });
   }, []);
+
   const handleOnLogOut = () => {
     Alert.alert("알림", "로그아웃 하시겠습니까?", [
       {
@@ -59,57 +63,39 @@ export default function Home({ navigation }) {
           <AntDesign style={styles.icon} color="white" name="user" size={50} />
         </View>
         <View>
-          <Text style={styles.userid}>A001</Text>
-          <Text style={styles.userloc}>지역 {userInfo.location}</Text>
+          <Text style={styles.userid}>{userInfo.team_skey}</Text>
+          <Text style={styles.userloc}>
+            지역 {data.filter((i) => i.value === userInfo.org_skey).map((v) => v.label)[0]}
+          </Text>
         </View>
       </View>
       <View style={styles.today}>
         <Text style={styles.today_title}>오늘의 구역</Text>
       </View>
       <View style={styles.today_item}>
-        {item.map((i) => (
-          <TouchableOpacity
-            key={i}
-            onPress={() => {
-              userInfo.location === 3002
-                ? navigation.push("Area_P", {
-                    area: i,
-                  })
-                : navigation.push("Area_D", {
-                    area: i,
-                  });
-            }}
-          >
-            <Text style={styles.today_item_title}>{i}</Text>
-          </TouchableOpacity>
-        ))}
+        {listSkey.length !== 0
+          ? listSkey.map((i) => (
+              <TouchableOpacity
+                key={i}
+                onPress={() => {
+                  userInfo.org_skey === 3002
+                    ? navigation.push("Area_P", {
+                        listName: userInfo.list.filter((v) => v.list_skey === i)[0].list_name,
+                        listKey: i,
+                      })
+                    : navigation.push("Area_D", {
+                        listName: userInfo.list.filter((v) => v.list_slistKey === i)[0].list_name,
+                        listKey: i,
+                      });
+                }}
+              >
+                <Text style={styles.today_item_title}>
+                  {userInfo.list.filter((v) => v.list_skey === i)[0].list_name}
+                </Text>
+              </TouchableOpacity>
+            ))
+          : null}
       </View>
-      {/* <View style={styles.footer}>
-        <View style={styles.footer_container}>
-          <View style={styles.icon_wrap}>
-            <TouchableOpacity style={styles.footer_title} onPress={handleGoHome}>
-              <AntDesign style={styles.icon} color="#00acb1" name="home" size={30} />
-            </TouchableOpacity>
-          </View>
-          <Text>홈</Text>
-        </View>
-        <View style={styles.footer_container}>
-          <View style={styles.icon_wrap}>
-            <TouchableOpacity style={styles.footer_title} onPress={handleGoCollection}>
-              <AntDesign style={styles.icon} color="#00acb1" name="search1" size={30} />
-            </TouchableOpacity>
-          </View>
-          <Text>수집</Text>
-        </View>
-        <View style={styles.footer_container}>
-          <View style={styles.icon_wrap}>
-            <TouchableOpacity style={styles.footer_title} onPress={handleOnLogOut}>
-              <AntDesign style={styles.icon} color="#00acb1" name="logout" size={30} />
-            </TouchableOpacity>
-          </View>
-          <Text>로그아웃</Text>
-        </View>
-      </View> */}
     </View>
   );
 }
