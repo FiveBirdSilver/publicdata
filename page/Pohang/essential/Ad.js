@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image, Alert, Dimensions } from "react-native";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Image, Alert, Dimensions, Modal, Pressable } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
@@ -16,9 +16,10 @@ export default function Ad({ route, navigation }) {
   const { width, height } = Dimensions.get("window");
   const { item } = route.params;
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
-
+  const ALBUM_NAME = "publicData";
   const [hasPermission, setHasPermission] = useState(null);
   const [photoName, setPhotoName] = useState("");
+  const [photoIng, setPhotoIng] = useState(true);
   const [value, setValue] = useState({
     wheelchair: "",
     stroller: "",
@@ -30,6 +31,7 @@ export default function Ad({ route, navigation }) {
     babychair_Image: "",
   });
 
+  // 갤러리에서 이미지 선택
   const uploadImg = async (name) => {
     if (!status?.granted) {
       const permission = await requestPermission();
@@ -46,6 +48,7 @@ export default function Ad({ route, navigation }) {
     SaveImg(name, result.uri);
   };
 
+  // 이미지 저장
   const SaveImg = (name, Imguri) => {
     if (name === "wheelchair") {
       setImage((image) => ({
@@ -86,10 +89,11 @@ export default function Ad({ route, navigation }) {
 
   const onCamera = async (name) => {
     setPhotoName(name);
+    setPhotoIng(true);
     const { status } = await Camera.requestCameraPermissionsAsync();
     setHasPermission(status === "granted");
   };
-  if (hasPermission === true) {
+  if (hasPermission === true && photoIng) {
     return (
       <>
         <Camera
@@ -109,11 +113,17 @@ export default function Ad({ route, navigation }) {
                 const data = await ref.current.takePictureAsync(options);
                 if (data.uri) {
                   SaveImg(photoName, data.uri);
+                  setPhotoIng(false);
                   try {
                     const { status } = await requestPermission();
                     if (status === "granted") {
                       const asset = await MediaLibrary.createAssetAsync(data.uri);
-                      await MediaLibrary.addAssetsToAlbumAsync([asset], "DCIM");
+                      let album = await MediaLibrary.getAlbumAsync(ALBUM_NAME);
+                      if (album === null) {
+                        album = await MediaLibrary.createAlbumAsync(ALBUM_NAME, asset);
+                      } else {
+                        await MediaLibrary.addAssetsToAlbumAsync([asset], album.id);
+                      }
                     } else {
                       setHasPermission(false);
                     }
@@ -132,10 +142,11 @@ export default function Ad({ route, navigation }) {
       </>
     );
   }
+  // const [modalVisible, setModalVisible] = useState(false);
+
   if (hasPermission === false) {
     return <Alert>카메라 접근 권한을 허용해주세요</Alert>;
   }
-
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -295,6 +306,26 @@ export default function Ad({ route, navigation }) {
                     </View>
                   ) : null}
                 </View>
+                {/* <View style={styles.centeredView}>
+                  <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                      Alert.alert("Modal has been closed.");
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <View style={styles.centeredView}>
+                      <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Hello World!</Text>
+                        <Pressable style={[styles.button, styles.buttonClose]} onPress={() => onCamera("babychair")}>
+                          <Text style={styles.textStyle}>Hide Modal</Text>
+                        </Pressable>
+                      </View>
+                    </View>
+                  </Modal>
+                </View> */}
               </View>
             </ScrollView>
           </View>

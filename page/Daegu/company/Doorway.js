@@ -14,6 +14,8 @@ export default function Doorway({ route, navigation }) {
     wheelchair: "",
     actSpace: "",
     width: "",
+    distance: "",
+    height: "",
   });
 
   const imagePickerOption = {
@@ -84,7 +86,6 @@ export default function Doorway({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>출입구 폭</Text>
                 <View style={styles.input_wrapper}>
@@ -95,6 +96,38 @@ export default function Doorway({ route, navigation }) {
                     onChangeText={(text) =>
                       setValue((prev) => {
                         return { ...prev, width: text };
+                      })
+                    }
+                    style={styles.input}
+                  ></TextInput>
+                </View>
+              </View>
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>전면 유효거리</Text>
+                <View style={styles.input_wrapper}>
+                  <TextInput
+                    name="name"
+                    placeholder="cm"
+                    value={value.distance}
+                    onChangeText={(text) =>
+                      setValue((prev) => {
+                        return { ...prev, distance: text };
+                      })
+                    }
+                    style={styles.input}
+                  ></TextInput>
+                </View>
+              </View>
+              <View style={styles.add_container}>
+                <Text style={styles.add_subtitle}>턱 높이</Text>
+                <View style={styles.input_wrapper}>
+                  <TextInput
+                    name="name"
+                    placeholder="cm"
+                    value={value.height}
+                    onChangeText={(text) =>
+                      setValue((prev) => {
+                        return { ...prev, height: text };
                       })
                     }
                     style={styles.input}
