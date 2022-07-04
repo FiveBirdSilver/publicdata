@@ -151,23 +151,42 @@ export default function Runway({ route, navigation }) {
               </View>
               <View>
                 {value.runway === "Y" ? (
-                  <View style={styles.add_input}>
-                    <View style={styles.add_container}>
-                      <Text style={styles.add_subtitle}>경사로 경사</Text>
-                      <View style={styles.input_wrapper}>
-                        <TextInput
-                          name="slope"
-                          value={value.slope}
-                          onChangeText={(text) =>
-                            setValue((prev) => {
-                              return { ...prev, slope: text };
-                            })
-                          }
-                          style={styles.input}
-                        ></TextInput>
+                  <>
+                    <View style={styles.add_input}>
+                      <View style={styles.add_container}>
+                        <Text style={styles.add_subtitle}>경사로 경사</Text>
+                        <View style={styles.input_wrapper}>
+                          <TextInput
+                            name="slope"
+                            value={value.slope}
+                            onChangeText={(text) =>
+                              setValue((prev) => {
+                                return { ...prev, slope: text };
+                              })
+                            }
+                            style={styles.input}
+                          ></TextInput>
+                        </View>
                       </View>
                     </View>
-                  </View>
+                    <View style={styles.add_input}>
+                      <View style={styles.add_container}>
+                        <Text style={styles.add_subtitle}>경사로 길이</Text>
+                        <View style={styles.input_wrapper}>
+                          <TextInput
+                            name="length"
+                            value={value.length}
+                            onChangeText={(text) =>
+                              setValue((prev) => {
+                                return { ...prev, length: text };
+                              })
+                            }
+                            style={styles.input}
+                          ></TextInput>
+                        </View>
+                      </View>
+                    </View>
+                  </>
                 ) : null}
               </View>
             </View>

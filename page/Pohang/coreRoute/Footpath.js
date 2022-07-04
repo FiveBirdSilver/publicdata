@@ -42,23 +42,21 @@ export default function Footpath({ route, navigation }) {
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>보행로 유무</Text>
+                <Text style={styles.add_subtitle}>휠체어 이동 가능 유무</Text>
                 <RadioButton.Group
                   onValueChange={(text) =>
                     setValue((prev) => {
-                      return { ...prev, foothPath: text };
+                      return { ...prev, footpathMove: text };
                     })
                   }
-                  value={value.foothPath}
+                  value={value.footpathMove}
                   style={styles.yesorno}
                 >
                   <View style={styles.radio}>
                     <View style={styles.radio_wrap}>
-                      <Text>있다</Text>
                       <RadioButton value="Y" />
                     </View>
                     <View style={styles.radio_wrap}>
-                      <Text>없다</Text>
                       <RadioButton value="N" />
                     </View>
                   </View>
@@ -85,32 +83,10 @@ export default function Footpath({ route, navigation }) {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>휠체어 이동 가능 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, footpathMove: text };
-                    })
-                  }
-                  value={value.footpathMove}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-
               <View style={styles.img}>
-                {value.foothPath === "Y" ? (
+                {value.footpathMove === "Y" ? (
                   <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>보행로</Text>
+                    <Text style={styles.img_container_title}>휠체어</Text>
                     <TouchableOpacity
                       style={styles.imgchoose}
                       onLaunchCamera={onLaunchCamera}
@@ -132,54 +108,40 @@ export default function Footpath({ route, navigation }) {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {value.footpathMove === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>휠체어</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
-                ) : null}
               </View>
               <View>
-                {value.foothPath === "Y" ? (
-                  <View style={styles.add_input}>
-                    <View style={styles.add_container}>
-                      <Text style={styles.add_subtitle}>바닥 재질</Text>
-                      <View style={styles.input_wrapper}>
-                        <TextInput
-                          name="floorMaterial"
-                          value={value.floorMaterial}
-                          onChangeText={(text) =>
-                            setValue((prev) => {
-                              return { ...prev, floorMaterial: text };
-                            })
-                          }
-                          style={styles.input}
-                        ></TextInput>
-                      </View>
-                    </View>
-                    <View style={styles.add_container}>
-                      <Text style={styles.add_subtitle}>배수 트렌치 간격</Text>
-                      <View style={styles.input_wrapper}>
-                        <TextInput
-                          name="waterspoutWidth"
-                          value={value.waterspoutWidth}
-                          onChangeText={(text) =>
-                            setValue((prev) => {
-                              return { ...prev, waterspoutWidth: text };
-                            })
-                          }
-                          style={styles.input}
-                        ></TextInput>
-                      </View>
+                <View style={styles.add_input}>
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>바닥 재질</Text>
+                    <View style={styles.input_wrapper}>
+                      <TextInput
+                        name="floorMaterial"
+                        value={value.floorMaterial}
+                        onChangeText={(text) =>
+                          setValue((prev) => {
+                            return { ...prev, floorMaterial: text };
+                          })
+                        }
+                        style={styles.input}
+                      ></TextInput>
                     </View>
                   </View>
-                ) : null}
+                  <View style={styles.add_container}>
+                    <Text style={styles.add_subtitle}>배수 트렌치 간격</Text>
+                    <View style={styles.input_wrapper}>
+                      <TextInput
+                        name="waterspoutWidth"
+                        value={value.waterspoutWidth}
+                        onChangeText={(text) =>
+                          setValue((prev) => {
+                            return { ...prev, waterspoutWidth: text };
+                          })
+                        }
+                        style={styles.input}
+                      ></TextInput>
+                    </View>
+                  </View>
+                </View>
               </View>
             </View>
           </View>

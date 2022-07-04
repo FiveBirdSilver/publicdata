@@ -107,7 +107,7 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   imgchoose: {
-    height: 250,
+    height: 300,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: color.gray,
@@ -151,5 +151,21 @@ export const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     backgroundColor: "white",
+  },
+  camera: {
+    width: 75,
+    borderRadius: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "white",
+    borderWidth: 2,
+    borderStyle: "solid",
+  },
+  cameraContainer: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 50,
   },
 });

@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
     fontSize: 20,
   },
   today: {
-    flex: 0.5,
+    flex: 5,
     width: "100%",
     padding: 16,
   },
@@ -79,9 +79,9 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   today_item: {
-    flex: 4,
+    flex: 5,
     width: "100%",
-    paddingLeft: 16,
+    padding: 16,
     flexDirection: "column",
   },
   today_item_title: {
@@ -115,5 +115,26 @@ export const styles = StyleSheet.create({
     height: 35,
     width: 35,
     marginBottom: 5,
+  },
+  home_btn: {
+    width: "100%",
+    padding: 12,
+    marginTop: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: color.darkgray,
+    borderRadius: 5,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });

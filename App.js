@@ -28,6 +28,7 @@ import ParkingArea_P from "./page/Pohang/park/ParkingArea";
 import ParkFootpath_P from "./page/Pohang/park/ParkFootpath";
 
 import EtoBasic_P from "./page/Pohang/eto/Basic";
+import EtoRunway_P from "./page/Pohang/eto/Runway";
 
 import TBasic_P from "./page/Pohang/toilet/Basic";
 import Entrance_P from "./page/Pohang/toilet/Entrance";
@@ -85,6 +86,7 @@ export default function App() {
         <Stack.Screen name="ParkFootpath_P" options={{ headerShown: false }} component={ParkFootpath_P} />
 
         <Stack.Screen name="EtoBasic_P" options={{ headerShown: false }} component={EtoBasic_P} />
+        <Stack.Screen name="EtoRunway_P" options={{ headerShown: false }} component={EtoRunway_P} />
 
         <Stack.Screen name="TBasic_P" options={{ headerShown: false }} component={TBasic_P} />
         <Stack.Screen name="Entrance_P" options={{ headerShown: false }} component={Entrance_P} />

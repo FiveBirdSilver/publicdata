@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, Alert } from "react-native";
+import { Text, View, TouchableOpacity, Alert, ScrollView } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -14,7 +14,6 @@ export default function Home({ navigation }) {
     { label: "대구", value: 3001 },
     { label: "포항", value: 3002 },
   ];
-
   useEffect(() => {
     AsyncStorage.getItem("User", (err, result) => {
       if (result) {
@@ -71,30 +70,33 @@ export default function Home({ navigation }) {
       </View>
       <View style={styles.today}>
         <Text style={styles.today_title}>오늘의 구역</Text>
-      </View>
-      <View style={styles.today_item}>
-        {listSkey.length !== 0
-          ? listSkey.map((i) => (
-              <TouchableOpacity
-                key={i}
-                onPress={() => {
-                  userInfo.org_skey === 3002
-                    ? navigation.push("Area_P", {
-                        listName: userInfo.list.filter((v) => v.list_skey === i)[0].list_name,
-                        listKey: i,
-                      })
-                    : navigation.push("Area_D", {
-                        listName: userInfo.list.filter((v) => v.list_slistKey === i)[0].list_name,
-                        listKey: i,
-                      });
-                }}
-              >
-                <Text style={styles.today_item_title}>
-                  {userInfo.list.filter((v) => v.list_skey === i)[0].list_name}
-                </Text>
-              </TouchableOpacity>
-            ))
-          : null}
+        <ScrollView>
+          <View style={styles.today_item}>
+            {listSkey.length !== 0
+              ? listSkey.map((i) => (
+                  <TouchableOpacity
+                    style={styles.home_btn}
+                    key={i}
+                    onPress={() => {
+                      userInfo.org_skey === 3002
+                        ? navigation.push("Area_P", {
+                            listName: userInfo.list.filter((v) => v.list_skey === i)[0].list_name,
+                            listKey: i,
+                          })
+                        : navigation.push("Area_D", {
+                            listName: userInfo.list.filter((v) => v.list_slistKey === i)[0].list_name,
+                            listKey: i,
+                          });
+                    }}
+                  >
+                    <Text style={styles.today_item_title}>
+                      {userInfo.list.filter((v) => v.list_skey === i)[0].list_name}
+                    </Text>
+                  </TouchableOpacity>
+                ))
+              : null}
+          </View>
+        </ScrollView>
       </View>
     </View>
   );

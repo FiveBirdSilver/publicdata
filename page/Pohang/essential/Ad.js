@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Image, Alert, Dimensions } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import { RadioButton } from "react-native-paper";
+import * as MediaLibrary from "expo-media-library";
 
 import { styles } from "../../../assets/styles/add";
 
@@ -9,8 +12,13 @@ import * as ImagePicker from "expo-image-picker";
 import { Camera, CameraType } from "expo-camera";
 
 export default function Ad({ route, navigation }) {
+  const ref = useRef(null);
+  const { width, height } = Dimensions.get("window");
   const { item } = route.params;
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+
+  const [hasPermission, setHasPermission] = useState(null);
+  const [photoName, setPhotoName] = useState("");
   const [value, setValue] = useState({
     wheelchair: "",
     stroller: "",
@@ -29,27 +37,30 @@ export default function Ad({ route, navigation }) {
         return null;
       }
     }
-
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       aspect: [1, 1],
       quality: 1,
     });
+    SaveImg(name, result.uri);
+  };
+
+  const SaveImg = (name, Imguri) => {
     if (name === "wheelchair") {
       setImage((image) => ({
         ...image,
-        wheelchair_Image: result.uri,
+        wheelchair_Image: Imguri,
       }));
     } else if (name === "stroller") {
       setImage((image) => ({
         ...image,
-        stroller_Image: result.uri,
+        stroller_Image: Imguri,
       }));
     } else if (name === "babychair") {
       setImage((image) => ({
         ...image,
-        babychair_Image: result.uri,
+        babychair_Image: Imguri,
       }));
     }
   };
@@ -73,50 +84,58 @@ export default function Ad({ route, navigation }) {
     }
   };
 
-  const cameraImg = async () => {
-    const { status } = await Camera.requestPermissionsAsync();
-    this.setHasPermission(status === "granted");
-    if (this.camera) {
-      const options = { quality: 0.5, base64: true };
-      let photo = await this.camera.takePictureAsync(options);
-      this.setState(
-        {
-          photo: photo.base64,
-          scanning: false,
-          uri: photo.uri,
-        },
-        () => this.callGoogleVIsionApi(this.state.result)
-      );
-    }
+  const onCamera = async (name) => {
+    setPhotoName(name);
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    setHasPermission(status === "granted");
   };
-
-  const [hasPermission, setHasPermission] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
-  }, []);
-
-  if (hasPermission === null) {
-    return <View />;
+  if (hasPermission === true) {
+    return (
+      <>
+        <Camera
+          style={{
+            width: width,
+            height: height,
+            justifyContent: "center",
+            overflow: "hidden",
+          }}
+          ref={ref}
+          type={CameraType.back}
+        >
+          <View style={styles.cameraContainer}>
+            <TouchableOpacity
+              onPress={async () => {
+                const options = { quality: 1, base64: true };
+                const data = await ref.current.takePictureAsync(options);
+                if (data.uri) {
+                  SaveImg(photoName, data.uri);
+                  try {
+                    const { status } = await requestPermission();
+                    if (status === "granted") {
+                      const asset = await MediaLibrary.createAssetAsync(data.uri);
+                      await MediaLibrary.addAssetsToAlbumAsync([asset], "DCIM");
+                    } else {
+                      setHasPermission(false);
+                    }
+                  } catch (error) {
+                    console.log(error);
+                  }
+                }
+              }}
+            >
+              <View style={styles.camera}>
+                <FontAwesome color="white" name="circle" size={70} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </Camera>
+      </>
+    );
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return <Alert>카메라 접근 권한을 허용해주세요</Alert>;
   }
-  const setSnap = async () => {
-    const options = { quality: 0.5, base64: true };
-    let photo = await this.camera.takePictureAsync(options);
-    this.setState(
-      {
-        photo: photo.base64,
-        scanning: false,
-        uri: photo.uri,
-      },
-      () => this.callGoogleVIsionApi(this.state.result)
-    );
-  };
+
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -270,10 +289,9 @@ export default function Ad({ route, navigation }) {
                   {value.babychair === "Y" ? (
                     <View style={styles.img_container}>
                       <Text style={styles.img_container_title}>유아용 보조의자</Text>
-                      <TouchableOpacity style={styles.imgchoose} onPress={setSnap}>
+                      <TouchableOpacity style={styles.imgchoose} onPress={() => onCamera("babychair")}>
                         <AntDesign style={styles.icon} color="white" name="pluscircle" size={30} />
                       </TouchableOpacity>
-                      <Camera type={CameraType.back} style={{ width: 300, height: 400 }}></Camera>
                     </View>
                   ) : null}
                 </View>

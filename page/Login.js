@@ -23,6 +23,7 @@ export default function Login({ navigation }) {
     { label: "대구", value: 3001 },
     { label: "포항", value: 3002 },
   ];
+
   useEffect(() => {
     // AsyncStorage.getItem("User", (err, result) => {
     //   if (result) {
