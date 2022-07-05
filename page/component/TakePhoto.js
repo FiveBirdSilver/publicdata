@@ -34,15 +34,17 @@ export default function TakePhoto(props) {
       allowsEditing: false,
       aspect: [1, 1],
       quality: 1,
+      base64: true,
     });
-    SaveImg(name, result.uri);
+    SaveImg(name, result);
   };
 
   // 이미지 저장
-  const SaveImg = (name, Imguri) => {
+  const SaveImg = (name, result) => {
+    const { base64, uri } = result;
     if (name === props.name) {
-      setImage(Imguri);
-      props.getImage(Imguri, props.name);
+      setImage(uri);
+      props.getImage(base64, props.name);
     }
   };
 

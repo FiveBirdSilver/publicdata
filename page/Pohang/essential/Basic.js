@@ -1,26 +1,40 @@
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
-import { styles } from "../../../assets/styles/add";
-import Input from "../../component/Input";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-export default function Basic({ route, navigation, API }) {
-  const { item } = route.params;
-  console.log(API);
-  const [value, setValue] = useState({});
+import Input from "../../component/Input";
+import { styles } from "../../../assets/styles/add";
 
+export default function Basic({ route, navigation }) {
+  const { item } = route.params;
+  const [value, setValue] = useState({});
+  const [User, setUser] = useState([]);
+  useEffect(() => {
+    AsyncStorage.getItem("User", (err, result) => {
+      if (result) {
+        setUser(JSON.parse(result));
+      }
+    });
+  }, []);
+  console.log(User.org_skey);
   const getText = (text, name) => {
     setValue((value) => ({
       ...value,
       [name]: text,
     }));
   };
-  console.log(value);
-  const handleOnSubmit = () => {
-    axios.post();
-  };
+  //   const handleOnSubmit = () => {
+  //     axios.post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/pohang/essential/setbasic", {
+  //       e_b_touristDestination :value.name,
+  // e_b_address :value.address,
+  // e_b_travelTime : value.time,
+  // e_b_fee : value.price,
+  // e_b_openingHours :value.hours,
+  // e_b_holiday :value.close
+  //     });
+  //   };
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>

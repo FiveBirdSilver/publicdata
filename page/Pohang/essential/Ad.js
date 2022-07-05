@@ -28,7 +28,9 @@ export default function Ad({ route, navigation }) {
       [name]: uri,
     }));
   };
-  console.log(image);
+  const handleOnSubmit = () => {
+    axios.post();
+  };
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -45,7 +47,7 @@ export default function Ad({ route, navigation }) {
 
           <View style={styles.add_title_wrapper}>
             <View style={styles.icon_wrap}>
-              <TouchableOpacity style={styles.footer_title}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
                 <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
               </TouchableOpacity>
             </View>
