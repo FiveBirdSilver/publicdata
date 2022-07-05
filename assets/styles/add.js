@@ -1,10 +1,14 @@
 import { StyleSheet } from "react-native";
 import { color } from "./color";
+import { Dimensions } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
+    position: "relative",
+
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
@@ -15,6 +19,7 @@ export const styles = StyleSheet.create({
     width: "90%",
   },
   add: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
@@ -56,6 +61,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   add_wrapper: {
+    flex: 1,
     width: "100%",
     padding: 16,
   },
@@ -107,7 +113,7 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   imgchoose: {
-    height: 300,
+    height: 350,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: color.gray,
@@ -149,6 +155,7 @@ export const styles = StyleSheet.create({
   },
   scrollview: {
     flex: 1,
+    position: "relative",
     width: "100%",
     backgroundColor: "white",
   },
@@ -175,6 +182,10 @@ export const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
+    width: "35%",
+    height: "20%",
+    justifyContent: "center",
+    alignItems: "center",
     margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
@@ -194,19 +205,27 @@ export const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
   },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
+  modalBtn: {
+    width: "100%",
+    padding: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    margin: 5,
+    backgroundColor: color.blue,
   },
-  buttonClose: {
-    backgroundColor: "#2196F3",
+  modalCloseBtn: {
+    marginTop: 30,
+    flexDirection: "row",
   },
   textStyle: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+    fontSize: 16,
   },
-  modalText: {
-    marginBottom: 15,
+  CloseStylemodalText: {
+    fontSize: 16,
     textAlign: "center",
   },
 });

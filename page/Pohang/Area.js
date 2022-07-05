@@ -35,7 +35,7 @@ export default function Area({ route, navigation }) {
   };
   const entry = {
     label: ["기본정보", "계단", "경사로", "턱", "승강기"],
-    value: ["EtoBasic_P", "Stairs_P", "EtoRunway_P", "Roadchin_P", "Elevator_P"],
+    value: ["EtoBasic_P", "EtoStairs_P", "EtoRunway_P", "EtoRoadchin_P", "EtoElevator_P"],
   };
 
   const toilet = {

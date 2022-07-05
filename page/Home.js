@@ -48,14 +48,14 @@ export default function Home({ navigation }) {
     <View style={styles.container}>
       <View style={styles.header_container}>
         <Header title="Home" subtitle="사용자정보" />
-        <View style={styles.logout}>
+        <TouchableOpacity onPress={handleOnLogOut} style={styles.logout}>
           <View style={styles.icon_wrap}>
-            <TouchableOpacity style={styles.footer_title} onPress={handleOnLogOut}>
+            <TouchableOpacity style={styles.footer_title}>
               <AntDesign style={styles.icon} color="#00acb1" name="logout" size={24} />
             </TouchableOpacity>
           </View>
           <Text style={styles.logout_title}>로그아웃</Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.userinfo}>
         <View style={styles.userimg}>

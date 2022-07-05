@@ -11,23 +11,23 @@ export default function Section({ item }) {
 
   return (
     <View style={styles.add_title_container}>
-      <View style={styles.add_title_wrapper}>
+      <TouchableOpacity style={styles.add_title_wrapper} onPress={() => navigation.goBack()}>
         <View style={styles.icon_wrap}>
-          <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.footer_title}>
             <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
           </TouchableOpacity>
         </View>
         <Text>뒤로</Text>
-      </View>
+      </TouchableOpacity>
       <Text style={styles.add_title}>{item}</Text>
-      <View style={styles.add_title_wrapper}>
+      <TouchableOpacity style={styles.add_title_wrapper}>
         <View style={styles.icon_wrap}>
           <TouchableOpacity style={styles.footer_title}>
             <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
           </TouchableOpacity>
         </View>
         <Text>저장</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }
