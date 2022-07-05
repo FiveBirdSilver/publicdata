@@ -125,9 +125,14 @@ export default function Ad({ route, navigation }) {
                 </View>
 
                 <View style={styles.img}>
-                  <TakePhoto title="휠체어" name="wheelchair" value={value.wheelchair} getImage={getImage} />
-                  <TakePhoto title="유모차" name="stroller" value={value.stroller} getImage={getImage} />
-                  <TakePhoto title="유아용 보조의자" name="babychair" value={value.babychair} getImage={getImage} />
+                  <TakePhoto title="휠체어" name="p_e_ad_wheelchairImg" value={value.wheelchair} getImage={getImage} />
+                  <TakePhoto title="유모차" name="p_e_ad_stroller" value={value.stroller} getImage={getImage} />
+                  <TakePhoto
+                    title="유아용 보조의자"
+                    name="p_e_ad_babychair"
+                    value={value.babychair}
+                    getImage={getImage}
+                  />
                 </View>
               </View>
             </ScrollView>
