@@ -9,22 +9,62 @@ import { styles } from "../../../assets/styles/add";
 
 export default function Basic({ route, navigation }) {
   const { listName, listKey } = route.params;
-  const [value, setValue] = useState({});
   const [user, setUser] = useState([]);
+  const [value, setValue] = useState({
+    name: "",
+    address: "",
+    time: "",
+    price: "",
+    hours: "",
+    close: "",
+  });
+
   useEffect(() => {
     AsyncStorage.getItem("User", (err, result) => {
       if (result) {
-        console.log(JSON.parse(result));
         setUser(JSON.parse(result));
       }
     });
   }, []);
+
   const getText = (text, name) => {
-    setValue((value) => ({
-      ...value,
-      [name]: text,
-    }));
+    // setValue((value) => ({
+    //   ...value,
+    //   [name]: text,
+    // }));
+    if (name === "name") {
+      setValue((value) => ({
+        ...value,
+        name: text,
+      }));
+    } else if (name === "address") {
+      setValue((value) => ({
+        ...value,
+        address: text,
+      }));
+    } else if (name === "time") {
+      setValue((value) => ({
+        ...value,
+        time: text,
+      }));
+    } else if (name === "price") {
+      setValue((value) => ({
+        ...value,
+        price: text,
+      }));
+    } else if (name === "hours") {
+      setValue((value) => ({
+        ...value,
+        hours: text,
+      }));
+    } else if (name === "close") {
+      setValue((value) => ({
+        ...value,
+        close: text,
+      }));
+    }
   };
+
   const handleOnSubmit = () => {
     axios
       .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/pohang/essential/setbasic", {

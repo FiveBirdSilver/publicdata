@@ -36,7 +36,7 @@ export default function TakePhoto(props) {
       quality: 1,
       base64: true,
     });
-    SaveImg(name, result.uri, result);
+    SaveImg(name, result.uri, result.base64);
   };
 
   // 이미지 저장
@@ -87,7 +87,7 @@ export default function TakePhoto(props) {
                   const options = { quality: 1, base64: true };
                   const data = await ref.current.takePictureAsync(options);
                   if (data.uri) {
-                    SaveImg(photoName, data.uri, data);
+                    SaveImg(photoName, data.uri, data.base64);
                     setPhotoIng(false);
                     try {
                       const { status } = await requestPermission();
@@ -127,25 +127,23 @@ export default function TakePhoto(props) {
   };
   return (
     <>
-      {props.value === "Y" ? (
-        <View style={styles.img_container}>
-          <Text style={styles.img_container_title}>{props.title}</Text>
-          {image === "" || image === undefined ? (
-            <TouchableOpacity style={styles.imgchoose} onPress={() => OpenModal(props.name)}>
-              <AntDesign style={styles.icon} color="white" name="pluscircle" size={30} />
-            </TouchableOpacity>
-          ) : (
-            image && (
-              <View>
-                <TouchableOpacity style={styles.imgcancle} onPress={() => cancleImg(props.name)}>
-                  <AntDesign style={styles.icon} color="red" name="minuscircle" size={30} />
-                </TouchableOpacity>
-                <Image source={{ uri: image }} style={styles.imgchoose} />
-              </View>
-            )
-          )}
-        </View>
-      ) : null}
+      <View style={styles.img_container}>
+        <Text style={styles.img_container_title}>{props.title}</Text>
+        {image === "" || image === undefined ? (
+          <TouchableOpacity style={styles.imgchoose} onPress={() => OpenModal(props.name)}>
+            <AntDesign style={styles.icon} color="white" name="pluscircle" size={30} />
+          </TouchableOpacity>
+        ) : (
+          image && (
+            <View>
+              <TouchableOpacity style={styles.imgcancle} onPress={() => cancleImg(props.name)}>
+                <AntDesign style={styles.icon} color="red" name="minuscircle" size={30} />
+              </TouchableOpacity>
+              <Image source={{ uri: image }} style={styles.imgchoose} />
+            </View>
+          )
+        )}
+      </View>
       <View style={styles.centeredView}>
         <Modal
           transparent={true}

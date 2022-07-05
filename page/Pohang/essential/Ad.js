@@ -1,53 +1,43 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image, Alert, Dimensions, Modal, Pressable } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-
-import { RadioButton, Title } from "react-native-paper";
-import * as MediaLibrary from "expo-media-library";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RadioButton } from "react-native-paper";
+import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
-
-import * as ImagePicker from "expo-image-picker";
-import { Camera, CameraType } from "expo-camera";
 import TakePhoto from "../../component/TakePhoto";
 
 export default function Ad({ route, navigation }) {
-  const { item } = route.params;
+  const { listName, listKey } = route.params;
 
   const [value, setValue] = useState({
     wheelchair: "",
     stroller: "",
     babychair: "",
   });
-  const [image, setImage] = useState({
-    wheelchairImg: "",
-    strollerImg: "",
-    babychairImg: "",
-  });
+  const [image, setImage] = useState([]);
+  const [teamKey, setTeamKey] = useState("");
 
   const getImage = (uri, name) => {
-    if (name === "p_e_ad_wheelchairImg") {
-      setImage((image) => ({
-        ...image,
-        wheelchairImg: uri.base64,
-      }));
-    } else if (name === "p_e_ad_strollerImg") {
-      setImage((image) => ({
-        ...image,
-        strollerImg: uri.base64,
-      }));
-    } else if (name === "p_e_ad_babychairImg") {
-      setImage((image) => ({
-        ...image,
-        babychairImg: uri.base64,
-      }));
-    }
+    const newArr = [...image];
+    newArr.push({
+      name: name,
+      img: uri,
+    });
+    setImage(newArr);
   };
 
   const handleOnSubmit = () => {
-    axios.post();
+    AsyncStorage.getItem("User", (err, result) => {
+      if (result) {
+        setTeamKey(JSON.parse(result).team_skey);
+      }
+    });
+    console.log(teamKey); // 유저 키
+    // axios.post()
   };
+
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -60,7 +50,7 @@ export default function Ad({ route, navigation }) {
             </View>
             <Text>뒤로</Text>
           </View>
-          <Text style={styles.add_title}>{item}</Text>
+          <Text style={styles.add_title}>{listName}</Text>
 
           <View style={styles.add_title_wrapper}>
             <View style={styles.icon_wrap}>
@@ -140,16 +130,16 @@ export default function Ad({ route, navigation }) {
                     </View>
                   </RadioButton.Group>
                 </View>
-
                 <View style={styles.img}>
-                  <TakePhoto title="휠체어" name="p_e_ad_wheelchairImg" value={value.wheelchair} getImage={getImage} />
-                  <TakePhoto title="유모차" name="p_e_ad_strollerImg" value={value.stroller} getImage={getImage} />
-                  <TakePhoto
-                    title="유아용 보조의자"
-                    name="p_e_ad_babychairImg"
-                    value={value.babychair}
-                    getImage={getImage}
-                  />
+                  {value.wheelchair === "Y" ? (
+                    <TakePhoto title="휠체어" name="p_e_ad_wheelchairImg" getImage={getImage} />
+                  ) : null}
+                  {value.stroller === "Y" ? (
+                    <TakePhoto title="유모차" name="p_e_ad_strollerImg" getImage={getImage} />
+                  ) : null}
+                  {value.babychair === "Y" ? (
+                    <TakePhoto title="유아용 보조의자" name="p_e_ad_babychairImg" getImage={getImage} />
+                  ) : null}
                 </View>
               </View>
             </ScrollView>

@@ -119,7 +119,7 @@ export default function Leaflet({ route, navigation }) {
                 ) : null}
                 {value.disabledFacility === "Y" ? (
                   <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>관광지 리플렛 장애인 편의시설 정보 제공 유무</Text>
+                    <Text style={styles.img_container_title}>관광지 리플렛 장애인 편의시설 정보 제공</Text>
                     <TouchableOpacity
                       style={styles.imgchoose}
                       onLaunchCamera={onLaunchCamera}

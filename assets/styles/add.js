@@ -6,9 +6,8 @@ const { width, height } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     position: "relative",
-
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
@@ -19,7 +18,6 @@ export const styles = StyleSheet.create({
     width: "90%",
   },
   add: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
@@ -61,7 +59,6 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   add_wrapper: {
-    flex: 1,
     width: "100%",
     padding: 16,
   },
@@ -100,7 +97,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "flex-start",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
   img_container: {
     width: "50%",
@@ -217,6 +214,7 @@ export const styles = StyleSheet.create({
   modalCloseBtn: {
     marginTop: 30,
     flexDirection: "row",
+    alignItems: "center",
   },
   textStyle: {
     color: "white",
@@ -224,8 +222,10 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
-  CloseStylemodalText: {
+  CloseStyle: {
     fontSize: 16,
+    color: "tomato",
+    fontWeight: "bold",
     textAlign: "center",
   },
 });
