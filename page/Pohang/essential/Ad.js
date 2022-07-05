@@ -14,20 +14,37 @@ import TakePhoto from "../../component/TakePhoto";
 
 export default function Ad({ route, navigation }) {
   const { item } = route.params;
-  const [image, setImage] = useState({});
 
   const [value, setValue] = useState({
     wheelchair: "",
     stroller: "",
     babychair: "",
   });
+  const [image, setImage] = useState({
+    wheelchairImg: "",
+    strollerImg: "",
+    babychairImg: "",
+  });
 
   const getImage = (uri, name) => {
-    setImage((image) => ({
-      ...image,
-      [name]: uri,
-    }));
+    if (name === "p_e_ad_wheelchairImg") {
+      setImage((image) => ({
+        ...image,
+        wheelchairImg: uri.base64,
+      }));
+    } else if (name === "p_e_ad_strollerImg") {
+      setImage((image) => ({
+        ...image,
+        strollerImg: uri.base64,
+      }));
+    } else if (name === "p_e_ad_babychairImg") {
+      setImage((image) => ({
+        ...image,
+        babychairImg: uri.base64,
+      }));
+    }
   };
+
   const handleOnSubmit = () => {
     axios.post();
   };
@@ -126,10 +143,10 @@ export default function Ad({ route, navigation }) {
 
                 <View style={styles.img}>
                   <TakePhoto title="휠체어" name="p_e_ad_wheelchairImg" value={value.wheelchair} getImage={getImage} />
-                  <TakePhoto title="유모차" name="p_e_ad_stroller" value={value.stroller} getImage={getImage} />
+                  <TakePhoto title="유모차" name="p_e_ad_strollerImg" value={value.stroller} getImage={getImage} />
                   <TakePhoto
                     title="유아용 보조의자"
-                    name="p_e_ad_babychair"
+                    name="p_e_ad_babychairImg"
                     value={value.babychair}
                     getImage={getImage}
                   />

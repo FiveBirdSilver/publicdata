@@ -36,12 +36,11 @@ export default function TakePhoto(props) {
       quality: 1,
       base64: true,
     });
-    SaveImg(name, result);
+    SaveImg(name, result.uri, result);
   };
 
   // 이미지 저장
-  const SaveImg = (name, result) => {
-    const { base64, uri } = result;
+  const SaveImg = (name, uri, base64) => {
     if (name === props.name) {
       setImage(uri);
       props.getImage(base64, props.name);
@@ -88,7 +87,7 @@ export default function TakePhoto(props) {
                   const options = { quality: 1, base64: true };
                   const data = await ref.current.takePictureAsync(options);
                   if (data.uri) {
-                    SaveImg(photoName, data.uri);
+                    SaveImg(photoName, data.uri, data);
                     setPhotoIng(false);
                     try {
                       const { status } = await requestPermission();

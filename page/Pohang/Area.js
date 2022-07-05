@@ -5,8 +5,7 @@ import { styles } from "../../assets/styles/area";
 import Header from "../component/Header";
 
 export default function Area({ route, navigation }) {
-  const { listName, listkey } = route.params;
-
+  const { listName, listKey } = route.params;
   // useEffect(() => {
   //   axios // 항목1의 키 값
   // },[])
@@ -82,7 +81,8 @@ export default function Area({ route, navigation }) {
                 style={styles.area_btn}
                 onPress={() =>
                   navigation.push(`${essential.value[index]}`, {
-                    item: i,
+                    listName: i,
+                    listKey: listKey,
                   })
                 }
               >

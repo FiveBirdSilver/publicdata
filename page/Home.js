@@ -27,7 +27,6 @@ export default function Home({ navigation }) {
       }
     });
   }, []);
-
   const handleOnLogOut = () => {
     Alert.alert("알림", "로그아웃 하시겠습니까?", [
       {
