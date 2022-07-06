@@ -9,8 +9,8 @@ import { styles } from "../../../assets/styles/add";
 import TakePhoto from "../../component/TakePhoto";
 
 export default function Ad({ route, navigation }) {
-  const { listName, listKey } = route.params;
-
+  const { listName, listKey, region, dataCollection, data } = route.params;
+  console.log(listKey, region, dataCollection, data);
   const [value, setValue] = useState({
     wheelchair: "",
     stroller: "",
@@ -24,18 +24,15 @@ export default function Ad({ route, navigation }) {
     newArr.push({
       name: name,
       img: uri,
+      depth1: region,
+      depth2: listKey,
+      depth3: dataCollection,
+      depth4: data,
     });
     setImage(newArr);
   };
-
   const handleOnSubmit = () => {
-    AsyncStorage.getItem("User", (err, result) => {
-      if (result) {
-        setTeamKey(JSON.parse(result).team_skey);
-      }
-    });
-    console.log(teamKey); // 유저 키
-    // axios.post()
+    //  axios.post()
   };
 
   return (

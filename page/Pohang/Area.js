@@ -5,7 +5,7 @@ import { styles } from "../../assets/styles/area";
 import Header from "../component/Header";
 
 export default function Area({ route, navigation }) {
-  const { listName, listKey } = route.params;
+  const { listName, listKey, region } = route.params;
   // useEffect(() => {
   //   axios // 항목1의 키 값
   // },[])
@@ -22,7 +22,7 @@ export default function Area({ route, navigation }) {
       "관광지 리플렛",
     ],
     value: ["Basic_P", "Recommend_P", "ServiceDog_P", "Ad_P", "Program_P", "Guide_P", "Facility_P", "Leaflet_P"],
-    // color : [],
+    depth: ["basic", "rc", "dog", "ad", "ep", "g", "af", "tl"],
   };
   const flow = {
     label: ["보행로", "기타", "계단", "경사로", "턱", "승강기"],
@@ -83,6 +83,9 @@ export default function Area({ route, navigation }) {
                   navigation.push(`${essential.value[index]}`, {
                     listName: i,
                     listKey: listKey,
+                    region: region,
+                    dataCollection: "e",
+                    data: essential.depth[index],
                   })
                 }
               >

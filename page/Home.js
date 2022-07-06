@@ -81,10 +81,12 @@ export default function Home({ navigation }) {
                         ? navigation.push("Area_P", {
                             listName: userInfo.list.filter((v) => v.list_skey === i)[0].list_name,
                             listKey: i,
+                            region: "p",
                           })
                         : navigation.push("Area_D", {
                             listName: userInfo.list.filter((v) => v.list_slistKey === i)[0].list_name,
                             listKey: i,
+                            region: "d",
                           });
                     }}
                   >
