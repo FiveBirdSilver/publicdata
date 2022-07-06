@@ -31,6 +31,7 @@ export default function Ad({ route, navigation }) {
     });
     setImage(newArr);
   };
+
   const handleOnSubmit = () => {
     //  axios.post()
   };
