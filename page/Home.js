@@ -28,6 +28,7 @@ export default function Home({ navigation }) {
       }
     });
   }, []);
+  console.log(userInfo);
   const handleOnLogOut = () => {
     Alert.alert("알림", "로그아웃 하시겠습니까?", [
       {
@@ -43,7 +44,6 @@ export default function Home({ navigation }) {
       },
     ]);
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.header_container}>
@@ -82,12 +82,14 @@ export default function Home({ navigation }) {
                         ? navigation.push("Area_P", {
                             listName: userInfo.list.filter((v) => v.list_skey === i)[0].list_name,
                             listKey: i,
+                            teamKey: userInfo.team_skey,
                             region: "p",
                             regionKey: userInfo.org_skey,
                           })
                         : navigation.push("Area_D", {
                             listName: userInfo.list.filter((v) => v.list_slistKey === i)[0].list_name,
                             listKey: i,
+                            teamKey: userInfo.team_skey,
                             region: "d",
                             regionKey: userInfo.org_skey,
                           });

@@ -5,11 +5,10 @@ import { styles } from "../../assets/styles/area";
 import Header from "../component/Header";
 
 export default function Area({ route, navigation }) {
-  const { listName, listKey, region, regionKey } = route.params;
+  const { listName, listKey, teamKey, region, regionKey } = route.params;
   // useEffect(() => {
   //   axios // 항목1의 키 값
   // },[])
-
   const essential = {
     label: [
       "기본정보",
@@ -83,6 +82,7 @@ export default function Area({ route, navigation }) {
                   navigation.push(`${essential.value[index]}`, {
                     listName: i,
                     listKey: listKey,
+                    teamKey: teamKey,
                     region: region,
                     regionKey: regionKey,
                     dataCollection: "e",

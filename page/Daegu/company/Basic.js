@@ -44,13 +44,13 @@ export default function Basic({ route, navigation }) {
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>업체명</Text>
                 <View style={styles.input_wrapper}>
-                  <TextInput name="name" value={value.name} style={styles.input} editable={false}></TextInput>
+                  <TextInput name="name" value={value.name} style={styles.input}></TextInput>
                 </View>
               </View>
               <View style={styles.add_container}>
                 <Text style={styles.add_subtitle}>업체 주소</Text>
                 <View style={styles.input_wrapper}>
-                  <TextInput name="name" value={value.address} style={styles.input} editable={false}></TextInput>
+                  <TextInput name="name" value={value.address} style={styles.input}></TextInput>
                 </View>
               </View>
               <View style={styles.add_container}>

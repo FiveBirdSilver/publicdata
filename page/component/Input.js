@@ -4,7 +4,7 @@ import { useState } from "react";
 import { styles } from "../../assets/styles/add";
 
 export default function Input(props) {
-  const [value, setValue] = useState("");
+  const [text, setText] = useState("");
   return (
     <>
       <View style={styles.add_container}>
@@ -12,12 +12,13 @@ export default function Input(props) {
         <View style={styles.input_wrapper}>
           <TextInput
             name={props.name}
-            value={value}
+            value={props.value ? `${props.value}` : text}
             placeholder={props.placeholder}
             onChangeText={(text) => {
-              setValue(text);
+              setText(text);
               props.getText(text, props.name);
             }}
+            keyboardType={props.keyboardType}
             style={styles.input}
           ></TextInput>
         </View>
