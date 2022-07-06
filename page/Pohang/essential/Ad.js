@@ -9,15 +9,16 @@ import { styles } from "../../../assets/styles/add";
 import TakePhoto from "../../component/TakePhoto";
 
 export default function Ad({ route, navigation }) {
-  const { listName, listKey, region, dataCollection, data } = route.params;
-  console.log(listKey, region, dataCollection, data);
+  const { listName, listKey, region, regionKey, dataCollection, data } = route.params;
+  // regionKey ==> 대구/포항 구분 키 ex) 3002
+
   const [value, setValue] = useState({
     wheelchair: "",
     stroller: "",
     babychair: "",
   });
+
   const [image, setImage] = useState([]);
-  const [teamKey, setTeamKey] = useState("");
 
   const getImage = (uri, name) => {
     const newArr = [...image];

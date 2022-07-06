@@ -5,7 +5,7 @@ import { styles } from "../../assets/styles/area";
 import Header from "../component/Header";
 
 export default function Area({ route, navigation }) {
-  const { listName, listKey, region } = route.params;
+  const { listName, listKey, region, regionKey } = route.params;
   // useEffect(() => {
   //   axios // 항목1의 키 값
   // },[])
@@ -84,6 +84,7 @@ export default function Area({ route, navigation }) {
                     listName: i,
                     listKey: listKey,
                     region: region,
+                    regionKey: regionKey,
                     dataCollection: "e",
                     data: essential.depth[index],
                   })

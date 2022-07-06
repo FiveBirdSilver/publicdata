@@ -10,6 +10,7 @@ export default function Home({ navigation }) {
   const [userInfo, setUserInfo] = useState("");
   const [isChecked, setIsChecked] = useState(null);
   const [listSkey, setListSkey] = useState([]);
+
   const data = [
     { label: "대구", value: 3001 },
     { label: "포항", value: 3002 },
@@ -82,11 +83,13 @@ export default function Home({ navigation }) {
                             listName: userInfo.list.filter((v) => v.list_skey === i)[0].list_name,
                             listKey: i,
                             region: "p",
+                            regionKey: userInfo.org_skey,
                           })
                         : navigation.push("Area_D", {
                             listName: userInfo.list.filter((v) => v.list_slistKey === i)[0].list_name,
                             listKey: i,
                             region: "d",
+                            regionKey: userInfo.org_skey,
                           });
                     }}
                   >
