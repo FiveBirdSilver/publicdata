@@ -1,94 +1,75 @@
 import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useEffect, useState } from "react";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-
 import Input from "../../component/Input";
 import { styles } from "../../../assets/styles/add";
 
 export default function Basic({ route, navigation }) {
-  const { listName, listKey } = route.params;
-  const [user, setUser] = useState([]);
-  const [value, setValue] = useState({
-    name: "",
-    address: "",
-    time: "",
-    price: "",
-    hours: "",
-    close: "",
-  });
+  const { listName, listKey, teamKey } = route.params;
+  const [value, setValue] = useState([]);
+  const [requiredValue, setRequiredVlaue] = useState([]);
+  const Compare = [
+    "e_b_touristDestination",
+    "e_b_address",
+    "e_b_travelTime",
+    "e_b_fee",
+    "e_b_openingHours",
+    "e_b_holiday",
+  ];
 
   useEffect(() => {
-    AsyncStorage.getItem("User", (err, result) => {
-      if (result) {
-        setUser(JSON.parse(result));
-      }
-    });
+    axios
+      .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/pohang/essential/getbasic", {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        setValue(JSON.parse(res.data));
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   const getText = (text, name) => {
-    // setValue((value) => ({
-    //   ...value,
-    //   [name]: text,
-    // }));
-    if (name === "name") {
-      setValue((value) => ({
-        ...value,
-        name: text,
-      }));
-    } else if (name === "address") {
-      setValue((value) => ({
-        ...value,
-        address: text,
-      }));
-    } else if (name === "time") {
-      setValue((value) => ({
-        ...value,
-        time: text,
-      }));
-    } else if (name === "price") {
-      setValue((value) => ({
-        ...value,
-        price: text,
-      }));
-    } else if (name === "hours") {
-      setValue((value) => ({
-        ...value,
-        hours: text,
-      }));
-    } else if (name === "close") {
-      setValue((value) => ({
-        ...value,
-        close: text,
-      }));
-    }
+    setValue((value) => ({
+      ...value,
+      [name]: text,
+    }));
+    setRequiredVlaue((requiredValue) => [...requiredValue, name]);
   };
 
+  const difference = [...new Set(requiredValue)]
+    .filter((x) => !Compare.includes(x))
+    .concat(Compare.filter((x) => ![...new Set(requiredValue)].includes(x)));
+
   const handleOnSubmit = () => {
-    axios
-      .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/pohang/essential/setbasic", {
-        team_skey: user.team_skey,
-        list_skey: listKey,
-        e_b_touristDestination: value.name,
-        e_b_address: value.address,
-        e_b_travelTime: value.time,
-        e_b_fee: value.price,
-        e_b_openingHours: value.hours,
-        e_b_holiday: value.close,
-      })
-      .then((res) => {
-        const response = JSON.parse(res.data);
-        if (response.result === 1) {
-          Alert.alert("저장되었습니다.");
-          navigation.goBack();
-        } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-      })
-      .catch((err) => {
-        console.log(err);
-        Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-      });
+    if (difference.length !== 0) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else
+      axios
+        .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/pohang/essential/setbasic", {
+          team_skey: teamKey,
+          list_skey: listKey,
+          e_b_touristDestination: value.e_b_touristDestination,
+          e_b_address: value.e_b_address,
+          e_b_travelTime: value.e_b_travelTime,
+          e_b_fee: value.e_b_fee,
+          e_b_openingHours: value.e_b_openingHours,
+          e_b_holiday: value.e_b_holiday,
+        })
+        .then((res) => {
+          const response = JSON.parse(res.data);
+          if (response.result === 1) {
+            Alert.alert("저장되었습니다.");
+            navigation.goBack();
+          } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+        })
+        .catch((err) => {
+          console.log(err);
+          Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+        });
   };
+
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -115,22 +96,43 @@ export default function Basic({ route, navigation }) {
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
-              <Input title="관광지명" getText={getText} name="name" />
-              <Input title="주소" getText={getText} name="address" />
+              <Input
+                title="관광지명"
+                getText={getText}
+                name="e_b_touristDestination"
+                value={value.e_b_touristDestination}
+              />
+              <Input title="주소" getText={getText} name="e_b_address" value={value.e_b_address} />
               <Input
                 title="이동소요시간"
                 getText={getText}
-                name="time"
+                name="e_b_travelTime"
+                value={value.e_b_travelTime}
                 placeholder="숫자만 입력해주세요 (EX. 1시간 30분 => 1.5)"
+                keyboardType={"numeric"}
               />
               <Input
                 title="관람료"
                 getText={getText}
-                name="price"
+                name="e_b_fee"
+                value={value.e_b_fee}
                 placeholder="숫자만 입력해주세요 (EX. 15,000원 => 15000)"
+                keyboardType={"numeric"}
               />
-              <Input title="영업시간" getText={getText} name="hours" placeholder="EX. 09:00 ~ 18:00" />
-              <Input title="휴무일" getText={getText} name="close" placeholder="EX. 화요일" />
+              <Input
+                title="영업시간"
+                getText={getText}
+                name="e_b_openingHours"
+                value={value.e_b_openingHours}
+                placeholder="EX. 09:00 ~ 18:00"
+              />
+              <Input
+                title="휴무일"
+                getText={getText}
+                name="e_b_holiday"
+                value={value.e_b_holiday}
+                placeholder="EX. 화요일"
+              />
             </View>
           </View>
         </View>

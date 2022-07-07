@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image, Alert, Dimensions, Modal, Pressable } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RadioButton } from "react-native-paper";
 import axios from "axios";
 
