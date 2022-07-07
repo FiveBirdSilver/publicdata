@@ -7,8 +7,10 @@ import { styles } from "../../../assets/styles/add";
 
 export default function Basic({ route, navigation }) {
   const { listName, listKey, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
   const [value, setValue] = useState([]);
-  const [requiredValue, setRequiredVlaue] = useState([]);
+  const requiredValue = Object.values(value).filter((i) => i !== "");
+
   const Compare = [
     "e_b_touristDestination",
     "e_b_address",
@@ -20,7 +22,7 @@ export default function Basic({ route, navigation }) {
 
   useEffect(() => {
     axios
-      .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/pohang/essential/getbasic", {
+      .post(`${API}/api/pohang/essential/getbasic`, {
         team_skey: teamKey,
         list_skey: listKey,
       })
@@ -35,19 +37,14 @@ export default function Basic({ route, navigation }) {
       ...value,
       [name]: text,
     }));
-    setRequiredVlaue((requiredValue) => [...requiredValue, name]);
   };
 
-  const difference = [...new Set(requiredValue)]
-    .filter((x) => !Compare.includes(x))
-    .concat(Compare.filter((x) => ![...new Set(requiredValue)].includes(x)));
-
   const handleOnSubmit = () => {
-    if (difference.length !== 0) {
+    if (requiredValue.length !== Compare.length) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else
       axios
-        .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/pohang/essential/setbasic", {
+        .post(`${API}/api/pohang/essential/setbasic`, {
           team_skey: teamKey,
           list_skey: listKey,
           e_b_touristDestination: value.e_b_touristDestination,
@@ -69,19 +66,18 @@ export default function Basic({ route, navigation }) {
           Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
         });
   };
-
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
         <View style={styles.add_title_container}>
-          <View style={styles.add_title_wrapper}>
+          <TouchableOpacity style={styles.add_title_wrapper}>
             <View style={styles.icon_wrap}>
               <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
                 <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
               </TouchableOpacity>
             </View>
             <Text>뒤로</Text>
-          </View>
+          </TouchableOpacity>
           <Text style={styles.add_title}>{listName}</Text>
 
           <View style={styles.add_title_wrapper}>
@@ -108,7 +104,7 @@ export default function Basic({ route, navigation }) {
                 getText={getText}
                 name="e_b_travelTime"
                 value={value.e_b_travelTime}
-                placeholder="숫자만 입력해주세요 (EX. 1시간 30분 => 1.5)"
+                placeholder="EX. 1시간 30분 => 1.5"
                 keyboardType={"numeric"}
               />
               <Input
@@ -116,7 +112,7 @@ export default function Basic({ route, navigation }) {
                 getText={getText}
                 name="e_b_fee"
                 value={value.e_b_fee}
-                placeholder="숫자만 입력해주세요 (EX. 15,000원 => 15000)"
+                placeholder="EX. 15,000원 => 15000"
                 keyboardType={"numeric"}
               />
               <Input

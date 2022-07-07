@@ -19,7 +19,7 @@ export default function TakePhoto(props) {
   const [photoIng, setPhotoIng] = useState(true);
 
   const [image, setImage] = useState("");
-
+  const [propsImg, setPropsImg] = useState(props.value);
   // 갤러리에서 이미지 선택
   const uploadImg = async (name) => {
     setModalVisible(false);
@@ -51,6 +51,7 @@ export default function TakePhoto(props) {
   const cancleImg = (name) => {
     if (name === props.name) {
       setImage("");
+      setPropsImg("");
       props.getImage("", props.name);
     }
   };
@@ -125,11 +126,13 @@ export default function TakePhoto(props) {
     setModalVisible(true);
     setPhotoName(name);
   };
+  console.log(image);
+  // console.log(propsImg);
   return (
     <>
       <View style={styles.img_container}>
         <Text style={styles.img_container_title}>{props.title}</Text>
-        {image === "" || image === undefined ? (
+        {/* {image === "" || image === undefined ? (
           <TouchableOpacity style={styles.imgchoose} onPress={() => OpenModal(props.name)}>
             <AntDesign style={styles.icon} color="white" name="pluscircle" size={30} />
           </TouchableOpacity>
@@ -142,7 +145,22 @@ export default function TakePhoto(props) {
               <Image source={{ uri: image }} style={styles.imgchoose} />
             </View>
           )
-        )}
+        )} */}
+        {/* {propsImg ? (
+          <View>
+            <TouchableOpacity style={styles.imgcancle} onPress={() => cancleImg(props.name)}>
+              <AntDesign style={styles.icon} color="red" name="minuscircle" size={30} />
+            </TouchableOpacity>
+            <Image source={{ uri: propsImg }} style={styles.imgchoose} />
+          </View>
+        ) : (
+          <View>
+            <TouchableOpacity style={styles.imgchoose} onPress={() => OpenModal(props.name)}>
+              <AntDesign style={styles.icon} color="white" name="pluscircle" size={30} />
+            </TouchableOpacity>
+            <Image source={{ uri: image }} style={styles.imgchoose} />
+          </View>
+        )} */}
       </View>
       <View style={styles.centeredView}>
         <Modal

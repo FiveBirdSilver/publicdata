@@ -26,14 +26,17 @@ export default function Area({ route, navigation }) {
   const flow = {
     label: ["보행로", "기타", "계단", "경사로", "턱", "승강기"],
     value: ["Footpath_P", "ETC_P", "Stairs_P", "Runway_P", "Roadchin_P", "Elevator_P"],
+    depth: ["f", "etc", "s", "r", "rh", "ev"],
   };
   const park = {
     label: ["기본정보", "주차구역", "보행로"],
     value: ["ParkBasic_P", "ParkingArea_P", "ParkFootpath_P"],
+    depth: ["basic", "pa", "f"],
   };
   const entry = {
     label: ["기본정보", "계단", "경사로", "턱", "승강기"],
     value: ["EtoBasic_P", "EtoStairs_P", "EtoRunway_P", "EtoRoadchin_P", "EtoElevator_P"],
+    depth: ["basic", "s", "r", "rh", "ev"],
   };
 
   const toilet = {
@@ -59,6 +62,7 @@ export default function Area({ route, navigation }) {
       "Facilities_P",
       "DisabledToilet_P",
     ],
+    depth: ["basic", "er", "ed", "ie", "w", "u", "t", "fc", "dt"],
   };
 
   return (
@@ -104,7 +108,13 @@ export default function Area({ route, navigation }) {
                 style={styles.area_btn}
                 onPress={() =>
                   navigation.push(`${flow.value[index]}`, {
-                    item: i,
+                    listName: i,
+                    listKey: listKey,
+                    teamKey: teamKey,
+                    region: region,
+                    regionKey: regionKey,
+                    dataCollection: "cr",
+                    data: flow.depth[index],
                   })
                 }
               >
@@ -122,7 +132,13 @@ export default function Area({ route, navigation }) {
                 style={styles.area_btn}
                 onPress={() =>
                   navigation.push(`${park.value[index]}`, {
-                    item: i,
+                    listName: i,
+                    listKey: listKey,
+                    teamKey: teamKey,
+                    region: region,
+                    regionKey: regionKey,
+                    dataCollection: "p",
+                    data: park.depth[index],
                   })
                 }
               >
@@ -140,7 +156,13 @@ export default function Area({ route, navigation }) {
                 style={styles.area_btn}
                 onPress={() =>
                   navigation.push(`${entry.value[index]}`, {
-                    item: i,
+                    listName: i,
+                    listKey: listKey,
+                    teamKey: teamKey,
+                    region: region,
+                    regionKey: regionKey,
+                    dataCollection: "eto",
+                    data: entry.depth[index],
                   })
                 }
               >
@@ -158,7 +180,13 @@ export default function Area({ route, navigation }) {
                 style={styles.area_btn}
                 onPress={() =>
                   navigation.push(`${toilet.value[index]}`, {
-                    item: i,
+                    listName: i,
+                    listKey: listKey,
+                    teamKey: teamKey,
+                    region: region,
+                    regionKey: regionKey,
+                    dataCollection: "t",
+                    data: toilet.depth[index],
                   })
                 }
               >

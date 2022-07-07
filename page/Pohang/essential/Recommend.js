@@ -2,33 +2,31 @@ import { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 
 import { styles } from "../../../assets/styles/add";
+import TakePhoto from "../../component/TakePhoto";
 
 export default function Recommend({ route, navigation }) {
-  const { item } = route.params;
+  const { listName, listKey, region, regionKey, dataCollection, data } = route.params;
 
   const [cos, setCos] = useState("");
+  const [test, setTest] = useState({});
   const [season, setSeoson] = useState([]);
+  const [image, setImage] = useState([]);
 
-  const imagePickerOption = {
-    mediaType: "photo",
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === "android",
+  const getImage = (uri, name) => {
+    const newArr = [...image];
+    newArr.push({
+      name: name,
+      img: uri,
+      depth1: region,
+      depth2: listKey,
+      depth3: dataCollection,
+      depth4: data,
+    });
+    setImage(newArr);
   };
 
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
-  };
-
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
-  };
-  console.log(season);
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -41,7 +39,7 @@ export default function Recommend({ route, navigation }) {
             </View>
             <Text>뒤로</Text>
           </View>
-          <Text style={styles.add_title}>{item}</Text>
+          <Text style={styles.add_title}>{listName}</Text>
 
           <View style={styles.add_title_wrapper}>
             <View style={styles.icon_wrap}>
@@ -68,18 +66,16 @@ export default function Recommend({ route, navigation }) {
               </View>
               <View style={styles.img}>
                 {cos !== ""
-                  ? cos.map((i) => (
-                      <View style={styles.img_container}>
-                        <Text style={styles.img_container_title} key={i}>
-                          {i}
-                        </Text>
-                        <TouchableOpacity
+                  ? cos.map((i, index) => (
+                      <View style={styles.img}>
+                        {/* <TouchableOpacity
                           style={styles.imgchoose}
                           onLaunchCamera={onLaunchCamera}
                           onLaunchImageLibrary={onLaunchImageLibrary}
                         >
                           <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
+                        <TakePhoto title={i} name={`p_e_r_Img_${index}`} getImage={getImage} />
                       </View>
                     ))
                   : null}

@@ -3,7 +3,6 @@ import axios from "axios";
 export default async function uploadImgToGcs(imageArr, regionKey) {
   console.log("uploadImgToGcs 실행");
   let promiseArray = [];
-
   if (imageArr.length === 0) {
     return;
   }
@@ -32,6 +31,8 @@ export default async function uploadImgToGcs(imageArr, regionKey) {
       let resultArray = result.map((v) => v.data);
       console.log("===== 업로드 성공 =====");
       console.log(resultArray);
+      // return "promise";
+      // result = resultArray;
     })
     .catch((err) => {
       console.log("=====", err.response.data.message, "=====");
@@ -39,4 +40,6 @@ export default async function uploadImgToGcs(imageArr, regionKey) {
       console.log("파일명 : ", err.response.data.target);
       console.log("원인 : ", err.response.data.error.msg);
     });
+
+  // return result1234;
 }

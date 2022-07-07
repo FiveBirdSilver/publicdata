@@ -1,25 +1,27 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image, Alert, Dimensions, Modal, Pressable } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { RadioButton } from "react-native-paper";
 import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
 import TakePhoto from "../../component/TakePhoto";
-
 import uploadImgToGcs from "../../component/util";
+import RadioBtn from "../../component/RadioBtn";
 
 export default function Ad({ route, navigation }) {
-  const { listName, listKey, region, regionKey, dataCollection, data } = route.params;
-  // regionKey ==> 대구/포항 구분 키 ex) 3002
-
-  const [value, setValue] = useState({
-    wheelchair: "",
-    stroller: "",
-    babychair: "",
-  });
-
+  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
+  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
+
+  const Compare = ["e_ad_wheelchair_YN", "e_ad_stroller_YN", "e_ad_babyChair_YN"];
+  const getCheck = (val, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: val,
+    }));
+  };
 
   const getImage = (uri, name) => {
     const newArr = [...image];
@@ -43,11 +45,44 @@ export default function Ad({ route, navigation }) {
       setImage(newArr);
     }
   };
+  useEffect(() => {
+    axios
+      .post(`${API}/api/pohang/essential/getad`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        console.log(JSON.parse(res.data));
+        setValue(JSON.parse(res.data));
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-  const handleOnSubmit = () => {
-    uploadImgToGcs(image, regionKey);
+  const handleOnSubmit = async () => {
+    await uploadImgToGcs(image, regionKey);
+    if (requiredValue.length !== Compare.length) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else
+      axios
+        .post(`${API}/api/pohang/essential/setad`, {
+          team_skey: teamKey,
+          list_skey: listKey,
+          e_ad_wheelchair_YN: value.e_ad_wheelchair_YN,
+          e_ad_stroller_YN: value.e_ad_stroller_YN,
+          e_ad_babyChair_YN: value.e_ad_babyChair_YN,
+        })
+        .then((res) => {
+          const response = JSON.parse(res.data);
+          if (response.result === 1) {
+            Alert.alert("저장되었습니다.");
+            navigation.goBack();
+          } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+        })
+        .catch((err) => {
+          console.log(err);
+          Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+        });
   };
-
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -75,80 +110,40 @@ export default function Ad({ route, navigation }) {
           <View style={styles.add}>
             <ScrollView style={styles.scrollview}>
               <View style={styles.add_wrapper}>
-                <View style={styles.add_container}>
-                  <Text style={styles.add_subtitle}>휠체어</Text>
-                  <RadioButton.Group
-                    onValueChange={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, wheelchair: text };
-                      })
-                    }
-                    value={value.wheelchair}
-                    style={styles.yesorno}
-                  >
-                    <View style={styles.radio}>
-                      <View style={styles.radio_wrap}>
-                        <Text>있다</Text>
-                        <RadioButton value="Y" />
-                      </View>
-                      <View style={styles.radio_wrap}>
-                        <Text>없다</Text>
-                        <RadioButton value="N" />
-                      </View>
-                    </View>
-                  </RadioButton.Group>
-                </View>
-                <View style={styles.add_container}>
-                  <Text style={styles.add_subtitle}>유모차</Text>
-                  <RadioButton.Group
-                    onValueChange={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, stroller: text };
-                      })
-                    }
-                    value={value.stroller}
-                    style={styles.yesorno}
-                  >
-                    <View style={styles.radio}>
-                      <View style={styles.radio_wrap}>
-                        <RadioButton value="Y" />
-                      </View>
-                      <View style={styles.radio_wrap}>
-                        <RadioButton value="N" />
-                      </View>
-                    </View>
-                  </RadioButton.Group>
-                </View>
-                <View style={styles.add_container}>
-                  <Text style={styles.add_subtitle}>유아용 보조의자</Text>
-                  <RadioButton.Group
-                    onValueChange={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, babychair: text };
-                      })
-                    }
-                    value={value.babychair}
-                    style={styles.yesorno}
-                  >
-                    <View style={styles.radio}>
-                      <View style={styles.radio_wrap}>
-                        <RadioButton value="Y" />
-                      </View>
-                      <View style={styles.radio_wrap}>
-                        <RadioButton value="N" />
-                      </View>
-                    </View>
-                  </RadioButton.Group>
-                </View>
+                <RadioBtn
+                  title="휠체어"
+                  getCheck={getCheck}
+                  name="e_ad_wheelchair_YN"
+                  value={value.e_ad_wheelchair_YN}
+                  yes="있다"
+                  no="없다"
+                />
+                <RadioBtn title="유모차" getCheck={getCheck} name="e_ad_stroller_YN" value={value.e_ad_stroller_YN} />
+                <RadioBtn
+                  title="유아용 보조의자"
+                  getCheck={getCheck}
+                  name="e_ad_babyChair_YN"
+                  value={value.e_ad_babyChair_YN}
+                />
                 <View style={styles.img}>
-                  {value.wheelchair === "Y" ? (
-                    <TakePhoto title="휠체어" name="p_e_ad_wheelchairImg" getImage={getImage} />
+                  {value.e_ad_wheelchair_YN === "Y" ? (
+                    <TakePhoto
+                      title="휠체어"
+                      name="p_e_ad_wheelchairImg"
+                      getImage={getImage}
+                      value={value.wheelchairImg}
+                    />
                   ) : null}
-                  {value.stroller === "Y" ? (
-                    <TakePhoto title="유모차" name="p_e_ad_strollerImg" getImage={getImage} />
+                  {value.e_ad_stroller_YN === "Y" ? (
+                    <TakePhoto title="유모차" name="p_e_ad_strollerImg" getImage={getImage} value={value.strollerImg} />
                   ) : null}
-                  {value.babychair === "Y" ? (
-                    <TakePhoto title="유아용 보조의자" name="p_e_ad_babychairImg" getImage={getImage} />
+                  {value.e_ad_babyChair_YN === "Y" ? (
+                    <TakePhoto
+                      title="유아용 보조의자"
+                      name="p_e_ad_babychairImg"
+                      getImage={getImage}
+                      value={value.babychairImg}
+                    />
                   ) : null}
                 </View>
               </View>
