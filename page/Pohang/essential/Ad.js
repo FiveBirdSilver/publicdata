@@ -8,6 +8,8 @@ import axios from "axios";
 import { styles } from "../../../assets/styles/add";
 import TakePhoto from "../../component/TakePhoto";
 
+import uploadImgToGcs from "../../component/util";
+
 export default function Ad({ route, navigation }) {
   const { listName, listKey, region, regionKey, dataCollection, data } = route.params;
   // regionKey ==> 대구/포항 구분 키 ex) 3002
@@ -22,19 +24,29 @@ export default function Ad({ route, navigation }) {
 
   const getImage = (uri, name) => {
     const newArr = [...image];
-    newArr.push({
-      name: name,
-      img: uri,
-      depth1: region,
-      depth2: listKey,
-      depth3: dataCollection,
-      depth4: data,
-    });
-    setImage(newArr);
+    let resultArr = [];
+    if (newArr.findIndex((v) => v.name === name) !== -1) {
+      resultArr = newArr.filter((v) => v.name !== name);
+      // console.log("=================삭제");
+      // console.log(resultArr);
+      setImage(resultArr);
+    } else {
+      newArr.push({
+        name: name,
+        img: uri.slice(0, 5),
+        depth1: region,
+        depth2: listKey,
+        depth3: dataCollection,
+        depth4: data,
+      });
+      // console.log("=================추가");
+      // console.log(newArr);
+      setImage(newArr);
+    }
   };
 
   const handleOnSubmit = () => {
-    //  axios.post()
+    uploadImgToGcs(image, regionKey);
   };
 
   return (

@@ -1,21 +1,25 @@
 import axios from "axios";
 
-/**
- *
- * @param {object : { name : base64 }}} image
- */
-export default async function uploadImgToGcs(image, userkey) {
+export default async function uploadImgToGcs(imageArr, regionKey) {
   let promiseArray = [];
-  console.log("image: ", image);
 
-  for (let key in image) {
+  if (imageArr.length === 0) {
+    return;
+  }
+
+  for (let i = 0; i < imageArr.length; i++) {
     promiseArray.push(
       axios({
         method: "POST",
-        url: "http://172.30.1.42:9999/api/upload",
+        url: "http://172.30.1.91:9999/api/upload",
         data: {
-          img: image[key],
-          photoName: key,
+          name: imageArr[i].name,
+          img: imageArr[i].img,
+          depth1: imageArr[i].depth1,
+          depth2: imageArr[i].depth2,
+          depth3: imageArr[i].depth3,
+          depth4: imageArr[i].depth4,
+          regionKey,
         },
       })
     );
@@ -24,10 +28,13 @@ export default async function uploadImgToGcs(image, userkey) {
   await Promise.all(promiseArray)
     .then((result) => {
       let resultArray = result.map((v) => v.data);
+      console.log("===== 업로드 성공 =====");
       console.log(resultArray);
     })
     .catch((err) => {
-      console.log(err);
-      console.log(err.response.data.message);
+      console.log("=====", err.response.data.message, "=====");
+      // console.log(err.response.data);
+      console.log("파일명 : ", err.response.data.target);
+      console.log("원인 : ", err.response.data.error.msg);
     });
 }
