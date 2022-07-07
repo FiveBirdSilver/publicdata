@@ -59,6 +59,14 @@ export default function Ad({ route, navigation }) {
   }, []);
 
   const handleOnSubmit = async () => {
+    uploadImgToGcs(image, regionKey)
+      .then((result) => {
+        console.log("실행");
+        // 이 자리에 DB API 호출
+      })
+      .catch((err) => {
+        console.log("에러발생");
+      });
     await uploadImgToGcs(image, regionKey);
     if (requiredValue.length !== Compare.length) {
       Alert.alert("모든 항목을 입력해주세요.");
