@@ -1,253 +1,232 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Modal, Alert } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { RadioButton } from "react-native-paper";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
-import Section from "../../component/Section";
+import TakePhoto from "../../component/TakePhoto";
+import uploadImgToGcs from "../../component/util";
+import RadioBtn from "../../component/RadioBtn";
 
 export default function Program({ route, navigation }) {
-  const { item } = route.params;
+  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [value, setValue] = useState([]);
+  const [image, setImage] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const [value, setValue] = useState({
-    wheelchairP: "",
-    visuallyImpairedP: "",
-    deafP: "",
-    devdisabledP: "",
-    seniorP: "",
-    infantP: "",
-  });
-  const imagePickerOption = {
-    mediaType: "photo",
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === "android",
+  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
+  const Compare = [
+    "e_ep_wheelchairProgram_YN",
+    "e_ep_visuallyImpairedProgram_YN",
+    "e_ep_deafProgram_YN",
+    "e_ep_developmentallyDisabledProgram_YN",
+    "e_ep_seniorProgram_YN",
+    "e_ep_infantProgram_YN",
+  ];
+  const getCheck = (val, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: val,
+    }));
   };
-
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
+  const getImage = (uri, name) => {
+    const newArr = [...image];
+    let resultArr = [];
+    if (newArr.findIndex((v) => v.name === name) !== -1) {
+      resultArr = newArr.filter((v) => v.name !== name);
+      // console.log("=================삭제");
+      // console.log(resultArr);
+      setImage(resultArr);
+    } else {
+      newArr.push({
+        name: name,
+        img: uri,
+        depth1: region,
+        depth2: listKey,
+        depth3: dataCollection,
+        depth4: data,
+      });
+      // console.log("=================추가");
+      // console.log(newArr);
+      setImage(newArr);
+    }
   };
+  useEffect(() => {
+    axios
+      .post(`${API}/api/pohang/essential/getprogram`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        console.log(JSON.parse(res.data));
+        setValue(JSON.parse(res.data));
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
+  const handleOnSubmit = async () => {
+    if (requiredValue.length !== Compare.length) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else setModalVisible(true);
+    uploadImgToGcs(image, regionKey).then((result) => {
+      console.log("실행");
+      axios
+        .post(`${API}/api/pohang/essential/setprogram`, {
+          team_skey: teamKey,
+          list_skey: listKey,
+          e_ep_wheelchairProgram_YN: value.e_ep_wheelchairProgram_YN,
+          e_ep_visuallyImpairedProgram_YN: value.e_ep_visuallyImpairedProgram_YN,
+          e_ep_deafProgram_YN: value.e_ep_deafProgram_YN,
+          e_ep_developmentallyDisabledProgram_YN: value.e_ep_developmentallyDisabledProgram_YN,
+          e_ep_seniorProgram_YN: value.e_ep_seniorProgram_YN,
+          e_ep_infantProgram_YN: value.e_ep_infantProgram_YN,
+        })
+        .then((res) => {
+          const response = JSON.parse(res.data);
+          if (response.result === 1) {
+            Alert.alert("저장되었습니다.");
+            navigation.goBack();
+          } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+          navigation.goBack();
+        })
+        .catch((err) => {
+          console.log(err);
+
+          Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+          navigation.goBack();
+        });
+    });
   };
-
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
-        <Section item={item} />
+        <View style={styles.add_title_container}>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>뒤로</Text>
+          </View>
+          <Text style={styles.add_title}>{listName}</Text>
+
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>저장</Text>
+          </View>
+        </View>
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>휠체어 이용자 체험 프로그램</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, wheelchairP: text };
-                    })
-                  }
-                  value={value.wheelchairP}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <Text>있다</Text>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <Text>없다</Text>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>시각장애인 체험 프로그램</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, visuallyImpairedP: text };
-                    })
-                  }
-                  value={value.visuallyImpairedP}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>청각장애인 체험 프로그램</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, deafP: text };
-                    })
-                  }
-                  value={value.deafP}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>발달장애인 체험 프로그램</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, devdisabledP: text };
-                    })
-                  }
-                  value={value.devdisabledP}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>시니어 체험 프로그램</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, seniorP: text };
-                    })
-                  }
-                  value={value.seniorP}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>영유아 체험 프로그램</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, infantP: text };
-                    })
-                  }
-                  value={value.infantP}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
+              <RadioBtn
+                title="휠체어 이용자 체험 프로그램"
+                getCheck={getCheck}
+                name="e_ep_wheelchairProgram_YN"
+                value={value.e_ep_wheelchairProgram_YN}
+                yes="있다"
+                no="없다"
+              />
+              <RadioBtn
+                title="시각장애인 체험 프로그램"
+                getCheck={getCheck}
+                name="e_ep_visuallyImpairedProgram_YN"
+                value={value.e_ep_visuallyImpairedProgram_YN}
+              />
+              <RadioBtn
+                title="청각장애인 체험 프로그램 체험 프로그램"
+                getCheck={getCheck}
+                name="e_ep_deafProgram_YN"
+                value={value.e_ep_deafProgram_YN}
+              />
+              <RadioBtn
+                title="발달장애인 체험 프로그램"
+                getCheck={getCheck}
+                name="e_ep_developmentallyDisabledProgram_YN"
+                value={value.e_ep_developmentallyDisabledProgram_YN}
+              />
+              <RadioBtn
+                title="시니어 체험 프로그램"
+                getCheck={getCheck}
+                name="e_ep_seniorProgram_YN"
+                value={value.e_ep_seniorProgram_YN}
+              />
+              <RadioBtn
+                title="영유아 체험 프로그램"
+                getCheck={getCheck}
+                name="e_ep_infantProgram_YN"
+                value={value.e_ep_infantProgram_YN}
+              />
               <View style={styles.img}>
-                {value.wheelchairP === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>휠체어 이용자 체험 프로그램</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.e_ep_wheelchairProgram_YN === "Y" ? (
+                  <TakePhoto
+                    title="휠체어 이용자 체험 프로그램"
+                    name="p_e_ep_wheelchairImg"
+                    getImage={getImage}
+                    value={value.wheelchairImg}
+                  />
                 ) : null}
-                {value.visuallyImpairedP === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>시각장애인 체험 프로그램</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.e_ep_visuallyImpairedProgram_YN === "Y" ? (
+                  <TakePhoto
+                    title="시각장애인 체험 프로그램"
+                    name="p_e_ep_visuallyImpairedImg"
+                    getImage={getImage}
+                    value={value.visuallyImpairedImg}
+                  />
                 ) : null}
-                {value.deafP === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>청각장애인 체험 프로그램</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.e_ep_deafProgram_YN === "Y" ? (
+                  <TakePhoto
+                    title="청각장애인 체험 프로그램 체험 프로그램"
+                    name="p_e_ep_deafImg"
+                    getImage={getImage}
+                    value={value.deafImg}
+                  />
                 ) : null}
-                {value.devdisabledP === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>발달장애인 체험 프로그램</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.e_ep_developmentallyDisabledProgram_YN === "Y" ? (
+                  <TakePhoto
+                    title="발달장애인 체험 프로그램"
+                    name="p_e_ep_devdisabledImg"
+                    getImage={getImage}
+                    value={value.devdisabledImg}
+                  />
                 ) : null}
-                {value.seniorP === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>시니어 체험 프로그램</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.e_ep_seniorProgram_YN === "Y" ? (
+                  <TakePhoto
+                    title="시니어 체험 프로그램"
+                    name="p_e_ep_seniorImg"
+                    getImage={getImage}
+                    value={value.seniorImg}
+                  />
                 ) : null}
-                {value.infantP === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>영유아 체험 프로그램</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.e_ep_infantProgram_YN === "Y" ? (
+                  <TakePhoto
+                    title="영유아 체험 프로그램"
+                    name="p_e_ep_infantImg"
+                    getImage={getImage}
+                    value={value.infantImg}
+                  />
                 ) : null}
               </View>
             </View>
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.container, styles.horizontal]}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 
@@ -13,6 +13,8 @@ export default function Ad({ route, navigation }) {
   const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
   const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
 
   const Compare = ["e_ad_wheelchair_YN", "e_ad_stroller_YN", "e_ad_babyChair_YN"];
@@ -59,38 +61,38 @@ export default function Ad({ route, navigation }) {
   }, []);
 
   const handleOnSubmit = async () => {
+    if (requiredValue.length !== Compare.length) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else setModalVisible(true);
     uploadImgToGcs(image, regionKey)
       .then((result) => {
         console.log("실행");
-        // 이 자리에 DB API 호출
+        axios
+          .post(`${API}/api/pohang/essential/setad`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            e_ad_wheelchair_YN: value.e_ad_wheelchair_YN,
+            e_ad_stroller_YN: value.e_ad_stroller_YN,
+            e_ad_babyChair_YN: value.e_ad_babyChair_YN,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              setModalVisible(false);
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+          })
+          .catch((err) => {
+            console.log(err);
+            Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+          });
       })
       .catch((err) => {
         console.log("에러발생");
       });
-    await uploadImgToGcs(image, regionKey);
-    if (requiredValue.length !== Compare.length) {
-      Alert.alert("모든 항목을 입력해주세요.");
-    } else
-      axios
-        .post(`${API}/api/pohang/essential/setad`, {
-          team_skey: teamKey,
-          list_skey: listKey,
-          e_ad_wheelchair_YN: value.e_ad_wheelchair_YN,
-          e_ad_stroller_YN: value.e_ad_stroller_YN,
-          e_ad_babyChair_YN: value.e_ad_babyChair_YN,
-        })
-        .then((res) => {
-          const response = JSON.parse(res.data);
-          if (response.result === 1) {
-            Alert.alert("저장되었습니다.");
-            navigation.goBack();
-          } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-        })
-        .catch((err) => {
-          console.log(err);
-          Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-        });
   };
+  console.log(value);
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -159,6 +161,17 @@ export default function Ad({ route, navigation }) {
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.container, styles.horizontal]}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

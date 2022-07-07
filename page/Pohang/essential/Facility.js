@@ -1,35 +1,91 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Modal, Alert } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { RadioButton } from "react-native-paper";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
-import Section from "../../component/Section";
+import TakePhoto from "../../component/TakePhoto";
+import uploadImgToGcs from "../../component/util";
+import RadioBtn from "../../component/RadioBtn";
 
 export default function Facility({ route, navigation }) {
-  const { item } = route.params;
-
-  const [value, setValue] = useState({
-    cartService: "",
-    wheelchairLift: "",
-    restPossible: "",
-  });
-  const imagePickerOption = {
-    mediaType: "photo",
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === "android",
+  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [value, setValue] = useState([]);
+  const [image, setImage] = useState([]);
+  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
+  const Compare = ["e_af_cartService_YN", "e_af_wheelchairLift_YN", "e_af_restPossible_YN"];
+  const getCheck = (val, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: val,
+    }));
   };
-
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
+  const getImage = (uri, name) => {
+    const newArr = [...image];
+    let resultArr = [];
+    if (newArr.findIndex((v) => v.name === name) !== -1) {
+      resultArr = newArr.filter((v) => v.name !== name);
+      // console.log("=================삭제");
+      // console.log(resultArr);
+      setImage(resultArr);
+    } else {
+      newArr.push({
+        name: name,
+        img: uri,
+        depth1: region,
+        depth2: listKey,
+        depth3: dataCollection,
+        depth4: data,
+      });
+      // console.log("=================추가");
+      // console.log(newArr);
+      setImage(newArr);
+    }
   };
+  useEffect(() => {
+    axios
+      .post(`${API}/api/pohang/essential/getfacility`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        console.log(JSON.parse(res.data));
+        setValue(JSON.parse(res.data));
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
+  const handleOnSubmit = async () => {
+    if (requiredValue.length !== Compare.length) {
+      Alert.alert("모든 항목을 입력해주세요.");
+      return;
+    } else
+      uploadImgToGcs(image, regionKey).then((result) => {
+        console.log("실행");
+        axios
+          .post(`${API}/api/pohang/essential/setfacility`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            e_g_guide_YN: value.e_g_guide_YN,
+            e_g_signLanguage_YN: value.e_g_signLanguage_YN,
+            e_g_audioGuide_YN: value.e_g_audioGuide_YN,
+            e_g_videoGudie_YN: value.e_g_videoGudie_YN,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+            navigation.goBack();
+          })
+          .catch((err) => {
+            console.log(err);
+            Alert.alert("저장에 실패했습니다. 다시 시도해주세요!!!");
+            navigation.goBack();
+          });
+      });
   };
   return (
     <ScrollView style={styles.scrollview}>
