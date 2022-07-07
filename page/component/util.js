@@ -1,18 +1,17 @@
 import axios from "axios";
 
 export default async function uploadImgToGcs(imageArr, regionKey) {
-  console.log("uploadImgToGcs 실행");
-  let promiseArray = [];
-
   if (imageArr.length === 0) {
     return;
   }
+
+  let promiseArray = [];
 
   for (let i = 0; i < imageArr.length; i++) {
     promiseArray.push(
       axios({
         method: "POST",
-        // url: "http://172.30.1.91:9999/api/upload",
+        // url: "http://172.30.1.60:9999/api/upload",
         url: "http://34.64.101.255/api/upload",
         data: {
           name: imageArr[i].name,
@@ -38,5 +37,11 @@ export default async function uploadImgToGcs(imageArr, regionKey) {
       // console.log(err.response.data);
       console.log("파일명 : ", err.response.data.target);
       console.log("원인 : ", err.response.data.error.msg);
+      throw new Error({
+        target: err.response.data.target,
+        msg: err.response.data.error.msg,
+      });
     });
+
+  return Promise.all(promiseArray);
 }

@@ -44,8 +44,15 @@ export default function Ad({ route, navigation }) {
     }
   };
 
-  const handleOnSubmit = () => {
-    uploadImgToGcs(image, regionKey);
+  const handleOnSubmit = async () => {
+    uploadImgToGcs(image, regionKey)
+      .then((result) => {
+        console.log("실행");
+        // 이 자리에 DB API 호출
+      })
+      .catch((err) => {
+        console.log("에러발생");
+      });
   };
 
   return (
