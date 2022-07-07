@@ -32,7 +32,7 @@ export default function Ad({ route, navigation }) {
     } else {
       newArr.push({
         name: name,
-        img: uri.slice(0, 5),
+        img: uri,
         depth1: region,
         depth2: listKey,
         depth3: dataCollection,
