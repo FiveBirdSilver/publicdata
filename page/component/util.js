@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export default async function uploadImgToGcs(imageArr, regionKey) {
+  console.log("uploadImgToGcs 실행");
   let promiseArray = [];
 
   if (imageArr.length === 0) {
@@ -11,7 +12,8 @@ export default async function uploadImgToGcs(imageArr, regionKey) {
     promiseArray.push(
       axios({
         method: "POST",
-        url: "http://172.30.1.91:9999/api/upload",
+        // url: "http://172.30.1.91:9999/api/upload",
+        url: "http://34.64.101.255/api/upload",
         data: {
           name: imageArr[i].name,
           img: imageArr[i].img,
