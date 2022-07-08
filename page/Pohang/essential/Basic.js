@@ -9,16 +9,6 @@ export default function Basic({ route, navigation }) {
   const { listName, listKey, teamKey } = route.params;
   const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
   const [value, setValue] = useState([]);
-  const requiredValue = Object.values(value).filter((i) => i !== "");
-
-  const Compare = [
-    "e_b_touristDestination",
-    "e_b_address",
-    "e_b_travelTime",
-    "e_b_fee",
-    "e_b_openingHours",
-    "e_b_holiday",
-  ];
 
   useEffect(() => {
     axios
@@ -40,9 +30,16 @@ export default function Basic({ route, navigation }) {
   };
 
   const handleOnSubmit = () => {
-    if (requiredValue.length !== Compare.length) {
+    if (
+      value.e_b_touristDestination === "" ||
+      value.e_b_address === "" ||
+      value.e_b_travelTime === "" ||
+      value.e_b_fee === "" ||
+      value.e_b_openingHours === "" ||
+      value.e_b_holiday === ""
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else
+    } else {
       axios
         .post(`${API}/api/pohang/essential/setbasic`, {
           team_skey: teamKey,
@@ -65,6 +62,7 @@ export default function Basic({ route, navigation }) {
           console.log(err);
           Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
         });
+    }
   };
   return (
     <ScrollView style={styles.scrollview}>

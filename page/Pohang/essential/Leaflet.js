@@ -16,8 +16,6 @@ export default function Leaflet({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
-  const Compare = ["e_tl_YN", "e_tl_disabled_facility_YN", "e_tl_dot_leaflet_YN"];
   const getCheck = (val, name) => {
     setValue((value) => ({
       ...value,
@@ -27,25 +25,22 @@ export default function Leaflet({ route, navigation }) {
 
   const getImage = (uri, name) => {
     const newArr = [...image];
-    let resultArr = [];
+    let tmp = [...image];
+
     if (newArr.findIndex((v) => v.name === name) !== -1) {
-      resultArr = newArr.filter((v) => v.name !== name);
-      // console.log("=================삭제");
-      // console.log(resultArr);
-      setImage(resultArr);
-    } else {
-      newArr.push({
-        name: name,
-        img: uri,
-        depth1: region,
-        depth2: listKey,
-        depth3: dataCollection,
-        depth4: data,
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
       });
-      // console.log("=================추가");
-      // console.log(newArr);
-      setImage(newArr);
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
     }
+
+    setImage(tmp);
   };
 
   useEffect(() => {
@@ -55,18 +50,24 @@ export default function Leaflet({ route, navigation }) {
         list_skey: listKey,
       })
       .then((res) => {
-        console.log("+++++++", JSON.parse(res.data));
-        setValue(JSON.parse(res.data));
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
       })
       .catch((err) => console.log(err));
   }, []);
 
   const handleOnSubmit = async () => {
-    if (requiredValue.length !== Compare.length) {
+    if (value.e_tl_YN === null || value.e_tl_disabled_facility_YN === null || value.e_tl_dot_leaflet_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else {
       setModalVisible(true);
-      uploadImgToGcs(image, regionKey)
+      uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
         .then((result) => {
           console.log("실행");
           axios
@@ -99,6 +100,7 @@ export default function Leaflet({ route, navigation }) {
         })
         .catch((err) => {
           console.log("에러발생");
+          setModalVisible(false);
         });
     }
   };
@@ -155,7 +157,7 @@ export default function Leaflet({ route, navigation }) {
                     title="관광지 리플렛"
                     name="p_e_tl_leafletImg"
                     getImage={getImage}
-                    value={value.leafletImg}
+                    value={value.p_e_tl_leafletImg}
                   />
                 ) : null}
                 {value.e_tl_disabled_facility_YN === "Y" ? (
@@ -163,7 +165,7 @@ export default function Leaflet({ route, navigation }) {
                     title="관광지 리플렛 장애인 편의시설 정보 제공"
                     name="p_e_tl_disabledFacilityImg"
                     getImage={getImage}
-                    value={value.disabledFacilityImg}
+                    value={value.p_e_tl_disabledFacilityImg}
                   />
                 ) : null}
                 {value.e_tl_dot_leaflet_YN === "Y" ? (
@@ -171,7 +173,7 @@ export default function Leaflet({ route, navigation }) {
                     title="점자 관광지 안내서 제공"
                     name="p_e_tl_dotLeafletImg"
                     getImage={getImage}
-                    value={value.dotLeafletImg}
+                    value={value.p_e_tl_dotLeafletImg}
                   />
                 ) : null}
               </View>

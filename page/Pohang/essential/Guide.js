@@ -16,36 +16,33 @@ export default function Guide({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
-  const Compare = ["e_g_guide_YN", "e_ep_visuallyImpairedProgram_YN", "e_g_audioGuide_YN", "e_g_videoGudie_YN"];
   const getCheck = (val, name) => {
     setValue((value) => ({
       ...value,
       [name]: val,
     }));
   };
+
   const getImage = (uri, name) => {
     const newArr = [...image];
-    let resultArr = [];
+    let tmp = [...image];
+
     if (newArr.findIndex((v) => v.name === name) !== -1) {
-      resultArr = newArr.filter((v) => v.name !== name);
-      // console.log("=================삭제");
-      // console.log(resultArr);
-      setImage(resultArr);
-    } else {
-      newArr.push({
-        name: name,
-        img: uri,
-        depth1: region,
-        depth2: listKey,
-        depth3: dataCollection,
-        depth4: data,
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
       });
-      // console.log("=================추가");
-      // console.log(newArr);
-      setImage(newArr);
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
     }
+
+    setImage(tmp);
   };
+
   useEffect(() => {
     axios
       .post(`${API}/api/pohang/essential/getguide`, {
@@ -53,19 +50,30 @@ export default function Guide({ route, navigation }) {
         list_skey: listKey,
       })
       .then((res) => {
-        console.log(JSON.parse(res.data));
-        setValue(JSON.parse(res.data));
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
       })
       .catch((err) => console.log(err));
   }, []);
 
   const handleOnSubmit = async () => {
-    if (requiredValue.length !== Compare.length) {
+    if (
+      value.e_g_guide_YN === null ||
+      value.e_ep_visuallyImpairedProgram_YN === null ||
+      value.e_g_audioGuide_YN === null ||
+      value.e_g_videoGudie_YN === null
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
       return;
     } else {
       setModalVisible(true);
-      uploadImgToGcs(image, regionKey).then((result) => {
+      uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data).then((result) => {
         console.log("실행");
         axios
           .post(`${API}/api/pohang/essential/setguide`, {
@@ -89,9 +97,8 @@ export default function Guide({ route, navigation }) {
             }
           })
           .catch((err) => {
-            console.log(err);
+            console.log("에러발생", err);
             setModalVisible(false);
-
             Alert.alert("저장에 실패했습니다. 다시 시도해주세요!!!");
             navigation.goBack();
           });
@@ -158,7 +165,7 @@ export default function Guide({ route, navigation }) {
                       title="안내요원(해설, 전담인력)"
                       name="p_e_g_guideImg"
                       getImage={getImage}
-                      value={value.guideImg}
+                      value={value.p_e_g_guideImg}
                     />
                   ) : null}
                   {value.e_g_signLanguage_YN === "Y" ? (
@@ -166,7 +173,7 @@ export default function Guide({ route, navigation }) {
                       title="수화 안내"
                       name="p_e_g_signLanguageImg"
                       getImage={getImage}
-                      value={value.signLanguageImg}
+                      value={value.p_e_g_signLanguageImg}
                     />
                   ) : null}
                   {value.e_g_audioGuide_YN === "Y" ? (
@@ -174,7 +181,7 @@ export default function Guide({ route, navigation }) {
                       title="오디오 가이드"
                       name="p_e_g_audioGuideImg"
                       getImage={getImage}
-                      value={value.audioGuideImg}
+                      value={value.p_e_g_audioGuideImg}
                     />
                   ) : null}
                   {value.e_g_videoGudie_YN === "Y" ? (
@@ -182,7 +189,7 @@ export default function Guide({ route, navigation }) {
                       title="비디오 가이드"
                       name="p_e_g_videoGuideImg"
                       getImage={getImage}
-                      value={value.videoGuideImg}
+                      value={value.p_e_g_videoGuideImg}
                     />
                   ) : null}
                 </View>

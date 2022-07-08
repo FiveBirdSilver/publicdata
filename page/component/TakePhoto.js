@@ -37,7 +37,9 @@ export default function TakePhoto(props) {
       quality: 1,
       base64: true,
     });
-    SaveImg(name, result.uri, result.base64);
+    if (result.cancelled) {
+      return;
+    } else SaveImg(name, result.uri, result.base64);
   };
 
   // 이미지 저장

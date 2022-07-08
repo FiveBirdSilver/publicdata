@@ -16,9 +16,6 @@ export default function Facility({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
-  const Compare = ["e_af_cartService_YN", "e_af_wheelchairLift_YN", "e_af_restPossible_YN"];
-
   const getCheck = (val, name) => {
     setValue((value) => ({
       ...value,
@@ -28,25 +25,22 @@ export default function Facility({ route, navigation }) {
 
   const getImage = (uri, name) => {
     const newArr = [...image];
-    let resultArr = [];
+    let tmp = [...image];
+
     if (newArr.findIndex((v) => v.name === name) !== -1) {
-      resultArr = newArr.filter((v) => v.name !== name);
-      // console.log("=================삭제");
-      // console.log(resultArr);
-      setImage(resultArr);
-    } else {
-      newArr.push({
-        name: name,
-        img: uri,
-        depth1: region,
-        depth2: listKey,
-        depth3: dataCollection,
-        depth4: data,
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
       });
-      // console.log("=================추가");
-      // console.log(newArr);
-      setImage(newArr);
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
     }
+
+    setImage(tmp);
   };
 
   useEffect(() => {
@@ -56,19 +50,29 @@ export default function Facility({ route, navigation }) {
         list_skey: listKey,
       })
       .then((res) => {
-        console.log(JSON.parse(res.data));
-        setValue(JSON.parse(res.data));
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
       })
       .catch((err) => console.log(err));
   }, []);
 
   const handleOnSubmit = async () => {
-    if (requiredValue.length !== Compare.length) {
+    if (
+      value.e_af_cartService_YN === null ||
+      value.e_af_wheelchairLift_YN === null ||
+      value.e_af_restPossible_YN === null
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
       return;
     } else {
       setModalVisible(true);
-      uploadImgToGcs(image, regionKey).then((result) => {
+      uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data).then((result) => {
         console.log("실행");
         axios
           .post(`${API}/api/pohang/essential/setfacility`, {
@@ -153,7 +157,7 @@ export default function Facility({ route, navigation }) {
                     title="이동 카트 서비스 제공"
                     name="p_e_af_cartServiceImg"
                     getImage={getImage}
-                    value={value.cartServiceImg}
+                    value={value.p_e_af_cartServiceImg}
                   />
                 ) : null}
                 {value.e_af_wheelchairLift_YN === "Y" ? (
@@ -161,7 +165,7 @@ export default function Facility({ route, navigation }) {
                     title="휠체어 승하차용 리프트"
                     name="p_e_af_wheelchairLiftImg"
                     getImage={getImage}
-                    value={value.wheelchairLiftImg}
+                    value={value.p_e_af_wheelchairLiftImg}
                   />
                 ) : null}
                 {value.e_af_restPossible_YN === "Y" ? (
@@ -169,7 +173,7 @@ export default function Facility({ route, navigation }) {
                     title="장애인 동반 휴식 가능 시설"
                     name="p_e_af_restPossibleImg"
                     getImage={getImage}
-                    value={value.restPossibleImg}
+                    value={value.p_e_af_restPossibleImg}
                   />
                 ) : null}
               </View>

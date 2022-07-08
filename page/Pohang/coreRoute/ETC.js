@@ -16,9 +16,6 @@ export default function ETC({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
-  const Compare = ["cr_etc_emergencybell_YN", "cr_etc_lightalarmdevice_YN"];
-
   const getCheck = (val, name) => {
     setValue((value) => ({
       ...value,
@@ -27,25 +24,22 @@ export default function ETC({ route, navigation }) {
   };
   const getImage = (uri, name) => {
     const newArr = [...image];
-    let resultArr = [];
+    let tmp = [...image];
+
     if (newArr.findIndex((v) => v.name === name) !== -1) {
-      resultArr = newArr.filter((v) => v.name !== name);
-      // console.log("=================삭제");
-      // console.log(resultArr);
-      setImage(resultArr);
-    } else {
-      newArr.push({
-        name: name,
-        img: uri,
-        depth1: region,
-        depth2: listKey,
-        depth3: dataCollection,
-        depth4: data,
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
       });
-      // console.log("=================추가");
-      // console.log(newArr);
-      setImage(newArr);
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
     }
+
+    setImage(tmp);
   };
   useEffect(() => {
     axios
@@ -54,18 +48,23 @@ export default function ETC({ route, navigation }) {
         list_skey: listKey,
       })
       .then((res) => {
-        console.log("+++++++", JSON.parse(res.data));
-        setValue(JSON.parse(res.data));
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
       })
       .catch((err) => console.log(err));
   }, []);
-
   const handleOnSubmit = async () => {
-    if (requiredValue.length !== Compare.length) {
+    if (value.cr_etc_emergencybell_YN === null || value.cr_etc_lightalarmdevice_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else {
       setModalVisible(true);
-      uploadImgToGcs(image, regionKey)
+      uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
         .then((result) => {
           console.log("실행");
           axios
@@ -96,7 +95,9 @@ export default function ETC({ route, navigation }) {
             });
         })
         .catch((err) => {
+          setModalVisible(false);
           console.log("에러발생");
+          navigation.goBack();
         });
     }
   };
@@ -147,7 +148,7 @@ export default function ETC({ route, navigation }) {
                     title="비상벨"
                     name="p_cr_etc_emergencybellImg"
                     getImage={getImage}
-                    value={value.emergencybellImg}
+                    value={value.p_cr_etc_emergencybellImg}
                   />
                 ) : null}
                 {value.cr_etc_lightalarmdevice_YN === "Y" ? (
@@ -155,7 +156,7 @@ export default function ETC({ route, navigation }) {
                     title="빛 확인 경보장치"
                     name="p_cr_etc_lightalarmdeviceImg"
                     getImage={getImage}
-                    value={value.lightalarmdeviceImg}
+                    value={value.p_cr_etc_lightalarmdeviceImg}
                   />
                 ) : null}
               </View>

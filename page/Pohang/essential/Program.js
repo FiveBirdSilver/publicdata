@@ -16,43 +16,33 @@ export default function Program({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
-  const Compare = [
-    "e_ep_wheelchairProgram_YN",
-    "e_ep_visuallyImpairedProgram_YN",
-    "e_ep_deafProgram_YN",
-    "e_ep_developmentallyDisabledProgram_YN",
-    "e_ep_seniorProgram_YN",
-    "e_ep_infantProgram_YN",
-  ];
   const getCheck = (val, name) => {
     setValue((value) => ({
       ...value,
       [name]: val,
     }));
   };
+
   const getImage = (uri, name) => {
     const newArr = [...image];
-    let resultArr = [];
+    let tmp = [...image];
+
     if (newArr.findIndex((v) => v.name === name) !== -1) {
-      resultArr = newArr.filter((v) => v.name !== name);
-      // console.log("=================삭제");
-      // console.log(resultArr);
-      setImage(resultArr);
-    } else {
-      newArr.push({
-        name: name,
-        img: uri,
-        depth1: region,
-        depth2: listKey,
-        depth3: dataCollection,
-        depth4: data,
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
       });
-      // console.log("=================추가");
-      // console.log(newArr);
-      setImage(newArr);
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
     }
+
+    setImage(tmp);
   };
+
   useEffect(() => {
     axios
       .post(`${API}/api/pohang/essential/getprogram`, {
@@ -60,18 +50,31 @@ export default function Program({ route, navigation }) {
         list_skey: listKey,
       })
       .then((res) => {
-        console.log(JSON.parse(res.data));
-        setValue(JSON.parse(res.data));
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
       })
       .catch((err) => console.log(err));
   }, []);
 
   const handleOnSubmit = async () => {
-    if (requiredValue.length !== Compare.length) {
+    if (
+      value.e_ep_wheelchairProgram_YN === null ||
+      value.e_ep_visuallyImpairedProgram_YN === null ||
+      value.e_ep_deafProgram_YN === null ||
+      value.e_ep_developmentallyDisabledProgram_YN === null ||
+      value.e_ep_seniorProgram_YN === null ||
+      value.e_ep_infantProgram_YN === null
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else {
       setModalVisible(true);
-      uploadImgToGcs(image, regionKey).then((result) => {
+      uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data).then((result) => {
         console.log("실행");
         axios
           .post(`${API}/api/pohang/essential/setprogram`, {
@@ -175,7 +178,7 @@ export default function Program({ route, navigation }) {
                     title="휠체어 이용자 체험 프로그램"
                     name="p_e_ep_wheelchairImg"
                     getImage={getImage}
-                    value={value.wheelchairImg}
+                    value={value.p_e_ep_wheelchairImg}
                   />
                 ) : null}
                 {value.e_ep_visuallyImpairedProgram_YN === "Y" ? (
@@ -183,7 +186,7 @@ export default function Program({ route, navigation }) {
                     title="시각장애인 체험 프로그램"
                     name="p_e_ep_visuallyImpairedImg"
                     getImage={getImage}
-                    value={value.visuallyImpairedImg}
+                    value={value.p_e_ep_visuallyImpairedImg}
                   />
                 ) : null}
                 {value.e_ep_deafProgram_YN === "Y" ? (
@@ -191,7 +194,7 @@ export default function Program({ route, navigation }) {
                     title="청각장애인 체험 프로그램 체험 프로그램"
                     name="p_e_ep_deafImg"
                     getImage={getImage}
-                    value={value.deafImg}
+                    value={value.p_e_ep_deafImg}
                   />
                 ) : null}
                 {value.e_ep_developmentallyDisabledProgram_YN === "Y" ? (
@@ -199,7 +202,7 @@ export default function Program({ route, navigation }) {
                     title="발달장애인 체험 프로그램"
                     name="p_e_ep_devdisabledImg"
                     getImage={getImage}
-                    value={value.devdisabledImg}
+                    value={value.p_e_ep_devdisabledImg}
                   />
                 ) : null}
                 {value.e_ep_seniorProgram_YN === "Y" ? (
@@ -207,7 +210,7 @@ export default function Program({ route, navigation }) {
                     title="시니어 체험 프로그램"
                     name="p_e_ep_seniorImg"
                     getImage={getImage}
-                    value={value.seniorImg}
+                    value={value.p_e_ep_seniorImg}
                   />
                 ) : null}
                 {value.e_ep_infantProgram_YN === "Y" ? (
@@ -215,7 +218,7 @@ export default function Program({ route, navigation }) {
                     title="영유아 체험 프로그램"
                     name="p_e_ep_infantImg"
                     getImage={getImage}
-                    value={value.infantImg}
+                    value={value.p_e_ep_infantImg}
                   />
                 ) : null}
               </View>

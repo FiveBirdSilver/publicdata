@@ -17,14 +17,6 @@ export default function Footpath({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
-  const Compare = [
-    "cr_f_street_lamp_YN",
-    "cr_f_wheelchair_accessible_YN",
-    "cr_f_floor_material",
-    "cr_f_waterspout_width",
-  ];
-
   const getCheck = (val, name) => {
     setValue((value) => ({
       ...value,
@@ -41,25 +33,22 @@ export default function Footpath({ route, navigation }) {
 
   const getImage = (uri, name) => {
     const newArr = [...image];
-    let resultArr = [];
+    let tmp = [...image];
+
     if (newArr.findIndex((v) => v.name === name) !== -1) {
-      resultArr = newArr.filter((v) => v.name !== name);
-      // console.log("=================삭제");
-      // console.log(resultArr);
-      setImage(resultArr);
-    } else {
-      newArr.push({
-        name: name,
-        img: uri,
-        depth1: region,
-        depth2: listKey,
-        depth3: dataCollection,
-        depth4: data,
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
       });
-      // console.log("=================추가");
-      // console.log(newArr);
-      setImage(newArr);
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
     }
+
+    setImage(tmp);
   };
 
   useEffect(() => {
@@ -69,20 +58,33 @@ export default function Footpath({ route, navigation }) {
         list_skey: listKey,
       })
       .then((res) => {
-        console.log("+++++++", JSON.parse(res.data));
-        setValue(JSON.parse(res.data));
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
       })
       .catch((err) => console.log(err));
   }, []);
 
   const handleOnSubmit = async () => {
-    if (requiredValue.length !== Compare.length || value.p_cr_f_footpathMoveImg === "") {
+    if (
+      value.cr_f_street_lamp_YN === null ||
+      value.cr_f_wheelchair_accessible_YN === null ||
+      value.cr_f_floor_material === null ||
+      value.cr_f_waterspout_width === null
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (!image.map((i) => i.name).includes("p_cr_f_footpathMoveImg")) {
-      Alert.alert("필수 사진을 추가해주세요.");
+    } else if (image) {
+      if (image.filter((i) => i.name === "p_cr_f_footpathMoveImg")[0].url === "") {
+        Alert.alert("필수 사진을 추가해주세요.");
+      }
     } else {
       setModalVisible(true);
-      uploadImgToGcs(image, regionKey)
+      uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
         .then((result) => {
           console.log("실행");
           axios
@@ -116,6 +118,8 @@ export default function Footpath({ route, navigation }) {
         })
         .catch((err) => {
           console.log("에러발생");
+          setModalVisible(false);
+          navigation.goBack();
         });
     }
   };
@@ -167,7 +171,7 @@ export default function Footpath({ route, navigation }) {
                     title="휠체어 이동 가능"
                     name="p_cr_f_footpathMoveImg"
                     getImage={getImage}
-                    value={value.footpathMoveImg}
+                    value={value.p_cr_f_footpathMoveImg}
                   />
                 ) : null}
                 {value.cr_f_street_lamp_YN === "Y" ? (
@@ -175,7 +179,7 @@ export default function Footpath({ route, navigation }) {
                     title="야간 조명"
                     name="p_cr_f_streetlampImg"
                     getImage={getImage}
-                    value={value.streetlampImg}
+                    value={value.p_cr_f_streetlampImg}
                   />
                 ) : null}
               </View>

@@ -16,10 +16,6 @@ export default function Ad({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
-  console.log(requiredValue);
-
-  const Compare = ["e_ad_wheelchair_YN", "e_ad_stroller_YN", "e_ad_babyChair_YN"];
   const getCheck = (val, name) => {
     setValue((value) => ({
       ...value,
@@ -67,46 +63,46 @@ export default function Ad({ route, navigation }) {
   }, []);
 
   const handleOnSubmit = async () => {
-    // if (requiredValue.length !== Compare.length) {
-    //   Alert.alert("모든 항목을 입력해주세요.");
-    // } else
-    // {
-    setModalVisible(true);
-    console.log("image", image);
-    uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
-      .then((result) => {
-        axios
-          .post(`${API}/api/pohang/essential/setad`, {
-            team_skey: teamKey,
-            list_skey: listKey,
-            e_ad_wheelchair_YN: value.e_ad_wheelchair_YN,
-            e_ad_stroller_YN: value.e_ad_stroller_YN,
-            e_ad_babyChair_YN: value.e_ad_babyChair_YN,
-          })
-          .then((res) => {
-            const response = JSON.parse(res.data);
-            if (response.result === 1) {
-              console.log("실행2");
-              setModalVisible(false);
-              Alert.alert("저장되었습니다.");
-              navigation.goBack();
-            } else {
+    if (value.e_ad_wheelchair_YN === null || value.e_ad_stroller_YN === null || value.e_ad_babyChair_YN === null) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else {
+      setModalVisible(true);
+      uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
+        .then((result) => {
+          axios
+            .post(`${API}/api/pohang/essential/setad`, {
+              team_skey: teamKey,
+              list_skey: listKey,
+              e_ad_wheelchair_YN: value.e_ad_wheelchair_YN,
+              e_ad_stroller_YN: value.e_ad_stroller_YN,
+              e_ad_babyChair_YN: value.e_ad_babyChair_YN,
+            })
+            .then((res) => {
+              const response = JSON.parse(res.data);
+              console.log(response);
+              if (response.result === 1) {
+                console.log("실행2");
+                setModalVisible(false);
+                Alert.alert("저장되었습니다.");
+                navigation.goBack();
+              } else {
+                setModalVisible(false);
+                Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+                navigation.goBack();
+              }
+            })
+            .catch((err) => {
+              console.log(err);
               setModalVisible(false);
               Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
               navigation.goBack();
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            setModalVisible(false);
-            Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-            navigation.goBack();
-          });
-      })
-      .catch((err) => {
-        console.log("에러발생");
-      });
-    // }
+            });
+        })
+        .catch((err) => {
+          setModalVisible(false);
+          console.log("에러발생");
+        });
+    }
   };
   return (
     <ScrollView style={styles.scrollview}>
@@ -156,7 +152,6 @@ export default function Ad({ route, navigation }) {
                       title="휠체어"
                       name="p_e_ad_wheelchairImg"
                       getImage={getImage}
-                      // value={value.wheelchairImg}
                       value={value.p_e_ad_wheelchairImg}
                     />
                   ) : null}
