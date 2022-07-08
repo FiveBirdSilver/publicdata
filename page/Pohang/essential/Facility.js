@@ -43,6 +43,7 @@ export default function Facility({ route, navigation }) {
       setImage(newArr);
     }
   };
+
   useEffect(() => {
     axios
       .post(`${API}/api/pohang/essential/getfacility`, {
@@ -60,7 +61,8 @@ export default function Facility({ route, navigation }) {
     if (requiredValue.length !== Compare.length) {
       Alert.alert("모든 항목을 입력해주세요.");
       return;
-    } else
+    } else {
+      setModalVisible(true);
       uploadImgToGcs(image, regionKey).then((result) => {
         console.log("실행");
         axios
@@ -75,22 +77,47 @@ export default function Facility({ route, navigation }) {
           .then((res) => {
             const response = JSON.parse(res.data);
             if (response.result === 1) {
+              setModalVisible(false);
               Alert.alert("저장되었습니다.");
               navigation.goBack();
-            } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-            navigation.goBack();
+            } else {
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+              navigation.goBack();
+            }
           })
           .catch((err) => {
             console.log(err);
-            Alert.alert("저장에 실패했습니다. 다시 시도해주세요!!!");
+            setModalVisible(false);
+            Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
             navigation.goBack();
           });
       });
+    }
   };
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
-        <Section item={item} />
+        <View style={styles.add_title_container}>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>뒤로</Text>
+          </View>
+          <Text style={styles.add_title}>{listName}</Text>
+
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>저장</Text>
+          </View>
+        </View>
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>

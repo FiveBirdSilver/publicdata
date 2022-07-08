@@ -4,6 +4,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
+import { color } from "../../../assets/styles/color";
 import TakePhoto from "../../component/TakePhoto";
 import uploadImgToGcs from "../../component/util";
 import RadioBtn from "../../component/RadioBtn";
@@ -47,6 +48,7 @@ export default function Ad({ route, navigation }) {
       setImage(newArr);
     }
   };
+
   useEffect(() => {
     axios
       .post(`${API}/api/pohang/essential/getad`, {
@@ -54,7 +56,7 @@ export default function Ad({ route, navigation }) {
         list_skey: listKey,
       })
       .then((res) => {
-        console.log(JSON.parse(res.data));
+        console.log("+++++++", JSON.parse(res.data));
         setValue(JSON.parse(res.data));
       })
       .catch((err) => console.log(err));
@@ -63,36 +65,44 @@ export default function Ad({ route, navigation }) {
   const handleOnSubmit = async () => {
     if (requiredValue.length !== Compare.length) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else setModalVisible(true);
-    uploadImgToGcs(image, regionKey)
-      .then((result) => {
-        console.log("실행");
-        axios
-          .post(`${API}/api/pohang/essential/setad`, {
-            team_skey: teamKey,
-            list_skey: listKey,
-            e_ad_wheelchair_YN: value.e_ad_wheelchair_YN,
-            e_ad_stroller_YN: value.e_ad_stroller_YN,
-            e_ad_babyChair_YN: value.e_ad_babyChair_YN,
-          })
-          .then((res) => {
-            const response = JSON.parse(res.data);
-            if (response.result === 1) {
+    } else {
+      setModalVisible(true);
+      uploadImgToGcs(image, regionKey)
+        .then((result) => {
+          console.log(result);
+          axios
+            .post(`${API}/api/pohang/essential/setad`, {
+              team_skey: teamKey,
+              list_skey: listKey,
+              e_ad_wheelchair_YN: value.e_ad_wheelchair_YN,
+              e_ad_stroller_YN: value.e_ad_stroller_YN,
+              e_ad_babyChair_YN: value.e_ad_babyChair_YN,
+            })
+            .then((res) => {
+              const response = JSON.parse(res.data);
+              if (response.result === 1) {
+                console.log("실행2");
+                setModalVisible(false);
+                Alert.alert("저장되었습니다.");
+                navigation.goBack();
+              } else {
+                setModalVisible(false);
+                Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+                navigation.goBack();
+              }
+            })
+            .catch((err) => {
+              console.log(err);
               setModalVisible(false);
-              Alert.alert("저장되었습니다.");
+              Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
               navigation.goBack();
-            } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-          })
-          .catch((err) => {
-            console.log(err);
-            Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-          });
-      })
-      .catch((err) => {
-        console.log("에러발생");
-      });
+            });
+        })
+        .catch((err) => {
+          console.log("에러발생");
+        });
+    }
   };
-  console.log(value);
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -168,8 +178,8 @@ export default function Ad({ route, navigation }) {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={[styles.container, styles.horizontal]}>
-          <ActivityIndicator size="large" color="#00ff00" />
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
         </View>
       </Modal>
     </ScrollView>
