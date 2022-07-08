@@ -17,6 +17,7 @@ export default function Ad({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
+  console.log(requiredValue);
 
   const Compare = ["e_ad_wheelchair_YN", "e_ad_stroller_YN", "e_ad_babyChair_YN"];
   const getCheck = (val, name) => {
@@ -28,25 +29,22 @@ export default function Ad({ route, navigation }) {
 
   const getImage = (uri, name) => {
     const newArr = [...image];
-    let resultArr = [];
+    let tmp = [...image];
+
     if (newArr.findIndex((v) => v.name === name) !== -1) {
-      resultArr = newArr.filter((v) => v.name !== name);
-      // console.log("=================삭제");
-      // console.log(resultArr);
-      setImage(resultArr);
-    } else {
-      newArr.push({
-        name: name,
-        img: uri,
-        depth1: region,
-        depth2: listKey,
-        depth3: dataCollection,
-        depth4: data,
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
       });
-      // console.log("=================추가");
-      // console.log(newArr);
-      setImage(newArr);
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
     }
+
+    setImage(tmp);
   };
 
   useEffect(() => {
@@ -56,52 +54,59 @@ export default function Ad({ route, navigation }) {
         list_skey: listKey,
       })
       .then((res) => {
-        console.log("+++++++", JSON.parse(res.data));
-        setValue(JSON.parse(res.data));
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
       })
       .catch((err) => console.log(err));
   }, []);
 
   const handleOnSubmit = async () => {
-    if (requiredValue.length !== Compare.length) {
-      Alert.alert("모든 항목을 입력해주세요.");
-    } else {
-      setModalVisible(true);
-      uploadImgToGcs(image, regionKey)
-        .then((result) => {
-          console.log(result);
-          axios
-            .post(`${API}/api/pohang/essential/setad`, {
-              team_skey: teamKey,
-              list_skey: listKey,
-              e_ad_wheelchair_YN: value.e_ad_wheelchair_YN,
-              e_ad_stroller_YN: value.e_ad_stroller_YN,
-              e_ad_babyChair_YN: value.e_ad_babyChair_YN,
-            })
-            .then((res) => {
-              const response = JSON.parse(res.data);
-              if (response.result === 1) {
-                console.log("실행2");
-                setModalVisible(false);
-                Alert.alert("저장되었습니다.");
-                navigation.goBack();
-              } else {
-                setModalVisible(false);
-                Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-                navigation.goBack();
-              }
-            })
-            .catch((err) => {
-              console.log(err);
+    // if (requiredValue.length !== Compare.length) {
+    //   Alert.alert("모든 항목을 입력해주세요.");
+    // } else
+    // {
+    setModalVisible(true);
+    console.log("image", image);
+    uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
+      .then((result) => {
+        axios
+          .post(`${API}/api/pohang/essential/setad`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            e_ad_wheelchair_YN: value.e_ad_wheelchair_YN,
+            e_ad_stroller_YN: value.e_ad_stroller_YN,
+            e_ad_babyChair_YN: value.e_ad_babyChair_YN,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              console.log("실행2");
+              setModalVisible(false);
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else {
               setModalVisible(false);
               Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
               navigation.goBack();
-            });
-        })
-        .catch((err) => {
-          console.log("에러발생");
-        });
-    }
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setModalVisible(false);
+            Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+            navigation.goBack();
+          });
+      })
+      .catch((err) => {
+        console.log("에러발생");
+      });
+    // }
   };
   return (
     <ScrollView style={styles.scrollview}>
@@ -151,18 +156,24 @@ export default function Ad({ route, navigation }) {
                       title="휠체어"
                       name="p_e_ad_wheelchairImg"
                       getImage={getImage}
-                      value={value.wheelchairImg}
+                      // value={value.wheelchairImg}
+                      value={value.p_e_ad_wheelchairImg}
                     />
                   ) : null}
                   {value.e_ad_stroller_YN === "Y" ? (
-                    <TakePhoto title="유모차" name="p_e_ad_strollerImg" getImage={getImage} value={value.strollerImg} />
+                    <TakePhoto
+                      title="유모차"
+                      name="p_e_ad_strollerImg"
+                      getImage={getImage}
+                      value={value.p_e_ad_strollerImg}
+                    />
                   ) : null}
                   {value.e_ad_babyChair_YN === "Y" ? (
                     <TakePhoto
                       title="유아용 보조의자"
                       name="p_e_ad_babychairImg"
                       getImage={getImage}
-                      value={value.babychairImg}
+                      value={value.p_e_ad_babychairImg}
                     />
                   ) : null}
                 </View>

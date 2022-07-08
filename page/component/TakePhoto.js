@@ -53,6 +53,7 @@ export default function TakePhoto(props) {
     if (name === props.name) {
       setImage("");
       setPropsImg("");
+      // props.getImage(null, props.name);
       props.getImage("", props.name);
     }
   };
@@ -127,7 +128,7 @@ export default function TakePhoto(props) {
     setModalVisible(true);
     setPhotoName(name);
   };
-  console.log(propsImg);
+  // console.log(propsImg);
   return (
     <>
       <View style={styles.img_container}>
