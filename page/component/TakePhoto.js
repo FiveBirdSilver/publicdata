@@ -37,9 +37,7 @@ export default function TakePhoto(props) {
       quality: 1,
       base64: true,
     });
-    if (result.cancelled) {
-      return;
-    } else SaveImg(name, result.uri, result.base64);
+    SaveImg(name, result.uri, result.base64);
   };
 
   // 이미지 저장
@@ -55,6 +53,7 @@ export default function TakePhoto(props) {
     if (name === props.name) {
       setImage("");
       setPropsImg("");
+      // props.getImage(null, props.name);
       props.getImage("", props.name);
     }
   };
@@ -129,6 +128,7 @@ export default function TakePhoto(props) {
     setModalVisible(true);
     setPhotoName(name);
   };
+  // console.log(propsImg);
   return (
     <>
       <View style={styles.img_container}>
