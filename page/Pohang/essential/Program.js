@@ -4,6 +4,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
+import { color } from "../../../assets/styles/color";
 import TakePhoto from "../../component/TakePhoto";
 import uploadImgToGcs from "../../component/util";
 import RadioBtn from "../../component/RadioBtn";
@@ -68,35 +69,41 @@ export default function Program({ route, navigation }) {
   const handleOnSubmit = async () => {
     if (requiredValue.length !== Compare.length) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else setModalVisible(true);
-    uploadImgToGcs(image, regionKey).then((result) => {
-      console.log("실행");
-      axios
-        .post(`${API}/api/pohang/essential/setprogram`, {
-          team_skey: teamKey,
-          list_skey: listKey,
-          e_ep_wheelchairProgram_YN: value.e_ep_wheelchairProgram_YN,
-          e_ep_visuallyImpairedProgram_YN: value.e_ep_visuallyImpairedProgram_YN,
-          e_ep_deafProgram_YN: value.e_ep_deafProgram_YN,
-          e_ep_developmentallyDisabledProgram_YN: value.e_ep_developmentallyDisabledProgram_YN,
-          e_ep_seniorProgram_YN: value.e_ep_seniorProgram_YN,
-          e_ep_infantProgram_YN: value.e_ep_infantProgram_YN,
-        })
-        .then((res) => {
-          const response = JSON.parse(res.data);
-          if (response.result === 1) {
-            Alert.alert("저장되었습니다.");
+    } else {
+      setModalVisible(true);
+      uploadImgToGcs(image, regionKey).then((result) => {
+        console.log("실행");
+        axios
+          .post(`${API}/api/pohang/essential/setprogram`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            e_ep_wheelchairProgram_YN: value.e_ep_wheelchairProgram_YN,
+            e_ep_visuallyImpairedProgram_YN: value.e_ep_visuallyImpairedProgram_YN,
+            e_ep_deafProgram_YN: value.e_ep_deafProgram_YN,
+            e_ep_developmentallyDisabledProgram_YN: value.e_ep_developmentallyDisabledProgram_YN,
+            e_ep_seniorProgram_YN: value.e_ep_seniorProgram_YN,
+            e_ep_infantProgram_YN: value.e_ep_infantProgram_YN,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              setModalVisible(false);
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else {
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+              navigation.goBack();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setModalVisible(false);
+            Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
             navigation.goBack();
-          } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-          navigation.goBack();
-        })
-        .catch((err) => {
-          console.log(err);
-
-          Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-          navigation.goBack();
-        });
-    });
+          });
+      });
+    }
   };
   return (
     <ScrollView style={styles.scrollview}>
@@ -223,8 +230,8 @@ export default function Program({ route, navigation }) {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={[styles.container, styles.horizontal]}>
-          <ActivityIndicator size="large" color="#00ff00" />
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
         </View>
       </Modal>
     </ScrollView>

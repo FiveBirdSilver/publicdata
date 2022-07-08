@@ -4,6 +4,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
+import { color } from "../../../assets/styles/color";
 import TakePhoto from "../../component/TakePhoto";
 import uploadImgToGcs from "../../component/util";
 import RadioBtn from "../../component/RadioBtn";
@@ -62,7 +63,8 @@ export default function Guide({ route, navigation }) {
     if (requiredValue.length !== Compare.length) {
       Alert.alert("모든 항목을 입력해주세요.");
       return;
-    } else
+    } else {
+      setModalVisible(true);
       uploadImgToGcs(image, regionKey).then((result) => {
         console.log("실행");
         axios
@@ -77,17 +79,24 @@ export default function Guide({ route, navigation }) {
           .then((res) => {
             const response = JSON.parse(res.data);
             if (response.result === 1) {
+              setModalVisible(false);
               Alert.alert("저장되었습니다.");
               navigation.goBack();
-            } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-            navigation.goBack();
+            } else {
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+              navigation.goBack();
+            }
           })
           .catch((err) => {
             console.log(err);
+            setModalVisible(false);
+
             Alert.alert("저장에 실패했습니다. 다시 시도해주세요!!!");
             navigation.goBack();
           });
       });
+    }
   };
   return (
     <ScrollView style={styles.scrollview}>
@@ -182,6 +191,17 @@ export default function Guide({ route, navigation }) {
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

@@ -1,152 +1,220 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { RadioButton } from "react-native-paper";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
-import Section from "../../component/Section";
+import { color } from "../../../assets/styles/color";
+import TakePhoto from "../../component/TakePhoto";
+import uploadImgToGcs from "../../component/util";
+import Input from "../../component/Input";
+import RadioBtn from "../../component/RadioBtn";
 
 export default function Footpath({ route, navigation }) {
-  const { item } = route.params;
+  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [value, setValue] = useState([]);
+  const [image, setImage] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const [value, setValue] = useState({
-    foothPath: "",
-    streetlamp: "",
-    footpathMove: "",
-    floorMaterial: "",
-    waterspoutWidth: "",
-  });
-  const imagePickerOption = {
-    mediaType: "photo",
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === "android",
+  const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
+  const Compare = [
+    "cr_f_street_lamp_YN",
+    "cr_f_wheelchair_accessible_YN",
+    "cr_f_floor_material",
+    "cr_f_waterspout_width",
+  ];
+
+  const getCheck = (val, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: val,
+    }));
   };
 
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
+  const getText = (text, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: text,
+    }));
   };
 
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
+  const getImage = (uri, name) => {
+    const newArr = [...image];
+    let resultArr = [];
+    if (newArr.findIndex((v) => v.name === name) !== -1) {
+      resultArr = newArr.filter((v) => v.name !== name);
+      // console.log("=================삭제");
+      // console.log(resultArr);
+      setImage(resultArr);
+    } else {
+      newArr.push({
+        name: name,
+        img: uri,
+        depth1: region,
+        depth2: listKey,
+        depth3: dataCollection,
+        depth4: data,
+      });
+      // console.log("=================추가");
+      // console.log(newArr);
+      setImage(newArr);
+    }
+  };
+
+  useEffect(() => {
+    axios
+      .post(`${API}/api/pohang/coreroute/getfootpath`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        console.log("+++++++", JSON.parse(res.data));
+        setValue(JSON.parse(res.data));
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const handleOnSubmit = async () => {
+    if (requiredValue.length !== Compare.length || value.p_cr_f_footpathMoveImg === "") {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else if (!image.map((i) => i.name).includes("p_cr_f_footpathMoveImg")) {
+      Alert.alert("필수 사진을 추가해주세요.");
+    } else {
+      setModalVisible(true);
+      uploadImgToGcs(image, regionKey)
+        .then((result) => {
+          console.log("실행");
+          axios
+            .post(`${API}/api/pohang/coreroute/setfootpath`, {
+              team_skey: teamKey,
+              list_skey: listKey,
+              cr_f_street_lamp_YN: value.cr_f_street_lamp_YN,
+              cr_f_wheelchair_accessible_YN: value.cr_f_wheelchair_accessible_YN,
+              cr_f_floor_material: value.cr_f_floor_material,
+              cr_f_waterspout_width: value.cr_f_waterspout_width,
+            })
+            .then((res) => {
+              const response = JSON.parse(res.data);
+              if (response.result === 1) {
+                console.log("실행2");
+                setModalVisible(false);
+                Alert.alert("저장되었습니다.");
+                navigation.goBack();
+              } else {
+                setModalVisible(false);
+                Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+                navigation.goBack();
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+              navigation.goBack();
+            });
+        })
+        .catch((err) => {
+          console.log("에러발생");
+        });
+    }
   };
 
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
-        <Section item={item} />
+        <View style={styles.add_title_container}>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>뒤로</Text>
+          </View>
+          <Text style={styles.add_title}>{listName}</Text>
+
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>저장</Text>
+          </View>
+        </View>
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>휠체어 이동 가능 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, footpathMove: text };
-                    })
-                  }
-                  value={value.footpathMove}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>야간 조명 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, streetlamp: text };
-                    })
-                  }
-                  value={value.streetlamp}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
+              <RadioBtn
+                title="휠체어 이동 가능 유무"
+                getCheck={getCheck}
+                name="cr_f_wheelchair_accessible_YN"
+                value={value.cr_f_wheelchair_accessible_YN}
+                yes="있다"
+                no="없다"
+              />
+              <RadioBtn
+                title="야간 조명 유무"
+                getCheck={getCheck}
+                name="cr_f_street_lamp_YN"
+                value={value.cr_f_street_lamp_YN}
+              />
+
               <View style={styles.img}>
-                {value.footpathMove === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>휠체어</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.cr_f_wheelchair_accessible_YN === "Y" ? (
+                  <TakePhoto
+                    title="휠체어 이동 가능"
+                    name="p_cr_f_footpathMoveImg"
+                    getImage={getImage}
+                    value={value.footpathMoveImg}
+                  />
                 ) : null}
-                {value.streetlamp === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>야간 조명</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.cr_f_street_lamp_YN === "Y" ? (
+                  <TakePhoto
+                    title="야간 조명"
+                    name="p_cr_f_streetlampImg"
+                    getImage={getImage}
+                    value={value.streetlampImg}
+                  />
                 ) : null}
               </View>
-              <View>
-                <View style={styles.add_input}>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>바닥 재질</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="floorMaterial"
-                        value={value.floorMaterial}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, floorMaterial: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>배수 트렌치 간격</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="waterspoutWidth"
-                        value={value.waterspoutWidth}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, waterspoutWidth: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
-                </View>
+              <View
+                style={{
+                  position: "relative",
+                }}
+              >
+                <Input
+                  title="바닥 재질"
+                  getText={getText}
+                  name="cr_f_floor_material"
+                  value={value.cr_f_floor_material}
+                  placeholder="EX. 아스팔트"
+                />
+                <Input
+                  title="배수 트렌치 간격"
+                  getText={getText}
+                  name="cr_f_waterspout_width"
+                  value={value.cr_f_waterspout_width}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 63, right: 10 }}>cm</Text>
               </View>
             </View>
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

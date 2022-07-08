@@ -17,7 +17,6 @@ export default function Ad({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
-
   const Compare = ["e_ad_wheelchair_YN", "e_ad_stroller_YN", "e_ad_babyChair_YN"];
   const getCheck = (val, name) => {
     setValue((value) => ({

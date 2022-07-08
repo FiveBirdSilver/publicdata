@@ -4,6 +4,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
+import { color } from "../../../assets/styles/color";
 import TakePhoto from "../../component/TakePhoto";
 import uploadImgToGcs from "../../component/util";
 import RadioBtn from "../../component/RadioBtn";
@@ -13,14 +14,18 @@ export default function Facility({ route, navigation }) {
   const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
   const requiredValue = Object.keys(value).filter((i) => !i.includes("Img"));
   const Compare = ["e_af_cartService_YN", "e_af_wheelchairLift_YN", "e_af_restPossible_YN"];
+
   const getCheck = (val, name) => {
     setValue((value) => ({
       ...value,
       [name]: val,
     }));
   };
+
   const getImage = (uri, name) => {
     const newArr = [...image];
     let resultArr = [];
@@ -69,10 +74,9 @@ export default function Facility({ route, navigation }) {
           .post(`${API}/api/pohang/essential/setfacility`, {
             team_skey: teamKey,
             list_skey: listKey,
-            e_g_guide_YN: value.e_g_guide_YN,
-            e_g_signLanguage_YN: value.e_g_signLanguage_YN,
-            e_g_audioGuide_YN: value.e_g_audioGuide_YN,
-            e_g_videoGudie_YN: value.e_g_videoGudie_YN,
+            e_af_cartService_YN: value.e_af_cartService_YN,
+            e_af_wheelchairLift_YN: value.e_af_wheelchairLift_YN,
+            e_af_restPossible_YN: value.e_af_restPossible_YN,
           })
           .then((res) => {
             const response = JSON.parse(res.data);
@@ -121,114 +125,69 @@ export default function Facility({ route, navigation }) {
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>이동 카트 서비스 제공</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, cartService: text };
-                    })
-                  }
-                  value={value.cartService}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <Text>있다</Text>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <Text>없다</Text>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>휠체어 승하차용 리프트</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, wheelchairLift: text };
-                    })
-                  }
-                  value={value.wheelchairLift}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>장애인 동반 휴식 가능 시설</Text>
-                <RadioButton.Group
-                  onValueChange={(text) =>
-                    setValue((prev) => {
-                      return { ...prev, restPossible: text };
-                    })
-                  }
-                  value={value.restPossible}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
+              <RadioBtn
+                title="이동 카트 서비스 제공"
+                getCheck={getCheck}
+                name="e_af_cartService_YN"
+                value={value.e_af_cartService_YN}
+                yes="있다"
+                no="없다"
+              />
+              <RadioBtn
+                title="휠체어 승하차용 리프트"
+                getCheck={getCheck}
+                name="e_af_wheelchairLift_YN"
+                value={value.e_af_wheelchairLift_YN}
+              />
+
+              <RadioBtn
+                title="장애인 동반 휴식 가능 시설"
+                getCheck={getCheck}
+                name="e_af_restPossible_YN"
+                value={value.e_af_restPossible_YN}
+              />
 
               <View style={styles.img}>
-                {value.cartService === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>이동 카트 서비스 제공</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.e_af_cartService_YN === "Y" ? (
+                  <TakePhoto
+                    title="이동 카트 서비스 제공"
+                    name="p_e_af_cartServiceImg"
+                    getImage={getImage}
+                    value={value.cartServiceImg}
+                  />
                 ) : null}
-                {value.wheelchairLift === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>휠체어 승하차용 리프트</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.e_af_wheelchairLift_YN === "Y" ? (
+                  <TakePhoto
+                    title="휠체어 승하차용 리프트"
+                    name="p_e_af_wheelchairLiftImg"
+                    getImage={getImage}
+                    value={value.wheelchairLiftImg}
+                  />
                 ) : null}
-                {value.restPossible === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>장애인 동반 휴식 가능 시설</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.e_af_restPossible_YN === "Y" ? (
+                  <TakePhoto
+                    title="장애인 동반 휴식 가능 시설"
+                    name="p_e_af_restPossibleImg"
+                    getImage={getImage}
+                    value={value.restPossibleImg}
+                  />
                 ) : null}
               </View>
             </View>
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
