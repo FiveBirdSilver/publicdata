@@ -1,211 +1,265 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { RadioButton } from "react-native-paper";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
-import Section from "../../component/Section";
+import { color } from "../../../assets/styles/color";
+import Input from "../../component/Input";
 
+import TakePhoto from "../../component/TakePhoto";
+import uploadImgToGcs from "../../component/util";
+import RadioBtn from "../../component/RadioBtn";
 export default function ParkingArea({ route, navigation }) {
-  const { item } = route.params;
+  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [value, setValue] = useState([]);
+  const [image, setImage] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const [value, setValue] = useState({
-    count: "",
-    disabledCount: "",
-    disabledWidth: "",
-    disabledLength: "",
-    pregnantCount: "",
-    busCount: "",
-    electricCount: "",
-    disabledSign: "",
-  });
-
-  const imagePickerOption = {
-    mediaType: "photo",
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === "android",
+  const getCheck = (val, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: val,
+    }));
   };
 
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
+  const getImage = (uri, name) => {
+    const newArr = [...image];
+    let tmp = [...image];
+
+    if (newArr.findIndex((v) => v.name === name) !== -1) {
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
+      });
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
+    }
+
+    setImage(tmp);
   };
 
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
+  useEffect(() => {
+    axios
+      .post(`${API}/api/pohang/park/getparkingarea`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const getText = (text, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: text,
+    }));
+  };
+  console.log(value);
+  const DataSave = () => {
+    setModalVisible(true);
+    uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
+      .then((result) => {
+        console.log("실행");
+        axios
+          .post(`${API}/api/pohang/park/setparkingarea`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            p_pa_count: value.p_pa_count,
+            p_pa_disabled_count: value.p_pa_disabled_count,
+            p_b_disabled_width: value.p_b_disabled_width,
+            p_b_disabled_length: value.p_b_disabled_length,
+            p_pa_pregnant_count: value.p_pa_pregnant_count,
+            p_pa_bus_count: value.p_pa_bus_count,
+            p_pa_electric_count: value.p_pa_electric_count,
+            p_pa_disabled_sign_YN: value.p_pa_disabled_sign_YN,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              console.log("실행2");
+              setModalVisible(false);
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else {
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+              navigation.goBack();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setModalVisible(false);
+            Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+            navigation.goBack();
+          });
+      })
+      .catch((err) => {
+        console.log("에러발생");
+        setModalVisible(false);
+      });
+  };
+
+  const handleOnSubmit = async () => {
+    if (
+      value.p_pa_count === (null || "") ||
+      value.p_pa_disabled_count === (null || "") ||
+      value.p_b_disabled_width === (null || "") ||
+      value.p_b_disabled_length === (null || "") ||
+      value.p_pa_pregnant_count === (null || "") ||
+      value.p_pa_bus_count === (null || "") ||
+      value.p_pa_electric_count === (null || "") ||
+      value.p_pa_disabled_sign_YN === (null || "")
+    ) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else DataSave();
   };
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
-        <Section item={item} />
+        <View style={styles.add_title_container}>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>뒤로</Text>
+          </View>
+          <Text style={styles.add_title}>{listName}</Text>
+
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>저장</Text>
+          </View>
+        </View>
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
-              <View>
-                <View style={styles.add_input}>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>총 주차 면수</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="name"
-                        value={value.count}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, count: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>장애인 주차 면수</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="name"
-                        value={value.disabledCount}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, disabledCount: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>장애인 주차 면적 가로</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="name"
-                        value={value.disabledWidth}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, disabledWidth: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>장애인 주차 면적 세로</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="name"
-                        value={value.disabledLength}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, disabledLength: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>임산부 주차 면수</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="name"
-                        value={value.pregnantCount}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, pregnantCount: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>대형버스 주차 면수</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="name"
-                        value={value.busCount}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, busCount: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>전기차 주차 면수</Text>
-                    <View style={styles.input_wrapper}>
-                      <TextInput
-                        name="name"
-                        value={value.electricCount}
-                        onChangeText={(text) =>
-                          setValue((prev) => {
-                            return { ...prev, electricCount: text };
-                          })
-                        }
-                        style={styles.input}
-                      ></TextInput>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.add_container}>
-                  <Text style={styles.add_subtitle}>장애인 주차구역 표지판</Text>
-                  <RadioButton.Group
-                    onValueChange={(v) =>
-                      setValue((prev) => {
-                        return { ...prev, disabledSign: v };
-                      })
-                    }
-                    value={value.disabledSign}
-                    style={styles.yesorno}
-                  >
-                    <View style={styles.radio}>
-                      <View style={styles.radio_wrap}>
-                        <Text>있다</Text>
-                        <RadioButton value="Y" />
-                      </View>
-                      <View style={styles.radio_wrap}>
-                        <Text>없다</Text>
-                        <RadioButton value="N" />
-                      </View>
-                    </View>
-                  </RadioButton.Group>
-                </View>
+              <View
+                style={{
+                  position: "relative",
+                }}
+              >
+                <Input
+                  title="총 주차 면수"
+                  getText={getText}
+                  name="p_pa_count"
+                  value={value.p_pa_count}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 13, right: 10 }}>개</Text>
+                <Input
+                  title="장애인 주차 면수"
+                  getText={getText}
+                  name="p_pa_disabled_count"
+                  value={value.p_pa_disabled_count}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 63, right: 10 }}>개</Text>
+                <Input
+                  title="장애인 주차 면적 가로"
+                  getText={getText}
+                  name="p_b_disabled_width"
+                  value={value.p_b_disabled_width}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 113, right: 10 }}>cm</Text>
+                <Input
+                  title="장애인 주차 면적 세로"
+                  getText={getText}
+                  name="p_b_disabled_length"
+                  value={value.p_b_disabled_length}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 163, right: 10 }}>cm</Text>
+                <Input
+                  title="임산부 주차 면수"
+                  getText={getText}
+                  name="p_pa_pregnant_count"
+                  value={value.p_pa_pregnant_count}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 213, right: 10 }}>개</Text>
+
+                <Input
+                  title="대형버스 주차 면수"
+                  getText={getText}
+                  name="p_pa_bus_count"
+                  value={value.p_pa_bus_count}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 263, right: 10 }}>개</Text>
+
+                <Input
+                  title="전기차 주차 면수"
+                  getText={getText}
+                  name="p_pa_electric_count"
+                  value={value.p_pa_electric_count}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 313, right: 10 }}>개</Text>
               </View>
+
+              <RadioBtn
+                title="장애인 주차구역 표지판"
+                getCheck={getCheck}
+                name="p_pa_disabled_sign_YN"
+                value={value.p_pa_disabled_sign_YN}
+                yes="있다"
+                no="없다"
+              />
               <View style={styles.img}>
-                {value.disabledSign === "Y" ? (
-                  <>
-                    <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>장애인 주차장</Text>
-                      <TouchableOpacity
-                        style={styles.imgchoose}
-                        onLaunchCamera={onLaunchCamera}
-                        onLaunchImageLibrary={onLaunchImageLibrary}
-                      >
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>장애인 주차구역 표지판</Text>
-                      <TouchableOpacity
-                        style={styles.imgchoose}
-                        onLaunchCamera={onLaunchCamera}
-                        onLaunchImageLibrary={onLaunchImageLibrary}
-                      >
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
-                    </View>
-                  </>
+                {value.p_pa_disabled_count !== null && value.p_pa_disabled_count > 0 ? (
+                  <TakePhoto
+                    title="장애인 주차장"
+                    name="p_p_pa_disabledParkImg"
+                    getImage={getImage}
+                    value={value.p_p_pa_disabledParkImg}
+                  />
+                ) : null}
+                {value.p_pa_disabled_sign_YN === "Y" ? (
+                  <TakePhoto
+                    title="장애인 주차구역 표지판"
+                    name="p_p_pa_disabledSignImg"
+                    getImage={getImage}
+                    value={value.p_p_pa_disabledSignImg}
+                  />
                 ) : null}
               </View>
             </View>
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

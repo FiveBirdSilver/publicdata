@@ -1,149 +1,218 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { RadioButton } from "react-native-paper";
+import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
-import Section from "../../component/Section";
+import { color } from "../../../assets/styles/color";
+import Input from "../../component/Input";
 
+import TakePhoto from "../../component/TakePhoto";
+import uploadImgToGcs from "../../component/util";
+import RadioBtn from "../../component/RadioBtn";
 export default function Facilities({ route, navigation }) {
-  const { item } = route.params;
-  const [value, setValue] = useState({
-    infantCradle: "",
-    diaperChangingTable: "",
-    infantUrinalToilet: "",
-  });
-  const imagePickerOption = {
-    mediaType: "photo",
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === "android",
+  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [value, setValue] = useState([]);
+  const [image, setImage] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const getCheck = (val, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: val,
+    }));
   };
 
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
+  const getImage = (uri, name) => {
+    const newArr = [...image];
+    let tmp = [...image];
+
+    if (newArr.findIndex((v) => v.name === name) !== -1) {
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
+      });
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
+    }
+
+    setImage(tmp);
   };
 
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
+  useEffect(() => {
+    axios
+      .post(`${API}/api/pohang/toilet/getfacilities`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const DataSave = () => {
+    setModalVisible(true);
+    uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
+      .then((result) => {
+        axios
+          .post(`${API}/api/pohang/toilet/setfacilities`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            t_fc_infant_cradle_YN: value.t_fc_infant_cradle_YN,
+            t_fc_diaper_changing_table_YN: value.t_fc_diaper_changing_table_YN,
+            t_fc_Infant_urinal_YN: value.t_fc_Infant_urinal_YN,
+            t_fc_Infant_toilet_YN: value.t_fc_Infant_toilet_YN,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              console.log("실행2");
+              setModalVisible(false);
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else {
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+              navigation.goBack();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setModalVisible(false);
+            Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+            navigation.goBack();
+          });
+      })
+      .catch((err) => {
+        console.log("에러발생");
+        setModalVisible(false);
+      });
+  };
+  const handleOnSubmit = async () => {
+    if (
+      value.t_fc_infant_cradle_YN === null ||
+      value.t_fc_diaper_changing_table_YN === null ||
+      value.t_fc_Infant_urinal_YN === null ||
+      value.t_fc_Infant_toilet_YN === null
+    ) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else DataSave();
   };
 
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
-        <Section item={item} />
+        <View style={styles.add_title_container}>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>뒤로</Text>
+          </View>
+          <Text style={styles.add_title}>{listName}</Text>
+
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>저장</Text>
+          </View>
+        </View>
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>영유아 거치대</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, infantCradle: v };
-                    })
-                  }
-                  value={value.infantCradle}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <Text>있다</Text>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <Text>없다</Text>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>기저귀 교환대</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, diaperChangingTable: v };
-                    })
-                  }
-                  value={value.diaperChangingTable}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>소아 대/소변기</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, infantUrinalToilet: v };
-                    })
-                  }
-                  value={value.infantUrinalToilet}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
+              <RadioBtn
+                title="영유아 거치대"
+                getCheck={getCheck}
+                name="t_fc_infant_cradle_YN"
+                value={value.t_fc_infant_cradle_YN}
+                yes="있다"
+                no="없다"
+              />
+              <RadioBtn
+                title="기저귀 교환대"
+                getCheck={getCheck}
+                name="t_fc_diaper_changing_table_YN"
+                value={value.t_fc_diaper_changing_table_YN}
+              />
+              <RadioBtn
+                title="소아 소변기"
+                getCheck={getCheck}
+                name="t_fc_Infant_urinal_YN"
+                value={value.t_fc_Infant_urinal_YN}
+              />
+              <RadioBtn
+                title="소아 대변기"
+                getCheck={getCheck}
+                name="t_fc_Infant_toilet_YN"
+                value={value.t_fc_Infant_toilet_YN}
+              />
               <View style={styles.img}>
-                {value.infantCradle === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>영유아 거치대</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.t_fc_infant_cradle_YN === "Y" ? (
+                  <TakePhoto
+                    title="영유아 거치대"
+                    name="p_t_fc_infantcradleImg"
+                    getImage={getImage}
+                    value={value.p_t_fc_infantcradleImg}
+                  />
                 ) : null}
-                {value.diaperChangingTable === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>기저귀 교환대</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.t_fc_diaper_changing_table_YN === "Y" ? (
+                  <TakePhoto
+                    title="기저귀 교환대"
+                    name="p_t_fc_diaperchangTabelImg"
+                    getImage={getImage}
+                    value={value.p_t_fc_diaperchangTabelImg}
+                  />
                 ) : null}
-                {value.infantUrinalToilet === "Y" ? (
-                  <View style={styles.img_container}>
-                    <Text style={styles.img_container_title}>소아 대/소변기</Text>
-                    <TouchableOpacity
-                      style={styles.imgchoose}
-                      onLaunchCamera={onLaunchCamera}
-                      onLaunchImageLibrary={onLaunchImageLibrary}
-                    >
-                      <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                    </TouchableOpacity>
-                  </View>
+                {value.t_fc_Infant_urinal_YN === "Y" ? (
+                  <TakePhoto
+                    title="소아 소변기"
+                    name="p_t_fc_urinalImg"
+                    getImage={getImage}
+                    value={value.p_t_fc_urinalImg}
+                  />
+                ) : null}
+                {value.t_fc_Infant_toilet_YN === "Y" ? (
+                  <TakePhoto
+                    title="소아 대변기"
+                    name="p_t_fc_toiletImg"
+                    getImage={getImage}
+                    value={value.p_t_fc_toiletImg}
+                  />
                 ) : null}
               </View>
             </View>
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

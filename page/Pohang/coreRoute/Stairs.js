@@ -18,12 +18,26 @@ export default function Staris({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [test, setTest] = useState([]);
 
   const getCheck = (val, name) => {
-    setValue((value) => ({
-      ...value,
-      [name]: val,
-    }));
+    if (name === "cr_s_YN" && val === "N") {
+      setValue((value) => ({
+        ...value,
+        cr_s_YN: "N",
+        cr_s_handle_YN: "N",
+        cr_s_handle_braille_YN: "N",
+        cr_s_dotblock_YN: "N",
+        cr_s_count: 0,
+        cr_s_width: 0,
+        cr_s_height: 0,
+        cr_s_handle_structure: 2,
+      }));
+    } else
+      setValue((value) => ({
+        ...value,
+        [name]: val,
+      }));
   };
 
   const getImage = (uri, name) => {
@@ -42,7 +56,6 @@ export default function Staris({ route, navigation }) {
         url: uri,
       });
     }
-
     setImage(tmp);
   };
 
@@ -55,15 +68,23 @@ export default function Staris({ route, navigation }) {
       .then((res) => {
         const response = JSON.parse(res.data);
         let obj = response;
+        let test0 = {};
 
         response.picture.forEach((v) => {
           obj[v.name] = v.url;
         });
-
         setValue(obj);
+
+        response.picture.forEach((v) => {
+          test0[v.name] = v.url;
+        });
+        setTest(test0);
       })
       .catch((err) => console.log(err));
   }, []);
+
+  console.log("==============================================");
+  console.log(test);
 
   const getText = (text, name) => {
     setValue((value) => ({
@@ -71,68 +92,99 @@ export default function Staris({ route, navigation }) {
       [name]: text,
     }));
   };
-  console.log(image);
 
+  const DataSave = () => {
+    setModalVisible(true);
+    uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
+      .then((result) => {
+        axios
+          .post(`${API}/api/pohang/coreroute/setstairs`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            cr_s_YN: value.cr_s_YN,
+            cr_s_handle_YN: value.cr_s_handle_YN,
+            cr_s_handle_braille_YN: value.cr_s_handle_braille_YN,
+            cr_s_dotblock_YN: value.cr_s_dotblock_YN,
+            cr_s_count: value.cr_s_count,
+            cr_s_width: value.cr_s_width,
+            cr_s_height: value.cr_s_height,
+            cr_s_handle_structure: value.cr_s_handle_structure,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              console.log("실행2");
+              setModalVisible(false);
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else {
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해 주세요.");
+              navigation.goBack();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setModalVisible(false);
+            Alert.alert("저장에 실패했습니다. 다시 시도해 주세요.");
+            navigation.goBack();
+          });
+      })
+      .catch((err) => {
+        setModalVisible(false);
+        console.log("에러발생");
+        Alert.alert("저장에 실패했습니다. 필수 사진이 추가되었는지 확인해 주세요.");
+      });
+  };
+  console.log(value.cr_s_YN === "Y");
+  console.log(test.p_cr_s_stairsImg === "", "?????");
   const handleOnSubmit = async () => {
     if (value.cr_s_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.cr_s_YN === "Y") {
-      if (
-        value.cr_s_handle_YN === null ||
-        value.cr_s_handle_braille_YN === null ||
-        value.cr_s_count === null ||
-        value.cr_s_width === null ||
-        value.cr_s_height === null ||
-        value.cr_s_handle_structure === null
-      ) {
-        Alert.alert("모든 항목을 입력해주세요.");
-      } else if (image.length !== 4) {
-        Alert.alert("필수 사진을 추가해주세요.");
-      } else {
-        console.log("i");
-        setModalVisible(true);
-        uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
-          .then((result) => {
-            axios
-              .post(`${API}/api/pohang/coreroute/setstairs`, {
-                team_skey: teamKey,
-                list_skey: listKey,
-                cr_s_YN: value.cr_s_YN,
-                cr_s_handle_YN: value.cr_s_handle_YN,
-                cr_s_handle_braille_YN: value.cr_s_handle_braille_YN,
-                cr_s_count: value.cr_s_count,
-                cr_s_width: value.cr_s_width,
-                cr_s_height: value.cr_s_height,
-                cr_s_handle_structure: value.cr_s_handle_structure,
-              })
-              .then((res) => {
-                const response = JSON.parse(res.data);
-                console.log(response);
-                if (response.result === 1) {
-                  console.log("실행2");
-                  setModalVisible(false);
-                  Alert.alert("저장되었습니다.");
-                  navigation.goBack();
-                } else {
-                  setModalVisible(false);
-                  Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-                  navigation.goBack();
-                }
-              })
-              .catch((err) => {
-                console.log(err);
-                setModalVisible(false);
-                Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-                navigation.goBack();
-              });
-          })
-          .catch((err) => {
-            setModalVisible(false);
-            console.log("에러발생");
-          });
-      }
+    } else if (
+      (value.cr_s_YN === "Y" && value.cr_s_handle_YN === null) ||
+      (value.cr_s_YN === "Y" && value.cr_s_handle_braille_YN === null) ||
+      (value.cr_s_YN === "Y" && value.cr_s_dotblock_YN === null) ||
+      (value.cr_s_YN === "Y" && value.cr_s_count === (null || 0)) ||
+      (value.cr_s_YN === "Y" && value.cr_s_width === (null || 0)) ||
+      (value.cr_s_YN === "Y" && value.cr_s_height === (null || 0)) ||
+      (value.cr_s_YN === "Y" && value.cr_s_handle_structure === null)
+    ) {
+      Alert.alert("모든 항목을 입력해주세요.");
     }
+    if (value.cr_s_YN === "Y" && test.p_cr_s_stairsImg === "") {
+      if (
+        image.find((i) => i.name === "p_cr_s_stairsImg") === undefined ||
+        image.find((i) => i.name === "p_cr_s_stairsImg").url === ""
+      ) {
+        Alert.alert("계단 사진을 추가해 주세요."); // 최초 insert 방어
+      } else DataSave();
+    }
+    // else if (value.cr_s_handle_YN === "Y" && test.p_cr_s_handleImg === "") {
+    //   if (
+    //     image.find((i) => i.name === "p_cr_s_handleImg") === undefined ||
+    //     image.find((i) => i.name === "p_cr_s_handleImg").url === ""
+    //   ) {
+    //     Alert.alert("계단 손잡이 사진을 추가해 주세요."); // 최초 insert 방어
+    //   } else DataSave();
+    // } else if (value.cr_s_handle_braille_YN === "Y" && test.p_cr_s_handleBrailleImg === "") {
+    //   if (
+    //     image.find((i) => i.name === "p_cr_s_handleBrailleImg") === undefined ||
+    //     image.find((i) => i.name === "p_cr_s_handleBrailleImg").url === ""
+    //   ) {
+    //     Alert.alert("계단 손잡이 점자 사진을 추가해주세요."); // 최초 insert 방어
+    //   } else DataSave();
+    // } else if (value.cr_s_dotblock_YN === "Y" && test.p_cr_s_dotBlockImg === "") {
+    //   if (
+    //     image.find((i) => i.name === "p_cr_s_dotBlockImg") === undefined ||
+    //     image.find((i) => i.name === "p_cr_s_dotBlockImg").url === ""
+    //   ) {
+    //     Alert.alert("계단 손잡이 점자 사진을 추가해 주세요."); // 최초 insert 방어
+    //   } else DataSave();
+    // }
+    else DataSave();
   };
+
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -199,50 +251,67 @@ export default function Staris({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_cr_s_stairsImg}
                     />
-                    <TakePhoto
-                      title="계단 손잡이"
-                      name="p_cr_s_handleImg"
-                      getImage={getImage}
-                      value={value.p_cr_s_handleImg}
-                    />
-                    <TakePhoto
-                      title="계단 손잡이 점자"
-                      name="p_cr_s_handleBrailleImg"
-                      getImage={getImage}
-                      value={value.p_cr_s_handleBrailleImg}
-                    />
-                    <TakePhoto
-                      title="계단 상하부 점형 블록 설치"
-                      name="p_cr_s_dotBlockImg"
-                      getImage={getImage}
-                      value={value.p_cr_s_dotBlockImg}
-                    />
+                    {value.cr_s_handle_YN === "Y" ? (
+                      <TakePhoto
+                        title="계단 손잡이"
+                        name="p_cr_s_handleImg"
+                        getImage={getImage}
+                        value={value.p_cr_s_handleImg}
+                      />
+                    ) : null}
+                    {value.cr_s_handle_braille_YN === "Y" ? (
+                      <TakePhoto
+                        title="계단 손잡이 점자"
+                        name="p_cr_s_handleBrailleImg"
+                        getImage={getImage}
+                        value={value.p_cr_s_handleBrailleImg}
+                      />
+                    ) : null}
+                    {value.cr_s_dotblock_YN === "Y" ? (
+                      <TakePhoto
+                        title="계단 상하부 점형 블록 설치"
+                        name="p_cr_s_dotBlockImg"
+                        getImage={getImage}
+                        value={value.p_cr_s_dotBlockImg}
+                      />
+                    ) : null}
                   </>
                 ) : null}
               </View>
               {value.cr_s_YN === "Y" ? (
-                <View>
-                  <Input
-                    title="계단 개수"
-                    getText={getText}
-                    name="cr_s_count"
-                    value={value.cr_s_count}
-                    keyboardType={"numeric"}
-                  />
-                  <Input
-                    title="계단 폭"
-                    getText={getText}
-                    name="cr_s_width"
-                    value={value.cr_s_width}
-                    keyboardType={"numeric"}
-                  />
-                  <Input
-                    title="계단 높이"
-                    getText={getText}
-                    name="cr_s_height"
-                    value={value.cr_s_height}
-                    keyboardType={"numeric"}
-                  />
+                <>
+                  <View
+                    style={{
+                      position: "relative",
+                    }}
+                  >
+                    <Input
+                      title="계단 개수"
+                      getText={getText}
+                      name="cr_s_count"
+                      value={value.cr_s_count}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>개</Text>
+                    <Input
+                      title="계단 폭"
+                      getText={getText}
+                      name="cr_s_width"
+                      value={value.cr_s_width}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 63, right: 10 }}>cm</Text>
+
+                    <Input
+                      title="계단 높이"
+                      getText={getText}
+                      name="cr_s_height"
+                      value={value.cr_s_height}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 113, right: 10 }}>cm</Text>
+                  </View>
+
                   <View style={styles.add_container}>
                     <Text style={styles.add_subtitle}>계단 손잡이 형태(양 옆, 한쪽)</Text>
                     <RadioButton.Group
@@ -257,20 +326,20 @@ export default function Staris({ route, navigation }) {
                       <View style={styles.radio}>
                         <View style={styles.radio_wrap}>
                           <Text>양 옆</Text>
-                          <RadioButton value="0" />
+                          <RadioButton value={0} />
                         </View>
                         <View style={styles.radio_wrap}>
                           <Text>한 쪽</Text>
-                          <RadioButton value="1" />
+                          <RadioButton value={1} />
                         </View>
                         <View style={styles.radio_wrap}>
                           <Text>없다</Text>
-                          <RadioButton value="2" />
+                          <RadioButton value={2} />
                         </View>
                       </View>
                     </RadioButton.Group>
                   </View>
-                </View>
+                </>
               ) : null}
             </View>
           </View>

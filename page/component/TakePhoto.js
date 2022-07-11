@@ -52,6 +52,7 @@ export default function TakePhoto(props) {
 
   // 이미지 취소
   const cancleImg = (name) => {
+    console.log(props.value);
     if (name === props.name) {
       setImage("");
       setPropsImg("");

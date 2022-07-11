@@ -34,7 +34,6 @@ export default function Footpath({ route, navigation }) {
   const getImage = (uri, name) => {
     const newArr = [...image];
     let tmp = [...image];
-
     if (newArr.findIndex((v) => v.name === name) !== -1) {
       tmp.forEach((v) => {
         if (v.name === name) {
@@ -64,64 +63,74 @@ export default function Footpath({ route, navigation }) {
         response.picture.forEach((v) => {
           obj[v.name] = v.url;
         });
-
         setValue(obj);
       })
       .catch((err) => console.log(err));
   }, []);
 
+  const DataSave = () => {
+    setModalVisible(true);
+    uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
+      .then((result) => {
+        console.log("실행");
+        axios
+          .post(`${API}/api/pohang/coreroute/setfootpath`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            cr_f_street_lamp_YN: value.cr_f_street_lamp_YN,
+            cr_f_wheelchair_accessible_YN: value.cr_f_wheelchair_accessible_YN,
+            cr_f_floor_material: value.cr_f_floor_material,
+            cr_f_waterspout_width: value.cr_f_waterspout_width,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              console.log("실행2");
+              setModalVisible(false);
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else {
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+              navigation.goBack();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setModalVisible(false);
+            Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+            navigation.goBack();
+          });
+      })
+      .catch((err) => {
+        console.log("에러발생");
+        setModalVisible(false);
+        navigation.goBack();
+      });
+  };
+
   const handleOnSubmit = async () => {
     if (
       value.cr_f_street_lamp_YN === null ||
       value.cr_f_wheelchair_accessible_YN === null ||
-      value.cr_f_floor_material === null ||
-      value.cr_f_waterspout_width === null
+      value.cr_f_floor_material === "" ||
+      value.cr_f_waterspout_width === ""
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (image) {
-      if (image.filter((i) => i.name === "p_cr_f_footpathMoveImg")[0].url === "") {
-        Alert.alert("필수 사진을 추가해주세요.");
-      }
-    } else {
-      setModalVisible(true);
-      uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
-        .then((result) => {
-          console.log("실행");
-          axios
-            .post(`${API}/api/pohang/coreroute/setfootpath`, {
-              team_skey: teamKey,
-              list_skey: listKey,
-              cr_f_street_lamp_YN: value.cr_f_street_lamp_YN,
-              cr_f_wheelchair_accessible_YN: value.cr_f_wheelchair_accessible_YN,
-              cr_f_floor_material: value.cr_f_floor_material,
-              cr_f_waterspout_width: value.cr_f_waterspout_width,
-            })
-            .then((res) => {
-              const response = JSON.parse(res.data);
-              if (response.result === 1) {
-                console.log("실행2");
-                setModalVisible(false);
-                Alert.alert("저장되었습니다.");
-                navigation.goBack();
-              } else {
-                setModalVisible(false);
-                Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-                navigation.goBack();
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-              setModalVisible(false);
-              Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
-              navigation.goBack();
-            });
-        })
-        .catch((err) => {
-          console.log("에러발생");
-          setModalVisible(false);
-          navigation.goBack();
-        });
-    }
+    } else if (value.cr_f_wheelchair_accessible_YN === "Y" && value.p_cr_f_footpathMoveImg === "") {
+      if (
+        image.find((i) => i.name === "p_cr_f_footpathMoveImg") === undefined ||
+        image.find((i) => i.name === "p_cr_f_footpathMoveImg").url === ""
+      ) {
+        Alert.alert("휠체어 이동 가능 사진을 추가해주세요."); // 최초 insert 방어
+      } else DataSave();
+    } else if (value.p_cr_f_footpathMoveImg !== "") {
+      // 이미지가 이미 존재할 때
+      if (image.length === 0) DataSave();
+      else if (image.length > 0 && image.find((i) => i.name === "p_cr_f_footpathMoveImg").url === "") {
+        Alert.alert("휠체어 이동 가능 사진을 추가해주세요."); // 수정 update 방어
+      } else DataSave();
+    } else DataSave();
   };
 
   return (

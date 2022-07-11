@@ -1,14 +1,26 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, ScrollView } from "react-native";
+import axios from "axios";
 
 import { styles } from "../../assets/styles/area";
 import Header from "../component/Header";
 
 export default function Area({ route, navigation }) {
   const { listName, listKey, teamKey, region, regionKey } = route.params;
-  // useEffect(() => {
-  //   axios // 항목1의 키 값
-  // },[])
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [complete, setComplete] = useState([]);
+
+  useEffect(() => {
+    axios
+      .post(`${API}/api/area`, {
+        org_skey: regionKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        setComplete(JSON.parse(res.data));
+      });
+  }, []);
+
   const essential = {
     label: [
       "기본정보",
@@ -23,6 +35,10 @@ export default function Area({ route, navigation }) {
     value: ["Basic_P", "Recommend_P", "ServiceDog_P", "Ad_P", "Program_P", "Guide_P", "Facility_P", "Leaflet_P"],
     depth: ["basic", "rc", "dog", "ad", "ep", "g", "af", "tl"],
   };
+  // const status_list = {
+  //   label: ["Basic_P", "Recommend_P", "ServiceDog_P", "Ad_P", "Program_P", "Guide_P", "Facility_P", "Leaflet_P"],
+  //   value: ["Y", "N", "Y", "Y", "Y", "Y", "Y", "Y"],
+  // };
   const flow = {
     label: ["보행로", "기타", "계단", "경사로", "턱", "승강기"],
     value: ["Footpath_P", "ETC_P", "Stairs_P", "Runway_P", "Roadchin_P", "Elevator_P"],
@@ -64,13 +80,11 @@ export default function Area({ route, navigation }) {
     ],
     depth: ["basic", "er", "ed", "ie", "w", "u", "t", "fc", "dt"],
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.header_container}>
         <Header title="데이터 수집" subtitle="데이터 만들기" />
       </View>
-
       <View style={styles.area}>
         <Text style={styles.area_title}>{listName}</Text>
       </View>
@@ -82,6 +96,7 @@ export default function Area({ route, navigation }) {
               <TouchableOpacity
                 key={i}
                 style={styles.area_btn}
+                // style={status_list.value[index] === "Y" ? styles.area_btn_complete : styles.area_btn}
                 onPress={() =>
                   navigation.push(`${essential.value[index]}`, {
                     listName: i,

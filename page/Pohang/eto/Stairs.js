@@ -1,283 +1,320 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { RadioButton } from "react-native-paper";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
-import Section from "../../component/Section";
+import { color } from "../../../assets/styles/color";
+import Input from "../../component/Input";
+
+import TakePhoto from "../../component/TakePhoto";
+import uploadImgToGcs from "../../component/util";
+import RadioBtn from "../../component/RadioBtn";
 
 export default function Staris({ route, navigation }) {
-  const { item } = route.params;
+  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [value, setValue] = useState([]);
+  const [image, setImage] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const [value, setValue] = useState({
-    stairs: "",
-    handle: "",
-    handleBraille: "",
-    dotBlock: "",
-    count: "",
-    width: "",
-    height: "",
-    handleStructure: "",
-  });
-  const imagePickerOption = {
-    mediaType: "photo",
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === "android",
+  const getCheck = (val, name) => {
+    if (name === "eto_s_YN" && val === "N") {
+      setValue((value) => ({
+        ...value,
+        eto_s_YN: "N",
+        eto_s_handle_YN: "N",
+        eto_s_handle_braille_YN: "N",
+        eto_s_dotblock_YN: "N",
+        eto_s_count: 0,
+        eto_s_width: 0,
+        eto_s_height: 0,
+        eto_s_handle_structure: 0,
+      }));
+    } else
+      setValue((value) => ({
+        ...value,
+        [name]: val,
+      }));
   };
 
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
+  const getImage = (uri, name) => {
+    const newArr = [...image];
+    let tmp = [...image];
+
+    if (newArr.findIndex((v) => v.name === name) !== -1) {
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
+      });
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
+    }
+    setImage(tmp);
   };
 
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
+  useEffect(() => {
+    axios
+      .post(`${API}/api/pohang/eto/getstairs`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const getText = (text, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: text,
+    }));
   };
-  console.log(value);
+
+  const DataSave = () => {
+    setModalVisible(true);
+    uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
+      .then((result) => {
+        axios
+          .post(`${API}/api/pohang/eto/setstairs`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            eto_s_YN: value.eto_s_YN,
+            eto_s_handle_YN: value.eto_s_handle_YN,
+            eto_s_handle_braille_YN: value.eto_s_handle_braille_YN,
+            eto_s_dotblock_YN: value.eto_s_dotblock_YN,
+            eto_s_count: value.eto_s_count,
+            eto_s_width: value.eto_s_width,
+            eto_s_height: value.eto_s_height,
+            eto_s_handle_structure: value.eto_s_handle_structure,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              console.log("실행2");
+              setModalVisible(false);
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else {
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해 주세요.");
+              navigation.goBack();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setModalVisible(false);
+            Alert.alert("저장에 실패했습니다. 다시 시도해 주세요.");
+            navigation.goBack();
+          });
+      })
+      .catch((err) => {
+        setModalVisible(false);
+        console.log("에러발생");
+        Alert.alert("저장에 실패했습니다. 필수 사진이 추가되었는지 확인해 주세요.");
+      });
+  };
+
+  const handleOnSubmit = async () => {
+    if (value.eto_s_YN === null) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else if (
+      (value.eto_s_YN === "Y" && value.eto_s_handle_YN === null) ||
+      (value.eto_s_YN === "Y" && value.eto_s_handle_braille_YN === null) ||
+      (value.eto_s_YN === "Y" && value.eto_s_dotblock_YN === null) ||
+      (value.eto_s_YN === "Y" && value.eto_s_count === (null || "" || 0)) ||
+      (value.eto_s_YN === "Y" && value.eto_s_width === (null || "" || 0)) ||
+      (value.eto_s_YN === "Y" && value.eto_s_height === (null || "" || 0)) ||
+      (value.eto_s_YN === "Y" && value.eto_s_handle_structure === (null || ""))
+    ) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else DataSave();
+  };
+
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
-        <Section item={item} />
+        <View style={styles.add_title_container}>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>뒤로</Text>
+          </View>
+          <Text style={styles.add_title}>{listName}</Text>
+
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>저장</Text>
+          </View>
+        </View>
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>계단 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, stairs: v };
-                    })
-                  }
-                  value={value.stairs}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <Text>있다</Text>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <Text>없다</Text>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-
-              {value.stairs === "Y" ? (
+              <RadioBtn
+                title="계단 유무"
+                getCheck={getCheck}
+                name="eto_s_YN"
+                value={value.eto_s_YN}
+                yes="있다"
+                no="없다"
+              />
+              {value.eto_s_YN === "Y" ? (
                 <>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>계단 손잡이 유무</Text>
-                    <RadioButton.Group
-                      onValueChange={(v) =>
-                        setValue((prev) => {
-                          return { ...prev, handle: v };
-                        })
-                      }
-                      value={value.handle}
-                      style={styles.yesorno}
-                    >
-                      <View style={styles.radio}>
-                        <View style={styles.radio_wrap}>
-                          <RadioButton value="Y" />
-                        </View>
-                        <View style={styles.radio_wrap}>
-                          <RadioButton value="N" />
-                        </View>
-                      </View>
-                    </RadioButton.Group>
+                  <RadioBtn
+                    title="계단 손잡이 유무"
+                    getCheck={getCheck}
+                    name="eto_s_handle_YN"
+                    value={value.eto_s_handle_YN}
+                  />
+
+                  <RadioBtn
+                    title="계단 손잡이 점자 유무(시작과 끝)"
+                    getCheck={getCheck}
+                    name="eto_s_handle_braille_YN"
+                    value={value.eto_s_handle_braille_YN}
+                  />
+                  <RadioBtn
+                    title="계단 상하부 점형 블록 설치 유무"
+                    getCheck={getCheck}
+                    name="eto_s_dotblock_YN"
+                    value={value.eto_s_dotblock_YN}
+                  />
+                </>
+              ) : null}
+              <View style={styles.img}>
+                {value.eto_s_YN === "Y" ? (
+                  <>
+                    <TakePhoto
+                      title="계단"
+                      name="p_cr_s_stairsImg"
+                      getImage={getImage}
+                      value={value.p_cr_s_stairsImg}
+                    />
+                    {value.eto_s_handle_YN === "Y" ? (
+                      <TakePhoto
+                        title="계단 손잡이"
+                        name="p_cr_s_handleImg"
+                        getImage={getImage}
+                        value={value.p_cr_s_handleImg}
+                      />
+                    ) : null}
+                    {value.eto_s_handle_braille_YN === "Y" ? (
+                      <TakePhoto
+                        title="계단 손잡이 점자"
+                        name="p_cr_s_handleBrailleImg"
+                        getImage={getImage}
+                        value={value.p_cr_s_handleBrailleImg}
+                      />
+                    ) : null}
+                    {value.eto_s_dotblock_YN === "Y" ? (
+                      <TakePhoto
+                        title="계단 상하부 점형 블록 설치"
+                        name="p_cr_s_dotBlockImg"
+                        getImage={getImage}
+                        value={value.p_cr_s_dotBlockImg}
+                      />
+                    ) : null}
+                  </>
+                ) : null}
+              </View>
+              {value.eto_s_YN === "Y" ? (
+                <>
+                  <View
+                    style={{
+                      position: "relative",
+                    }}
+                  >
+                    <Input
+                      title="계단 개수"
+                      getText={getText}
+                      name="eto_s_count"
+                      value={value.eto_s_count}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>개</Text>
+                    <Input
+                      title="계단 폭"
+                      getText={getText}
+                      name="eto_s_width"
+                      value={value.eto_s_width}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 63, right: 10 }}>cm</Text>
+
+                    <Input
+                      title="계단 높이"
+                      getText={getText}
+                      name="eto_s_height"
+                      value={value.eto_s_height}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 113, right: 10 }}>cm</Text>
                   </View>
+
                   <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>계단 손잡이 점자 유무(시작과 끝)</Text>
+                    <Text style={styles.add_subtitle}>계단 손잡이 형태(양 옆, 한쪽)</Text>
                     <RadioButton.Group
                       onValueChange={(v) =>
                         setValue((prev) => {
-                          return { ...prev, handleBraille: v };
+                          return { ...prev, eto_s_handle_structure: v };
                         })
                       }
-                      value={value.handleBraille}
+                      value={value.eto_s_handle_structure}
                       style={styles.yesorno}
                     >
                       <View style={styles.radio}>
                         <View style={styles.radio_wrap}>
-                          <RadioButton value="Y" />
+                          <Text>양 옆</Text>
+                          <RadioButton value={0} />
                         </View>
                         <View style={styles.radio_wrap}>
-                          <RadioButton value="N" />
-                        </View>
-                      </View>
-                    </RadioButton.Group>
-                  </View>
-                  <View style={styles.add_container}>
-                    <Text style={styles.add_subtitle}>계단 상하부 점형 블록 설치 유무</Text>
-                    <RadioButton.Group
-                      onValueChange={(v) =>
-                        setValue((prev) => {
-                          return { ...prev, dotBlock: v };
-                        })
-                      }
-                      value={value.dotBlock}
-                      style={styles.yesorno}
-                    >
-                      <View style={styles.radio}>
-                        <View style={styles.radio_wrap}>
-                          <RadioButton value="Y" />
+                          <Text>한 쪽</Text>
+                          <RadioButton value={1} />
                         </View>
                         <View style={styles.radio_wrap}>
-                          <RadioButton value="N" />
+                          <Text>없다</Text>
+                          <RadioButton value={2} />
                         </View>
                       </View>
                     </RadioButton.Group>
                   </View>
                 </>
               ) : null}
-              <View style={styles.img}>
-                {value.stairs === "Y" ? (
-                  <>
-                    <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>계단 유무</Text>
-                      <TouchableOpacity
-                        style={styles.imgchoose}
-                        onLaunchCamera={onLaunchCamera}
-                        onLaunchImageLibrary={onLaunchImageLibrary}
-                      >
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>계단 손잡이 유무</Text>
-                      <TouchableOpacity
-                        style={styles.imgchoose}
-                        onLaunchCamera={onLaunchCamera}
-                        onLaunchImageLibrary={onLaunchImageLibrary}
-                      >
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>계단 손잡이 점자 유무(시작과 끝)</Text>
-                      <TouchableOpacity
-                        style={styles.imgchoose}
-                        onLaunchCamera={onLaunchCamera}
-                        onLaunchImageLibrary={onLaunchImageLibrary}
-                      >
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.img_container}>
-                      <Text style={styles.img_container_title}>계단 상하부 점형 블록 설치 유무</Text>
-                      <TouchableOpacity
-                        style={styles.imgchoose}
-                        onLaunchCamera={onLaunchCamera}
-                        onLaunchImageLibrary={onLaunchImageLibrary}
-                      >
-                        <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                      </TouchableOpacity>
-                    </View>
-                  </>
-                ) : null}
-              </View>
-              <View>
-                {value.stairs === "Y" ? (
-                  <View style={styles.add_input}>
-                    <View style={styles.add_container}>
-                      <Text style={styles.add_subtitle}>계단 개수</Text>
-                      <View style={styles.input_wrapper}>
-                        <TextInput
-                          name="count"
-                          value={value.count}
-                          onChangeText={(text) =>
-                            setValue((prev) => {
-                              return { ...prev, count: text };
-                            })
-                          }
-                          style={styles.input}
-                        ></TextInput>
-                      </View>
-                    </View>
-                    <View style={styles.add_container}>
-                      <Text style={styles.add_subtitle}>계단 폭</Text>
-                      <View style={styles.input_wrapper}>
-                        <TextInput
-                          name="width"
-                          value={value.width}
-                          onChangeText={(text) =>
-                            setValue((prev) => {
-                              return { ...prev, width: text };
-                            })
-                          }
-                          style={styles.input}
-                        ></TextInput>
-                      </View>
-                    </View>
-                    <View style={styles.add_container}>
-                      <Text style={styles.add_subtitle}>계단 높이</Text>
-                      <View style={styles.input_wrapper}>
-                        <TextInput
-                          name="height"
-                          value={value.height}
-                          onChangeText={(text) =>
-                            setValue((prev) => {
-                              return { ...prev, height: text };
-                            })
-                          }
-                          style={styles.input}
-                        ></TextInput>
-                      </View>
-                    </View>
-                    <View style={styles.add_container}>
-                      {/* <View style={{ width: "100%" }}>
-                        <TextInput
-                          name="handleStructure"
-                          value={value.handleStructure}
-                          onChangeText={(text) =>
-                            setValue((prev) => {
-                              return { ...prev, handleStructure: text };
-                            })
-                          }
-                          style={styles.input}
-                        ></TextInput>
-                      </View> */}
-                    </View>
-
-                    <View style={styles.add_container}>
-                      <Text style={styles.add_subtitle}>계단 손잡이 형태(양 옆, 한쪽)</Text>
-                      <RadioButton.Group
-                        onValueChange={(v) =>
-                          setValue((prev) => {
-                            return { ...prev, handleStructure: v };
-                          })
-                        }
-                        value={value.handleStructure}
-                        style={styles.yesorno}
-                      >
-                        <View style={styles.radio}>
-                          <View style={styles.radio_wrap}>
-                            <Text>양 옆</Text>
-                            <RadioButton value="0" />
-                          </View>
-                          <View style={styles.radio_wrap}>
-                            <Text>한 쪽</Text>
-                            <RadioButton value="1" />
-                          </View>
-                          <View style={styles.radio_wrap}>
-                            <Text>없다</Text>
-                            <RadioButton value="2" />
-                          </View>
-                        </View>
-                      </RadioButton.Group>
-                    </View>
-                  </View>
-                ) : null}
-              </View>
             </View>
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

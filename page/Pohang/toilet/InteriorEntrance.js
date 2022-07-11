@@ -1,164 +1,184 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { RadioButton } from "react-native-paper";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
-import Section from "../../component/Section";
+import { color } from "../../../assets/styles/color";
+import Input from "../../component/Input";
+
+import RadioBtn from "../../component/RadioBtn";
 
 export default function InteriorEntrance({ route, navigation }) {
-  const { item } = route.params;
+  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [value, setValue] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const [value, setValue] = useState({
-    doortype: "",
-    lock: "",
-    silhouette: "",
-    width: "",
-    roadchin: "",
-    rodechinHeight: "",
-  });
+  const getCheck = (val, name) => {
+    if (name === "t_ie_road_chin_YN" && val === "N") {
+      setValue((value) => ({
+        ...value,
+        t_ie_road_chin_height: 0,
+      }));
+    }
+    setValue((value) => ({
+      ...value,
+      [name]: val,
+    }));
+  };
+  const getText = (text, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: text,
+    }));
+  };
+  console.log(value);
+  useEffect(() => {
+    axios
+      .post(`${API}/api/pohang/toilet/getinteriorentrance`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        setValue(JSON.parse(res.data));
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-  const imagePickerOption = {
-    mediaType: "photo",
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === "android",
+  const DataSave = () => {
+    axios
+      .post(`${API}/api/pohang/toilet/setinteriorentrance`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+        t_ie_doortype: value.t_ie_doortype,
+        t_ie_width: value.t_ie_width,
+        t_ie_lock_YN: value.t_ie_lock_YN,
+        t_ie_silhouette_YN: value.t_ie_silhouette_YN,
+        t_ie_road_chin_YN: value.t_ie_road_chin_YN,
+        t_ie_road_chin_height: value.t_ie_road_chin_height,
+      })
+      .then((res) => {
+        const response = JSON.parse(res.data);
+        if (response.result === 1) {
+          Alert.alert("저장되었습니다.");
+          navigation.goBack();
+        } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+      })
+      .catch((err) => {
+        console.log(err);
+        Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+      });
   };
 
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
-  };
-
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
+  const handleOnSubmit = async () => {
+    if (
+      value.t_ie_doortype === (null || "") ||
+      value.t_ie_widthe === (null || "") ||
+      value.t_ie_lock_YN === null ||
+      value.t_ie_silhouette_YN === null ||
+      value.t_ie_road_chin_YN === null ||
+      value.t_ie_road_chin_height === (null || "")
+    ) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else if (value.t_ie_road_chin_YN === "Y" && value.t_ie_road_chin_height === (null || "" || 0)) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else DataSave();
   };
 
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
-        <Section item={item} />
+        <View style={styles.add_title_container}>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>뒤로</Text>
+          </View>
+          <Text style={styles.add_title}>{listName}</Text>
+
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>저장</Text>
+          </View>
+        </View>
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>문 유형</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    value={value.doortype}
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, doortype: text };
-                      })
-                    }
-                    style={styles.input}
-                  ></TextInput>
-                </View>
+              <Input
+                title="문 유형"
+                getText={getText}
+                name="t_ie_doortype"
+                placeholder="EX. 여닫이 문"
+                value={value.t_ie_doortype}
+              />
+              <View
+                style={{
+                  position: "relative",
+                }}
+              >
+                <Input
+                  title="문 폭"
+                  getText={getText}
+                  name="t_ie_width"
+                  value={value.t_ie_width}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>문 폭</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    value={value.width}
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, width: text };
-                      })
-                    }
-                    style={styles.input}
-                  ></TextInput>
-                </View>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>잠금장치 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, lock: v };
-                    })
-                  }
-                  value={value.lock}
-                  style={styles.yesorno}
+              <RadioBtn
+                title="잠금장치 유무"
+                getCheck={getCheck}
+                name="t_ie_lock_YN"
+                value={value.t_ie_lock_YN}
+                yes="있다"
+                no="없다"
+              />
+              <RadioBtn
+                title="실루엣 보임 여부"
+                getCheck={getCheck}
+                name="t_ie_silhouette_YN"
+                value={value.t_ie_silhouette_YN}
+              />
+              <RadioBtn title="턱 유무" getCheck={getCheck} name="t_ie_road_chin_YN" value={value.t_ie_road_chin_YN} />
+              {value.t_ie_road_chin_YN === "Y" ? (
+                <View
+                  style={{
+                    position: "relative",
+                  }}
                 >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <Text>있다</Text>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <Text>없다</Text>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>실루엣 보임 여부</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, silhouette: v };
-                    })
-                  }
-                  value={value.silhouette}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>턱 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, roadchin: v };
-                    })
-                  }
-                  value={value.roadchin}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              {value.roadchin === "Y" ? (
-                <View style={styles.add_container}>
-                  <Text style={styles.add_subtitle}>턱 높이</Text>
-                  <View style={styles.input_wrapper}>
-                    <TextInput
-                      name="name"
-                      value={value.rodechinHeight}
-                      onChangeText={(text) =>
-                        setValue((prev) => {
-                          return { ...prev, rodechinHeight: text };
-                        })
-                      }
-                      style={styles.input}
-                    ></TextInput>
-                  </View>
+                  <Input
+                    title="턱 높이"
+                    getText={getText}
+                    name="t_ie_road_chin_height"
+                    value={value.t_ie_road_chin_height}
+                    keyboardType={"numeric"}
+                  />
+                  <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
                 </View>
               ) : null}
             </View>
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
