@@ -67,7 +67,7 @@ export default function Ad({ route, navigation }) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else {
       setModalVisible(true);
-      uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
+      uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data, teamKey)
         .then((result) => {
           axios
             .post(`${API}/api/pohang/essential/setad`, {
