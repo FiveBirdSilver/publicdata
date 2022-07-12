@@ -18,7 +18,8 @@ export default function Staris({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [test, setTest] = useState([]);
+  const [imageLength, setImageLength] = useState([]);
+  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "cr_s_YN" && val === "N") {
@@ -40,6 +41,24 @@ export default function Staris({ route, navigation }) {
       }));
   };
 
+  useEffect(() => {
+    axios
+      .post(`${API}/api/pohang/coreroute/getstairs`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        const response = JSON.parse(res.data);
+        let obj = response;
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+        setValue(obj);
+        setImageLength(response.picture.map((i) => i.url).filter((v) => v !== "").length);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   const getImage = (uri, name) => {
     const newArr = [...image];
     let tmp = [...image];
@@ -57,34 +76,13 @@ export default function Staris({ route, navigation }) {
       });
     }
     setImage(tmp);
+
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
-
-  useEffect(() => {
-    axios
-      .post(`${API}/api/pohang/coreroute/getstairs`, {
-        team_skey: teamKey,
-        list_skey: listKey,
-      })
-      .then((res) => {
-        const response = JSON.parse(res.data);
-        let obj = response;
-        let test0 = {};
-
-        response.picture.forEach((v) => {
-          obj[v.name] = v.url;
-        });
-        setValue(obj);
-
-        response.picture.forEach((v) => {
-          test0[v.name] = v.url;
-        });
-        setTest(test0);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  console.log("==============================================");
-  console.log(test);
 
   const getText = (text, name) => {
     setValue((value) => ({
@@ -136,8 +134,7 @@ export default function Staris({ route, navigation }) {
         Alert.alert("저장에 실패했습니다. 필수 사진이 추가되었는지 확인해 주세요.");
       });
   };
-  console.log(value.cr_s_YN === "Y");
-  console.log(test.p_cr_s_stairsImg === "", "?????");
+
   const handleOnSubmit = async () => {
     if (value.cr_s_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
@@ -145,44 +142,18 @@ export default function Staris({ route, navigation }) {
       (value.cr_s_YN === "Y" && value.cr_s_handle_YN === null) ||
       (value.cr_s_YN === "Y" && value.cr_s_handle_braille_YN === null) ||
       (value.cr_s_YN === "Y" && value.cr_s_dotblock_YN === null) ||
-      (value.cr_s_YN === "Y" && value.cr_s_count === (null || 0)) ||
-      (value.cr_s_YN === "Y" && value.cr_s_width === (null || 0)) ||
-      (value.cr_s_YN === "Y" && value.cr_s_height === (null || 0)) ||
+      (value.cr_s_YN === "Y" && value.cr_s_count === null) ||
+      (value.cr_s_YN === "Y" && value.cr_s_count === 0) ||
+      (value.cr_s_YN === "Y" && value.cr_s_width === null) ||
+      (value.cr_s_YN === "Y" && value.cr_s_width === 0) ||
+      (value.cr_s_YN === "Y" && value.cr_s_height === null) ||
+      (value.cr_s_YN === "Y" && value.cr_s_height === 0) ||
       (value.cr_s_YN === "Y" && value.cr_s_handle_structure === null)
     ) {
-      Alert.alert("모든 항목을 입력해주세요.");
-    }
-    if (value.cr_s_YN === "Y" && test.p_cr_s_stairsImg === "") {
-      if (
-        image.find((i) => i.name === "p_cr_s_stairsImg") === undefined ||
-        image.find((i) => i.name === "p_cr_s_stairsImg").url === ""
-      ) {
-        Alert.alert("계단 사진을 추가해 주세요."); // 최초 insert 방어
-      } else DataSave();
-    }
-    // else if (value.cr_s_handle_YN === "Y" && test.p_cr_s_handleImg === "") {
-    //   if (
-    //     image.find((i) => i.name === "p_cr_s_handleImg") === undefined ||
-    //     image.find((i) => i.name === "p_cr_s_handleImg").url === ""
-    //   ) {
-    //     Alert.alert("계단 손잡이 사진을 추가해 주세요."); // 최초 insert 방어
-    //   } else DataSave();
-    // } else if (value.cr_s_handle_braille_YN === "Y" && test.p_cr_s_handleBrailleImg === "") {
-    //   if (
-    //     image.find((i) => i.name === "p_cr_s_handleBrailleImg") === undefined ||
-    //     image.find((i) => i.name === "p_cr_s_handleBrailleImg").url === ""
-    //   ) {
-    //     Alert.alert("계단 손잡이 점자 사진을 추가해주세요."); // 최초 insert 방어
-    //   } else DataSave();
-    // } else if (value.cr_s_dotblock_YN === "Y" && test.p_cr_s_dotBlockImg === "") {
-    //   if (
-    //     image.find((i) => i.name === "p_cr_s_dotBlockImg") === undefined ||
-    //     image.find((i) => i.name === "p_cr_s_dotBlockImg").url === ""
-    //   ) {
-    //     Alert.alert("계단 손잡이 점자 사진을 추가해 주세요."); // 최초 insert 방어
-    //   } else DataSave();
-    // }
-    else DataSave();
+      Alert.alert("모든 항목을 입력해 주세요.");
+    } else if (yLength !== imageLength) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
+    } else DataSave();
   };
 
   return (

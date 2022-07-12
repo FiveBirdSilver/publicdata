@@ -15,7 +15,7 @@ export default function Ad({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-
+  console.log(value);
   const getCheck = (val, name) => {
     setValue((value) => ({
       ...value,

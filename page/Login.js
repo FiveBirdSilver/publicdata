@@ -40,7 +40,6 @@ export default function Login({ navigation }) {
     });
   }, []);
   const handleOnSubmit = () => {
-    // navigation.push("Home");
     if (id === "" || password === "") {
       Alert.alert("알림", "아이디와 비밀번호를 모두 입력해주세요");
     } else if (location === null) {

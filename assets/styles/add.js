@@ -141,6 +141,7 @@ export const styles = StyleSheet.create({
   season_container: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 30,
   },
   radio: {
     flexDirection: "row",
@@ -237,5 +238,26 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     // padding: 10,
+  },
+  reInput: {
+    width: "80%",
+    backgroundColor: color.gray,
+    height: 40,
+    paddingLeft: 10,
+    borderRadius: 5,
+  },
+  reView: {
+    marginTop: 30,
+    justifyContent: "center",
+    position: "relative",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "flex-start",
+    backgroundColor: "black",
+  },
+  resubTitle: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });

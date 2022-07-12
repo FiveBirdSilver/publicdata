@@ -80,6 +80,7 @@ export default function Area({ route, navigation }) {
     ],
     depth: ["basic", "er", "ed", "ie", "w", "u", "t", "fc", "dt"],
   };
+  console.log(complete);
   return (
     <View style={styles.container}>
       <View style={styles.header_container}>
@@ -95,8 +96,13 @@ export default function Area({ route, navigation }) {
             {essential.label.map((i, index) => (
               <TouchableOpacity
                 key={i}
-                style={styles.area_btn}
-                // style={status_list.value[index] === "Y" ? styles.area_btn_complete : styles.area_btn}
+                style={
+                  complete.length !== 0
+                    ? complete.status_list.essential.map((i) => i.status)[index] === "Y"
+                      ? styles.area_btn_complete
+                      : styles.area_btn
+                    : styles.area_btn
+                }
                 onPress={() =>
                   navigation.push(`${essential.value[index]}`, {
                     listName: i,
@@ -109,7 +115,17 @@ export default function Area({ route, navigation }) {
                   })
                 }
               >
-                <Text style={styles.area_btn_title}>{i}</Text>
+                <Text
+                  style={
+                    complete.length !== 0
+                      ? complete.status_list.essential.map((i) => i.status)[index] === "Y"
+                        ? styles.area_btn_title_complete
+                        : styles.area_btn_title
+                      : styles.area_btn_title
+                  }
+                >
+                  {i}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -120,7 +136,13 @@ export default function Area({ route, navigation }) {
             {flow.label.map((i, index) => (
               <TouchableOpacity
                 key={i}
-                style={styles.area_btn}
+                style={
+                  complete.length !== 0
+                    ? complete.status_list.coreroute.map((i) => i.status)[index] === "Y"
+                      ? styles.area_btn_complete
+                      : styles.area_btn
+                    : styles.area_btn
+                }
                 onPress={() =>
                   navigation.push(`${flow.value[index]}`, {
                     listName: i,
@@ -133,7 +155,17 @@ export default function Area({ route, navigation }) {
                   })
                 }
               >
-                <Text style={styles.area_btn_title}>{i}</Text>
+                <Text
+                  style={
+                    complete.length !== 0
+                      ? complete.status_list.coreroute.map((i) => i.status)[index] === "Y"
+                        ? styles.area_btn_title_complete
+                        : styles.area_btn_title
+                      : styles.area_btn_title
+                  }
+                >
+                  {i}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -144,7 +176,13 @@ export default function Area({ route, navigation }) {
             {park.label.map((i, index) => (
               <TouchableOpacity
                 key={i}
-                style={styles.area_btn}
+                style={
+                  complete.length !== 0
+                    ? complete.status_list.park.map((i) => i.status)[index] === "Y"
+                      ? styles.area_btn_complete
+                      : styles.area_btn
+                    : styles.area_btn
+                }
                 onPress={() =>
                   navigation.push(`${park.value[index]}`, {
                     listName: i,
@@ -157,7 +195,17 @@ export default function Area({ route, navigation }) {
                   })
                 }
               >
-                <Text style={styles.area_btn_title}>{i}</Text>
+                <Text
+                  style={
+                    complete.length !== 0
+                      ? complete.status_list.park.map((i) => i.status)[index] === "Y"
+                        ? styles.area_btn_title_complete
+                        : styles.area_btn_title
+                      : styles.area_btn_title
+                  }
+                >
+                  {i}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -168,7 +216,13 @@ export default function Area({ route, navigation }) {
             {entry.label.map((i, index) => (
               <TouchableOpacity
                 key={i}
-                style={styles.area_btn}
+                style={
+                  complete.length !== 0
+                    ? complete.status_list.eto.map((i) => i.status)[index] === "Y"
+                      ? styles.area_btn_complete
+                      : styles.area_btn
+                    : styles.area_btn
+                }
                 onPress={() =>
                   navigation.push(`${entry.value[index]}`, {
                     listName: i,
@@ -181,7 +235,17 @@ export default function Area({ route, navigation }) {
                   })
                 }
               >
-                <Text style={styles.area_btn_title}>{i}</Text>
+                <Text
+                  style={
+                    complete.length !== 0
+                      ? complete.status_list.eto.map((i) => i.status)[index] === "Y"
+                        ? styles.area_btn_title_complete
+                        : styles.area_btn_title
+                      : styles.area_btn_title
+                  }
+                >
+                  {i}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -192,7 +256,13 @@ export default function Area({ route, navigation }) {
             {toilet.label.map((i, index) => (
               <TouchableOpacity
                 key={i}
-                style={styles.area_btn}
+                style={
+                  complete.length !== 0
+                    ? complete.status_list.toilet.map((i) => i.status)[index] === "Y"
+                      ? styles.area_btn_complete
+                      : styles.area_btn
+                    : styles.area_btn
+                }
                 onPress={() =>
                   navigation.push(`${toilet.value[index]}`, {
                     listName: i,
@@ -205,7 +275,17 @@ export default function Area({ route, navigation }) {
                   })
                 }
               >
-                <Text style={styles.area_btn_title}>{i}</Text>
+                <Text
+                  style={
+                    complete.length !== 0
+                      ? complete.status_list.toilet.map((i) => i.status)[index] === "Y"
+                        ? styles.area_btn_title_complete
+                        : styles.area_btn_title
+                      : styles.area_btn_title
+                  }
+                >
+                  {i}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
