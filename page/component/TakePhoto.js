@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image, Alert, Dimensions, Modal, Pressable } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -20,6 +20,10 @@ export default function TakePhoto(props) {
 
   const [image, setImage] = useState("");
   const [propsImg, setPropsImg] = useState(props.value);
+
+  useEffect(() => {
+    setPropsImg(props.value);
+  }, [props.value]);
 
   // 갤러리에서 이미지 선택
   const uploadImg = async (name) => {
@@ -131,7 +135,6 @@ export default function TakePhoto(props) {
     setModalVisible(true);
     setPhotoName(name);
   };
-  // console.log(propsImg);
   return (
     <>
       <View style={styles.img_container}>

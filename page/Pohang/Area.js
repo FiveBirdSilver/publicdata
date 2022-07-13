@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { Text, View, TouchableOpacity, ScrollView, Alert } from "react-native";
 import axios from "axios";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 import { styles } from "../../assets/styles/area";
+
 import Header from "../component/Header";
 
 export default function Area({ route, navigation }) {
@@ -21,6 +23,30 @@ export default function Area({ route, navigation }) {
       });
   }, []);
 
+  const handleOnSubmit = () => {
+    const essential = complete.status_list.coreroute.map((i) => i.status);
+    const coreroute = complete.status_list.coreroute.map((i) => i.status);
+    const eto = complete.status_list.eto.map((i) => i.status);
+    const park = complete.status_list.park.map((i) => i.status);
+    const toilet = complete.status_list.toilet.map((i) => i.status);
+    const tmpJoin = essential.concat(coreroute).concat(eto).concat(park).concat(toilet);
+
+    if (tmpJoin.filter((i) => i === "N").length !== 0) {
+      Alert.alert("미수집 항목이 존재합니다. 모든 수집 완료 후 저장해주세요.");
+    } else
+      axios
+        .post(`${API}/api/completion`, {
+          team_skey: teamKey,
+          org_skey: regionKey,
+          list_skey: listKey,
+        })
+        .then((res) => {
+          if (JSON.parse(res.data).result === 1) {
+            Alert.alert("저장되었습니다.");
+          } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
+        });
+  };
+
   const essential = {
     label: [
       "기본정보",
@@ -35,10 +61,7 @@ export default function Area({ route, navigation }) {
     value: ["Basic_P", "Recommend_P", "ServiceDog_P", "Ad_P", "Program_P", "Guide_P", "Facility_P", "Leaflet_P"],
     depth: ["basic", "rc", "dog", "ad", "ep", "g", "af", "tl"],
   };
-  // const status_list = {
-  //   label: ["Basic_P", "Recommend_P", "ServiceDog_P", "Ad_P", "Program_P", "Guide_P", "Facility_P", "Leaflet_P"],
-  //   value: ["Y", "N", "Y", "Y", "Y", "Y", "Y", "Y"],
-  // };
+
   const flow = {
     label: ["보행로", "기타", "계단", "경사로", "턱", "승강기"],
     value: ["Footpath_P", "ETC_P", "Stairs_P", "Runway_P", "Roadchin_P", "Elevator_P"],
@@ -80,11 +103,16 @@ export default function Area({ route, navigation }) {
     ],
     depth: ["basic", "er", "ed", "ie", "w", "u", "t", "fc", "dt"],
   };
-  console.log(complete);
+
   return (
     <View style={styles.container}>
       <View style={styles.header_container}>
         <Header title="데이터 수집" subtitle="데이터 만들기" />
+        <View style={styles.icon_wrap}>
+          <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+            <AntDesign style={styles.icon} color="orange" name="upload" size={30} />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.area}>
         <Text style={styles.area_title}>{listName}</Text>

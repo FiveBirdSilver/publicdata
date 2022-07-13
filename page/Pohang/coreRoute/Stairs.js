@@ -54,7 +54,12 @@ export default function Staris({ route, navigation }) {
           obj[v.name] = v.url;
         });
         setValue(obj);
-        setImageLength(response.picture.map((i) => i.url).filter((v) => v !== "").length);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
       })
       .catch((err) => console.log(err));
   }, []);

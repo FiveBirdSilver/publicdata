@@ -16,6 +16,8 @@ export default function Footpath({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [imageLength, setImageLength] = useState([]);
+  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     setValue((value) => ({
@@ -47,6 +49,11 @@ export default function Footpath({ route, navigation }) {
       });
     }
 
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
     setImage(tmp);
   };
 
@@ -117,19 +124,8 @@ export default function Footpath({ route, navigation }) {
       value.cr_f_waterspout_width === ""
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.cr_f_wheelchair_accessible_YN === "Y" && value.p_cr_f_footpathMoveImg === "") {
-      if (
-        image.find((i) => i.name === "p_cr_f_footpathMoveImg") === undefined ||
-        image.find((i) => i.name === "p_cr_f_footpathMoveImg").url === ""
-      ) {
-        Alert.alert("휠체어 이동 가능 사진을 추가해주세요."); // 최초 insert 방어
-      } else DataSave();
-    } else if (value.p_cr_f_footpathMoveImg !== "") {
-      // 이미지가 이미 존재할 때
-      if (image.length === 0) DataSave();
-      else if (image.length > 0 && image.find((i) => i.name === "p_cr_f_footpathMoveImg").url === "") {
-        Alert.alert("휠체어 이동 가능 사진을 추가해주세요."); // 수정 update 방어
-      } else DataSave();
+    } else if (yLength !== imageLength) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
 

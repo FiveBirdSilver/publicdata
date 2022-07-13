@@ -38,6 +38,7 @@ export default function Login({ navigation }) {
         }
       }
     });
+    // axios 타야함!
   }, []);
   const handleOnSubmit = () => {
     if (id === "" || password === "") {

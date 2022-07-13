@@ -17,6 +17,8 @@ export default function Basic({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [imageLength, setImageLength] = useState([]);
+  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "t_b_YN" && val === "N") {
@@ -56,6 +58,11 @@ export default function Basic({ route, navigation }) {
     }
 
     setImage(tmp);
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
 
   useEffect(() => {
@@ -73,6 +80,12 @@ export default function Basic({ route, navigation }) {
         });
 
         setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
       })
       .catch((err) => console.log(err));
   }, []);
@@ -139,6 +152,8 @@ export default function Basic({ route, navigation }) {
       (value.t_b_YN === "Y" && value.t_b_address === (null || ""))
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
+    } else if (yLength !== imageLength) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
 

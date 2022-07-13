@@ -1,136 +1,191 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { RadioButton } from "react-native-paper";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
-import Section from "../../component/Section";
+import { color } from "../../../assets/styles/color";
+import Input from "../../component/Input";
+
+import TakePhoto from "../../component/TakePhoto";
+import uploadImgToGcs from "../../component/util";
+import RadioBtn from "../../component/RadioBtn";
 
 export default function Door({ route, navigation }) {
-  const { item } = route.params;
+  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [value, setValue] = useState([]);
+  const [image, setImage] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [imageLength, setImageLength] = useState([]);
 
-  const [value, setValue] = useState({
-    sliding: "",
-    hinged: "",
-    automatic: "",
-  });
+  const getCheck = (val, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: val,
+    }));
+  };
+  const getImage = (uri, name) => {
+    const newArr = [...image];
+    let tmp = [...image];
 
-  const imagePickerOption = {
-    mediaType: "photo",
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === "android",
+    if (newArr.findIndex((v) => v.name === name) !== -1) {
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
+      });
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
+    }
+    setImage(tmp);
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
 
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
-  };
+  useEffect(() => {
+    axios
+      .post(`${API}/api/daegu/toilet/getdoor`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        const response = JSON.parse(res.data);
+        let obj = response;
 
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const DataSave = () => {
+    setModalVisible(true);
+    uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
+      .then((result) => {
+        axios
+          .post(`${API}/api/daegu/toilet/setdoor`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            to_door_sliding_YN: value.to_door_sliding_YN,
+            to_door_hinged_YN: value.to_door_hinged_YN,
+            to_door_automatic_YN: value.to_door_automatic_YN,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              console.log("실행2");
+              setModalVisible(false);
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else {
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해 주세요.");
+              navigation.goBack();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setModalVisible(false);
+            Alert.alert("저장에 실패했습니다. 다시 시도해 주세요.");
+            navigation.goBack();
+          });
+      })
+      .catch((err) => {
+        setModalVisible(false);
+        console.log("에러발생");
+        Alert.alert("저장에 실패했습니다. 필수 사진이 추가되었는지 확인해 주세요.");
+      });
+  };
+  const handleOnSubmit = async () => {
+    if (value.to_door_sliding_YN === null || value.to_door_hinged_YN === null || value.to_door_automatic_YN === null) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else if (imageLength === 0) {
+      Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+    } else DataSave();
   };
 
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
-        <Section item={item} />
+        <View style={styles.add_title_container}>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>뒤로</Text>
+          </View>
+          <Text style={styles.add_title}>{listName}</Text>
+
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>저장</Text>
+          </View>
+        </View>
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>미닫이문 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, sliding: v };
-                    })
-                  }
-                  value={value.sliding}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <Text>있다</Text>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <Text>없다</Text>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>여닫이문 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, hinged: v };
-                    })
-                  }
-                  value={value.hinged}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>버튼식 자동문 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, automatic: v };
-                    })
-                  }
-                  value={value.automatic}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
+              <RadioBtn
+                title="미닫이문 유무"
+                getCheck={getCheck}
+                name="to_door_sliding_YN"
+                value={value.to_door_sliding_YN}
+                yes="있다"
+                no="없다"
+              />
+              <RadioBtn
+                title="여닫이문 유무"
+                getCheck={getCheck}
+                name="to_door_hinged_YN"
+                value={value.to_door_hinged_YN}
+              />
+              <RadioBtn
+                title="버튼식 자동문 유무"
+                getCheck={getCheck}
+                name="to_door_automatic_YN"
+                value={value.to_door_automatic_YN}
+              />
               <View style={styles.img}>
-                <View style={styles.img_container}>
-                  <Text style={styles.img_container_title}>사진 1</Text>
-                  <TouchableOpacity
-                    style={styles.imgchoose}
-                    onLaunchCamera={onLaunchCamera}
-                    onLaunchImageLibrary={onLaunchImageLibrary}
-                  >
-                    <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.img_container}>
-                  <Text style={styles.img_container_title}>사진 2</Text>
-                  <TouchableOpacity
-                    style={styles.imgchoose}
-                    onLaunchCamera={onLaunchCamera}
-                    onLaunchImageLibrary={onLaunchImageLibrary}
-                  >
-                    <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                  </TouchableOpacity>
-                </View>
+                <TakePhoto title="사진 1" name="d_t_door_photo1" getImage={getImage} value={value.d_t_door_photo1} />
+                <TakePhoto title="사진 1" name="d_t_door_photo2" getImage={getImage} value={value.d_t_door_photo2} />
               </View>
             </View>
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

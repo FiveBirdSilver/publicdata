@@ -1,192 +1,245 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { RadioButton } from "react-native-paper";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
-import Section from "../../component/Section";
+import { color } from "../../../assets/styles/color";
+import Input from "../../component/Input";
+
+import RadioBtn from "../../component/RadioBtn";
+import TakePhoto from "../../component/TakePhoto";
+import uploadImgToGcs from "../../component/util";
 
 export default function Ramp({ route, navigation }) {
-  const { item } = route.params;
+  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
+  const [value, setValue] = useState([]);
+  const [image, setImage] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [imageLength, setImageLength] = useState([]);
 
-  const [value, setValue] = useState({
-    ramp: "",
-    rampHandle: "",
-    rampBraile: "",
-    rampAntislip: "",
-    rampWidth: "",
-    rampAngle: "",
-  });
-
-  const imagePickerOption = {
-    mediaType: "photo",
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === "android",
+  const getCheck = (val, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: val,
+    }));
   };
 
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
+  const getImage = (uri, name) => {
+    const newArr = [...image];
+    let tmp = [...image];
+
+    if (newArr.findIndex((v) => v.name === name) !== -1) {
+      tmp.forEach((v) => {
+        if (v.name === name) {
+          v.url = uri;
+        }
+      });
+    } else {
+      tmp.push({
+        name: name,
+        url: uri,
+      });
+    }
+    setImage(tmp);
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
 
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
+  useEffect(() => {
+    axios
+      .post(`${API}/api/daegu/company/getramp`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const getText = (text, name) => {
+    setValue((value) => ({
+      ...value,
+      [name]: text,
+    }));
+  };
+
+  const DataSave = () => {
+    setModalVisible(true);
+    uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
+      .then((result) => {
+        axios
+          .post(`${API}/api/daegu/company/setramp`, {
+            team_skey: teamKey,
+            list_skey: listKey,
+            dw_ramp_YN: value.dw_ramp_YN,
+            dw_ramp_handle_YN: value.dw_ramp_handle_YN,
+            dw_ramp_braille_YN: value.dw_ramp_braille_YN,
+            dw_ramp_antislip_YN: value.dw_ramp_antislip_YN,
+            dw_ramp_width: value.dw_ramp_width,
+            dw_ramp_angle: value.dw_ramp_angle,
+          })
+          .then((res) => {
+            const response = JSON.parse(res.data);
+            if (response.result === 1) {
+              console.log("실행2");
+              setModalVisible(false);
+              Alert.alert("저장되었습니다.");
+              navigation.goBack();
+            } else {
+              setModalVisible(false);
+              Alert.alert("저장에 실패했습니다. 다시 시도해 주세요.");
+              navigation.goBack();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setModalVisible(false);
+            Alert.alert("저장에 실패했습니다. 다시 시도해 주세요.");
+            navigation.goBack();
+          });
+      })
+      .catch((err) => {
+        setModalVisible(false);
+        console.log("에러발생");
+        Alert.alert("저장에 실패했습니다. 필수 사진이 추가되었는지 확인해 주세요.");
+      });
+  };
+  const handleOnSubmit = async () => {
+    if (
+      value.dw_ramp_YN === null ||
+      value.dw_ramp_handle_YN === null ||
+      value.dw_ramp_braille_YN === null ||
+      value.dw_ramp_antislip_YN === null ||
+      value.dw_ramp_width === null ||
+      value.dw_ramp_width === "" ||
+      value.dw_ramp_angle === null ||
+      value.dw_ramp_angle === ""
+    ) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else if (imageLength === 0) {
+      Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+    } else DataSave();
   };
 
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
-        <Section item={item} />
+        <View style={styles.add_title_container}>
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => navigation.goBack()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="back" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>뒤로</Text>
+          </View>
+          <Text style={styles.add_title}>{listName}</Text>
+
+          <View style={styles.add_title_wrapper}>
+            <View style={styles.icon_wrap}>
+              <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+                <AntDesign style={styles.icon} color="#00acb1" name="save" size={30} />
+              </TouchableOpacity>
+            </View>
+            <Text>저장</Text>
+          </View>
+        </View>
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>입구 경사 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, ramp: v };
-                    })
-                  }
-                  value={value.ramp}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <Text>있다</Text>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <Text>없다</Text>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
+              <RadioBtn
+                title="입구 경사 유무"
+                getCheck={getCheck}
+                name="dw_ramp_YN"
+                value={value.dw_ramp_YN}
+                yes="있다"
+                no="없다"
+              />
+              <RadioBtn
+                title="손잡이 유무"
+                getCheck={getCheck}
+                name="dw_ramp_handle_YN"
+                value={value.dw_ramp_handle_YN}
+              />
+              <RadioBtn
+                title="손잡이 점자표기 유무"
+                getCheck={getCheck}
+                name="dw_ramp_braille_YN"
+                value={value.dw_ramp_braille_YN}
+              />
+              <RadioBtn
+                title="미끄럼 방지판 유무"
+                getCheck={getCheck}
+                name="dw_ramp_antislip_YN"
+                value={value.dw_ramp_antislip_YN}
+              />
+              <View style={{ position: "relative" }}>
+                <Input
+                  title="가로 폭"
+                  getText={getText}
+                  name="dw_ramp_width"
+                  value={value.dw_ramp_width}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                <Input
+                  title="경사면 각도"
+                  getText={getText}
+                  name="dw_ramp_angle"
+                  value={value.dw_ramp_angle}
+                  keyboardType={"numeric"}
+                />
+                <Text style={{ position: "absolute", top: 63, right: 10 }}>◦</Text>
               </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>손잡이 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, rampHandle: v };
-                    })
-                  }
-                  value={value.rampHandle}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>손잡이 점자표기 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, rampBraile: v };
-                    })
-                  }
-                  value={value.rampBraile}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>미끄럼 방지판 유무</Text>
-                <RadioButton.Group
-                  onValueChange={(v) =>
-                    setValue((prev) => {
-                      return { ...prev, rampAntislip: v };
-                    })
-                  }
-                  value={value.rampAntislip}
-                  style={styles.yesorno}
-                >
-                  <View style={styles.radio}>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="Y" />
-                    </View>
-                    <View style={styles.radio_wrap}>
-                      <RadioButton value="N" />
-                    </View>
-                  </View>
-                </RadioButton.Group>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>가로폭</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    placeholder="cm"
-                    value={value.rampWidth}
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, rampWidth: text };
-                      })
-                    }
-                    style={styles.input}
-                  ></TextInput>
-                </View>
-              </View>
-              <View style={styles.add_container}>
-                <Text style={styles.add_subtitle}>경사면 각도</Text>
-                <View style={styles.input_wrapper}>
-                  <TextInput
-                    name="name"
-                    placeholder="◦"
-                    value={value.rampAngle}
-                    onChangeText={(text) =>
-                      setValue((prev) => {
-                        return { ...prev, rampAngle: text };
-                      })
-                    }
-                    style={styles.input}
-                  ></TextInput>
-                </View>
-              </View>
+
               <View style={styles.img}>
-                <View style={styles.img_container}>
-                  <Text style={styles.img_container_title}>사진 1</Text>
-                  <TouchableOpacity
-                    style={styles.imgchoose}
-                    onLaunchCamera={onLaunchCamera}
-                    onLaunchImageLibrary={onLaunchImageLibrary}
-                  >
-                    <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.img_container}>
-                  <Text style={styles.img_container_title}>사진 2</Text>
-                  <TouchableOpacity
-                    style={styles.imgchoose}
-                    onLaunchCamera={onLaunchCamera}
-                    onLaunchImageLibrary={onLaunchImageLibrary}
-                  >
-                    <AntDesign style={styles.icon} color="white" name="pluscircle" size={40} />
-                  </TouchableOpacity>
-                </View>
+                <TakePhoto
+                  title="사진 1"
+                  name="d_c_dw_ramp_photo1"
+                  getImage={getImage}
+                  value={value.d_c_dw_ramp_photo1}
+                />
+                <TakePhoto
+                  title="사진 2"
+                  name="d_c_dw_ramp_photo2"
+                  getImage={getImage}
+                  value={value.d_c_dw_ramp_photo2}
+                />
               </View>
             </View>
           </View>
         </View>
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

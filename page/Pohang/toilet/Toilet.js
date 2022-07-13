@@ -16,6 +16,8 @@ export default function Urinal({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [imageLength, setImageLength] = useState([]);
+  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "t_toilet_YN" && val === "N") {
@@ -51,6 +53,11 @@ export default function Urinal({ route, navigation }) {
     }
 
     setImage(tmp);
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
 
   useEffect(() => {
@@ -68,6 +75,12 @@ export default function Urinal({ route, navigation }) {
         });
 
         setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
       })
       .catch((err) => console.log(err));
   }, []);
@@ -156,7 +169,7 @@ export default function Urinal({ route, navigation }) {
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <RadioBtn
-                title="소변기 유무"
+                title="대변기 유무"
                 getCheck={getCheck}
                 name="t_toilet_YN"
                 value={value.t_toilet_YN}
@@ -171,7 +184,7 @@ export default function Urinal({ route, navigation }) {
                     }}
                   >
                     <Input
-                      title="소변기 개수"
+                      title="대변기 개수"
                       getText={getText}
                       keyboardType={"numeric"}
                       name="t_toilet_count"
@@ -180,7 +193,7 @@ export default function Urinal({ route, navigation }) {
                     <Text style={{ position: "absolute", top: 13, right: 10 }}>개</Text>
                   </View>
                   <RadioBtn
-                    title="소변기 좌우 손잡이 설치 여부"
+                    title="대변기 좌우 손잡이 설치 여부"
                     getCheck={getCheck}
                     name="t_toilet_handle_YN"
                     value={value.t_toilet_handle_YN}
@@ -198,14 +211,14 @@ export default function Urinal({ route, navigation }) {
                 {value.t_toilet_YN === "Y" ? (
                   <>
                     <TakePhoto
-                      title="소변기"
+                      title="대변기"
                       name="p_t_t_toiletImg"
                       getImage={getImage}
                       value={value.p_t_t_toiletImg}
                     />
                     {value.t_toilet_handle_YN === "Y" ? (
                       <TakePhoto
-                        title="소변기 좌우 손잡이"
+                        title="대변기 좌우 손잡이"
                         name="p_t_t_uninalhandleImg"
                         getImage={getImage}
                         value={value.p_t_t_uninalhandleImg}

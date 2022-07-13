@@ -18,6 +18,8 @@ export default function Staris({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [imageLength, setImageLength] = useState([]);
+  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "eto_s_YN" && val === "N") {
@@ -30,7 +32,7 @@ export default function Staris({ route, navigation }) {
         eto_s_count: 0,
         eto_s_width: 0,
         eto_s_height: 0,
-        eto_s_handle_structure: 0,
+        eto_s_handle_structure: 2,
       }));
     } else
       setValue((value) => ({
@@ -56,6 +58,11 @@ export default function Staris({ route, navigation }) {
       });
     }
     setImage(tmp);
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
 
   useEffect(() => {
@@ -73,6 +80,12 @@ export default function Staris({ route, navigation }) {
         });
 
         setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
       })
       .catch((err) => console.log(err));
   }, []);
@@ -141,6 +154,8 @@ export default function Staris({ route, navigation }) {
       (value.eto_s_YN === "Y" && value.eto_s_handle_structure === (null || ""))
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
+    } else if (yLength !== imageLength) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
 

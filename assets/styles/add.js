@@ -260,4 +260,15 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  reIcon: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+    borderWidth: 2,
+    borderStyle: "solid",
+    borderColor: color.blue,
+    height: 37,
+    width: 37,
+    margin: 10,
+  },
 });

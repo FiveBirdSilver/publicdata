@@ -16,6 +16,8 @@ export default function DisabledToilet({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [imageLength, setImageLength] = useState([]);
+  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "t_dt_YN" && val === "N") {
@@ -64,6 +66,11 @@ export default function DisabledToilet({ route, navigation }) {
     }
 
     setImage(tmp);
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
 
   const getText = (text, name) => {
@@ -88,6 +95,12 @@ export default function DisabledToilet({ route, navigation }) {
         });
 
         setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
       })
       .catch((err) => console.log(err));
   }, []);
@@ -143,7 +156,7 @@ export default function DisabledToilet({ route, navigation }) {
         setModalVisible(false);
       });
   };
-  console.log(value);
+
   const handleOnSubmit = async () => {
     if (value.t_dt_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
@@ -166,9 +179,10 @@ export default function DisabledToilet({ route, navigation }) {
       (value.t_dt_YN === "Y" && value.t_dt_cleandevice_YN === null)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
+    } else if (imageLength - yLength !== 1) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
-  console.log(value);
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>

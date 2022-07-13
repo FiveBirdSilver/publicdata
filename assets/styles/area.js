@@ -88,4 +88,19 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     color: color.darkgray,
   },
+  icon_wrap: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 30,
+    borderWidth: 2,
+    borderStyle: "solid",
+    borderColor: "orange",
+    height: 45,
+    width: 45,
+    margin: 10,
+  },
+  footer_title: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
 });

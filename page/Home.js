@@ -87,7 +87,7 @@ export default function Home({ navigation }) {
                             regionKey: userInfo.org_skey,
                           })
                         : navigation.push("Area_D", {
-                            listName: userInfo.list.filter((v) => v.list_slistKey === i)[0].list_name,
+                            listName: userInfo.list.filter((v) => v.list_skey === i)[0].list_name,
                             listKey: i,
                             teamKey: userInfo.team_skey,
                             region: "d",

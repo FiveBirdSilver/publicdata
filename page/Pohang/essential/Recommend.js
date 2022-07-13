@@ -20,10 +20,9 @@ export default function Recommend({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [plus, setPlus] = useState([]);
+  const [plus, setPlus] = useState("");
 
   const getImage = (uri, name) => {
-    console.log(uri);
     const newArr = [...image];
     let tmp = [...image];
 
@@ -39,10 +38,9 @@ export default function Recommend({ route, navigation }) {
         url: uri,
       });
     }
-
     setImage(tmp);
   };
-  const [test, setTest] = useState("");
+
   useEffect(() => {
     axios
       .post(`${API}/api/pohang/essential/getrecommand`, {
@@ -51,13 +49,13 @@ export default function Recommend({ route, navigation }) {
       })
       .then((res) => {
         const response = JSON.parse(res.data);
-        setTest(response.e_rc_season);
-        setPlus(response.picture.filter((i) => i.url !== null));
         let obj = response;
+
         response.picture.forEach((v) => {
           obj[v.name] = v.url;
         });
         setValue(obj);
+        setPlus(response.picture.filter((i) => i.url !== null || "").length);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -98,19 +96,33 @@ export default function Recommend({ route, navigation }) {
         setModalVisible(false);
       });
   };
-
   const handleOnSubmit = async () => {
-    DataSave();
+    if (value.e_rc_course === "" || value.e_rc_course === null || season.length === 0) {
+      Alert.alert("모든 항목을 입력해 주세요.");
+    } else DataSave();
   };
 
   const handleOnPlus = () => {
-    let arr = [...plus];
-    arr.push(".");
-    setPlus(arr);
+    setPlus(plus + 1);
+    if (plus === 10) {
+      Alert.alert("추천 코스 사진 추가는 최대 10개까지 가능합니다.");
+      setPlus(value.picture.filter((i) => i.url !== null || "").length);
+    }
   };
-  console.log(test);
-  console.log(test.includes(2));
+  const handleOnMinus = () => {
+    setPlus(plus - 1);
+  };
 
+  const getText = (text) => {
+    let arr = text.split(",");
+    if (arr.length > 10) {
+      Alert.alert("추천 코스 입력은 최대 10개까지 가능합니다.");
+    } else
+      setValue({
+        ...value,
+        e_rc_course: text,
+      });
+  };
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -160,7 +172,6 @@ export default function Recommend({ route, navigation }) {
                     textDecorationLine: "none",
                     color: "black",
                   }}
-                  isChecked={test.includes(0)}
                 />
                 <BouncyCheckbox
                   size={15}
@@ -180,8 +191,6 @@ export default function Recommend({ route, navigation }) {
                     textDecorationLine: "none",
                     color: "black",
                   }}
-                  isChecked={test.includes(1) ? true : false}
-                  // isChecked={true}
                 />
                 <BouncyCheckbox
                   size={15}
@@ -201,7 +210,6 @@ export default function Recommend({ route, navigation }) {
                     textDecorationLine: "none",
                     color: "black",
                   }}
-                  isChecked={test.includes(2)}
                 />
                 <BouncyCheckbox
                   size={15}
@@ -221,20 +229,115 @@ export default function Recommend({ route, navigation }) {
                     textDecorationLine: "none",
                     color: "black",
                   }}
-                  isChecked={test.includes(3)}
                 />
               </View>
+
               <View style={styles.resubTitle}>
                 <Text style={styles.add_subtitle}>추천 코스</Text>
                 <TextInput
                   name={value}
-                  onChangeText={(text) => setValue({ e_rc_course: text })}
+                  onChangeText={(text) => getText(text)}
                   style={styles.reInput}
                   value={value.e_rc_course}
+                  placeholder="추천 코스는 최대 10개까지 입력 가능합니다. ' , ' 로 구분해 주세요."
                 />
-                <TouchableOpacity onPress={handleOnPlus}>
+              </View>
+              <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+                <TouchableOpacity onPress={handleOnPlus} style={styles.reIcon}>
                   <AntDesign style={styles.icon} color="#00acb1" name="plus" size={30} />
                 </TouchableOpacity>
+                <TouchableOpacity onPress={handleOnMinus} style={styles.reIcon}>
+                  <AntDesign style={styles.icon} color="#00acb1" name="minus" size={30} />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.img}>
+                {plus === 1 ? (
+                  <>
+                    <TakePhoto title="추천 코스 1" name="p_e_rc_Img0" getImage={getImage} value={value.p_e_rc_Img0} />
+                  </>
+                ) : plus === 2 ? (
+                  <>
+                    <TakePhoto title="추천 코스 1" name="p_e_rc_Img0" getImage={getImage} value={value.p_e_rc_Img0} />
+                    <TakePhoto title="추천 코스 2" name="p_e_rc_Img1" getImage={getImage} value={value.p_e_rc_Img1} />
+                  </>
+                ) : plus === 3 ? (
+                  <>
+                    <TakePhoto title="추천 코스 1" name="p_e_rc_Img0" getImage={getImage} value={value.p_e_rc_Img0} />
+                    <TakePhoto title="추천 코스 2" name="p_e_rc_Img1" getImage={getImage} value={value.p_e_rc_Img1} />
+                    <TakePhoto title="추천 코스 3" name="p_e_rc_Img2" getImage={getImage} value={value.p_e_rc_Img2} />
+                  </>
+                ) : plus === 4 ? (
+                  <>
+                    <TakePhoto title="추천 코스 1" name="p_e_rc_Img0" getImage={getImage} value={value.p_e_rc_Img0} />
+                    <TakePhoto title="추천 코스 2" name="p_e_rc_Img1" getImage={getImage} value={value.p_e_rc_Img1} />
+                    <TakePhoto title="추천 코스 3" name="p_e_rc_Img2" getImage={getImage} value={value.p_e_rc_Img2} />
+                    <TakePhoto title="추천 코스 4" name="p_e_rc_Img3" getImage={getImage} value={value.p_e_rc_Img3} />
+                  </>
+                ) : plus === 5 ? (
+                  <>
+                    <TakePhoto title="추천 코스 1" name="p_e_rc_Img0" getImage={getImage} value={value.p_e_rc_Img0} />
+                    <TakePhoto title="추천 코스 2" name="p_e_rc_Img1" getImage={getImage} value={value.p_e_rc_Img1} />
+                    <TakePhoto title="추천 코스 3" name="p_e_rc_Img2" getImage={getImage} value={value.p_e_rc_Img2} />
+                    <TakePhoto title="추천 코스 4" name="p_e_rc_Img3" getImage={getImage} value={value.p_e_rc_Img3} />
+                    <TakePhoto title="추천 코스 5" name="p_e_rc_Img4" getImage={getImage} value={value.p_e_rc_Img4} />
+                  </>
+                ) : plus === 6 ? (
+                  <>
+                    <TakePhoto title="추천 코스 1" name="p_e_rc_Img0" getImage={getImage} value={value.p_e_rc_Img0} />
+                    <TakePhoto title="추천 코스 2" name="p_e_rc_Img1" getImage={getImage} value={value.p_e_rc_Img1} />
+                    <TakePhoto title="추천 코스 3" name="p_e_rc_Img2" getImage={getImage} value={value.p_e_rc_Img2} />
+                    <TakePhoto title="추천 코스 4" name="p_e_rc_Img3" getImage={getImage} value={value.p_e_rc_Img3} />
+                    <TakePhoto title="추천 코스 5" name="p_e_rc_Img4" getImage={getImage} value={value.p_e_rc_Img4} />
+                    <TakePhoto title="추천 코스 6" name="p_e_rc_Img5" getImage={getImage} value={value.p_e_rc_Img5} />
+                  </>
+                ) : plus === 7 ? (
+                  <>
+                    <TakePhoto title="추천 코스 1" name="p_e_rc_Img0" getImage={getImage} value={value.p_e_rc_Img0} />
+                    <TakePhoto title="추천 코스 2" name="p_e_rc_Img1" getImage={getImage} value={value.p_e_rc_Img1} />
+                    <TakePhoto title="추천 코스 3" name="p_e_rc_Img2" getImage={getImage} value={value.p_e_rc_Img2} />
+                    <TakePhoto title="추천 코스 4" name="p_e_rc_Img3" getImage={getImage} value={value.p_e_rc_Img3} />
+                    <TakePhoto title="추천 코스 5" name="p_e_rc_Img4" getImage={getImage} value={value.p_e_rc_Img4} />
+                    <TakePhoto title="추천 코스 6" name="p_e_rc_Img5" getImage={getImage} value={value.p_e_rc_Img5} />
+                    <TakePhoto title="추천 코스 7" name="p_e_rc_Img6" getImage={getImage} value={value.p_e_rc_Img6} />
+                  </>
+                ) : plus === 8 ? (
+                  <>
+                    <TakePhoto title="추천 코스 1" name="p_e_rc_Img0" getImage={getImage} value={value.p_e_rc_Img0} />
+                    <TakePhoto title="추천 코스 2" name="p_e_rc_Img1" getImage={getImage} value={value.p_e_rc_Img1} />
+                    <TakePhoto title="추천 코스 3" name="p_e_rc_Img2" getImage={getImage} value={value.p_e_rc_Img2} />
+                    <TakePhoto title="추천 코스 4" name="p_e_rc_Img3" getImage={getImage} value={value.p_e_rc_Img3} />
+                    <TakePhoto title="추천 코스 5" name="p_e_rc_Img4" getImage={getImage} value={value.p_e_rc_Img4} />
+                    <TakePhoto title="추천 코스 6" name="p_e_rc_Img5" getImage={getImage} value={value.p_e_rc_Img5} />
+                    <TakePhoto title="추천 코스 7" name="p_e_rc_Img6" getImage={getImage} value={value.p_e_rc_Img6} />
+                    <TakePhoto title="추천 코스 8" name="p_e_rc_Img7" getImage={getImage} value={value.p_e_rc_Img7} />
+                  </>
+                ) : plus === 9 ? (
+                  <>
+                    <TakePhoto title="추천 코스 1" name="p_e_rc_Img0" getImage={getImage} value={value.p_e_rc_Img0} />
+                    <TakePhoto title="추천 코스 2" name="p_e_rc_Img1" getImage={getImage} value={value.p_e_rc_Img1} />
+                    <TakePhoto title="추천 코스 3" name="p_e_rc_Img2" getImage={getImage} value={value.p_e_rc_Img2} />
+                    <TakePhoto title="추천 코스 4" name="p_e_rc_Img3" getImage={getImage} value={value.p_e_rc_Img3} />
+                    <TakePhoto title="추천 코스 5" name="p_e_rc_Img4" getImage={getImage} value={value.p_e_rc_Img4} />
+                    <TakePhoto title="추천 코스 6" name="p_e_rc_Img5" getImage={getImage} value={value.p_e_rc_Img5} />
+                    <TakePhoto title="추천 코스 7" name="p_e_rc_Img6" getImage={getImage} value={value.p_e_rc_Img6} />
+                    <TakePhoto title="추천 코스 8" name="p_e_rc_Img7" getImage={getImage} value={value.p_e_rc_Img7} />
+                    <TakePhoto title="추천 코스 9" name="p_e_rc_Img8" getImage={getImage} value={value.p_e_rc_Img8} />
+                  </>
+                ) : plus === 10 ? (
+                  <>
+                    <TakePhoto title="추천 코스 1" name="p_e_rc_Img0" getImage={getImage} value={value.p_e_rc_Img0} />
+                    <TakePhoto title="추천 코스 2" name="p_e_rc_Img1" getImage={getImage} value={value.p_e_rc_Img1} />
+                    <TakePhoto title="추천 코스 3" name="p_e_rc_Img2" getImage={getImage} value={value.p_e_rc_Img2} />
+                    <TakePhoto title="추천 코스 4" name="p_e_rc_Img3" getImage={getImage} value={value.p_e_rc_Img3} />
+                    <TakePhoto title="추천 코스 5" name="p_e_rc_Img4" getImage={getImage} value={value.p_e_rc_Img4} />
+                    <TakePhoto title="추천 코스 6" name="p_e_rc_Img5" getImage={getImage} value={value.p_e_rc_Img5} />
+                    <TakePhoto title="추천 코스 7" name="p_e_rc_Img6" getImage={getImage} value={value.p_e_rc_Img6} />
+                    <TakePhoto title="추천 코스 8" name="p_e_rc_Img7" getImage={getImage} value={value.p_e_rc_Img7} />
+                    <TakePhoto title="추천 코스 9" name="p_e_rc_Img8" getImage={getImage} value={value.p_e_rc_Img8} />
+                    <TakePhoto title="추천 코스 10" name="p_e_rc_Img9" getImage={getImage} value={value.p_e_rc_Img9} />
+                  </>
+                ) : null}
               </View>
             </View>
           </View>

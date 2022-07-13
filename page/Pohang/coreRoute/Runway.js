@@ -17,6 +17,8 @@ export default function Runway({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [imageLength, setImageLength] = useState([]);
+  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "cr_r_YN" && val === "N") {
@@ -33,6 +35,31 @@ export default function Runway({ route, navigation }) {
         [name]: val,
       }));
   };
+
+  useEffect(() => {
+    axios
+      .post(`${API}/api/pohang/coreroute/getrunway`, {
+        team_skey: teamKey,
+        list_skey: listKey,
+      })
+      .then((res) => {
+        const response = JSON.parse(res.data);
+        let obj = response;
+
+        response.picture.forEach((v) => {
+          obj[v.name] = v.url;
+        });
+
+        setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   const getImage = (uri, name) => {
     const newArr = [...image];
@@ -52,26 +79,13 @@ export default function Runway({ route, navigation }) {
     }
 
     setImage(tmp);
+
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
-
-  useEffect(() => {
-    axios
-      .post(`${API}/api/pohang/coreroute/getrunway`, {
-        team_skey: teamKey,
-        list_skey: listKey,
-      })
-      .then((res) => {
-        const response = JSON.parse(res.data);
-        let obj = response;
-
-        response.picture.forEach((v) => {
-          obj[v.name] = v.url;
-        });
-
-        setValue(obj);
-      })
-      .catch((err) => console.log(err));
-  }, []);
 
   const getText = (text, name) => {
     setValue((value) => ({
@@ -93,6 +107,7 @@ export default function Runway({ route, navigation }) {
             cr_r_handle_YN: value.cr_r_handle_YN,
             cr_r_handle_braille_YN: value.cr_r_handle_braille_YN,
             cr_f_waterspout_width: value.cr_f_waterspout_width,
+            cr_r_slope: value.cr_r_slope,
           })
           .then((res) => {
             const response = JSON.parse(res.data);
@@ -119,7 +134,7 @@ export default function Runway({ route, navigation }) {
         setModalVisible(false);
       });
   };
-  console.log(value);
+
   const handleOnSubmit = async () => {
     if (value.cr_r_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
@@ -132,7 +147,6 @@ export default function Runway({ route, navigation }) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else DataSave();
   };
-
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -196,17 +210,17 @@ export default function Runway({ route, navigation }) {
                     {value.cr_r_handle_YN === "Y" ? (
                       <TakePhoto
                         title="경사로 손잡이"
-                        name="p_cr_f_streetlampImg"
+                        name="p_cr_r_handleImg"
                         getImage={getImage}
-                        value={value.p_cr_f_streetlampImg}
+                        value={value.p_cr_r_handleImg}
                       />
                     ) : null}
                     {value.cr_r_handle_braille_YN === "Y" ? (
                       <TakePhoto
                         title="경사로 손잡이 점자"
-                        name="p_cr_f_streetlampImg"
+                        name="p_cr_r_handleBrailleImg"
                         getImage={getImage}
-                        value={value.p_cr_f_streetlampImg}
+                        value={value.p_cr_r_handleBrailleImg}
                       />
                     ) : null}
                   </>

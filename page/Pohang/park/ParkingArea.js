@@ -69,7 +69,6 @@ export default function ParkingArea({ route, navigation }) {
       [name]: text,
     }));
   };
-  console.log(value);
   const DataSave = () => {
     setModalVisible(true);
     uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)

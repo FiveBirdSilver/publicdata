@@ -17,6 +17,8 @@ export default function Basic({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [imageLength, setImageLength] = useState([]);
+  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "eto_b_YN" && val === "N") {
@@ -50,6 +52,11 @@ export default function Basic({ route, navigation }) {
       });
     }
     setImage(tmp);
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
 
   useEffect(() => {
@@ -67,6 +74,12 @@ export default function Basic({ route, navigation }) {
         });
 
         setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
       })
       .catch((err) => console.log(err));
   }, []);
@@ -125,9 +138,10 @@ export default function Basic({ route, navigation }) {
       (value.eto_b_YN === "Y" && value.eto_b_floor_material === (null || ""))
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
+    } else if (imageLength - yLength !== 1) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
-  console.log(value);
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -168,19 +182,12 @@ export default function Basic({ route, navigation }) {
                     position: "relative",
                   }}
                 >
-                  <Input
-                    title="입구•매표소 이름"
-                    getText={getText}
-                    name="eto_b_name"
-                    value={value.eto_b_name}
-                    keyboardType={"numeric"}
-                  />
+                  <Input title="입구•매표소 이름" getText={getText} name="eto_b_name" value={value.eto_b_name} />
                   <Input
                     title="바닥 재질"
                     getText={getText}
                     name="eto_b_floor_material"
                     value={value.eto_b_floor_material}
-                    keyboardType={"numeric"}
                     placeholder="EX. 아스팔트"
                   />
                 </View>
