@@ -139,14 +139,13 @@ export default function Elevator({ route, navigation }) {
     if (value.eto_ev_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.eto_ev_YN === "Y" && value.eto_ev_YN === (null || "")) ||
       (value.eto_ev_YN === "Y" && value.eto_ev_door_width === (null || "" || 0)) ||
-      (value.eto_ev_YN === "Y" && value.eto_ev_wheelchair_possible_YN === (null || "")) ||
-      (value.eto_ev_YN === "Y" && value.eto_ev_button_braille_YN === (null || "")) ||
-      (value.eto_ev_YN === "Y" && value.eto_ev_emergencybell_YN === (null || ""))
+      (value.eto_ev_YN === "Y" && value.eto_ev_wheelchair_possible_YN === null) ||
+      (value.eto_ev_YN === "Y" && value.eto_ev_button_braille_YN === null) ||
+      (value.eto_ev_YN === "Y" && value.eto_ev_emergencybell_YN === null)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (yLength !== imageLength) {
+    } else if (value.eto_ev_YN === "Y" && imageLength !== 4) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
@@ -218,30 +217,24 @@ export default function Elevator({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_cr_ev_elevatorImg}
                     />
-                    {value.eto_ev_wheelchair_possible_YN === "Y" ? (
-                      <TakePhoto
-                        title="휠체어 탑승 가능"
-                        name="p_cr_ev_wheelchairImg"
-                        getImage={getImage}
-                        value={value.p_cr_ev_wheelchairImg}
-                      />
-                    ) : null}
-                    {value.eto_ev_button_braille_YN === "Y" ? (
-                      <TakePhoto
-                        title="조작버튼 점자표시"
-                        name="p_cr_ev_braileImg"
-                        getImage={getImage}
-                        value={value.p_cr_ev_braileImg}
-                      />
-                    ) : null}
-                    {value.eto_ev_emergencybell_YN === "Y" ? (
-                      <TakePhoto
-                        title="비상벨"
-                        name="p_cr_ev_emergencybellImg"
-                        getImage={getImage}
-                        value={value.p_cr_ev_emergencybellImg}
-                      />
-                    ) : null}
+                    <TakePhoto
+                      title="휠체어 탑승 가능"
+                      name="p_cr_ev_wheelchairImg"
+                      getImage={getImage}
+                      value={value.p_cr_ev_wheelchairImg}
+                    />
+                    <TakePhoto
+                      title="조작버튼 점자표시"
+                      name="p_cr_ev_braileImg"
+                      getImage={getImage}
+                      value={value.p_cr_ev_braileImg}
+                    />
+                    <TakePhoto
+                      title="비상벨"
+                      name="p_cr_ev_emergencybellImg"
+                      getImage={getImage}
+                      value={value.p_cr_ev_emergencybellImg}
+                    />
                   </>
                 ) : null}
               </View>

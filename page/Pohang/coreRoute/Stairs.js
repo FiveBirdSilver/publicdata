@@ -19,7 +19,6 @@ export default function Staris({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "cr_s_YN" && val === "N") {
@@ -139,7 +138,6 @@ export default function Staris({ route, navigation }) {
         Alert.alert("저장에 실패했습니다. 필수 사진이 추가되었는지 확인해 주세요.");
       });
   };
-
   const handleOnSubmit = async () => {
     if (value.cr_s_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
@@ -156,7 +154,7 @@ export default function Staris({ route, navigation }) {
       (value.cr_s_YN === "Y" && value.cr_s_handle_structure === null)
     ) {
       Alert.alert("모든 항목을 입력해 주세요.");
-    } else if (yLength !== imageLength) {
+    } else if (value.cr_s_YN === "Y" && imageLength !== 4) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
@@ -227,30 +225,24 @@ export default function Staris({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_cr_s_stairsImg}
                     />
-                    {value.cr_s_handle_YN === "Y" ? (
-                      <TakePhoto
-                        title="계단 손잡이"
-                        name="p_cr_s_handleImg"
-                        getImage={getImage}
-                        value={value.p_cr_s_handleImg}
-                      />
-                    ) : null}
-                    {value.cr_s_handle_braille_YN === "Y" ? (
-                      <TakePhoto
-                        title="계단 손잡이 점자"
-                        name="p_cr_s_handleBrailleImg"
-                        getImage={getImage}
-                        value={value.p_cr_s_handleBrailleImg}
-                      />
-                    ) : null}
-                    {value.cr_s_dotblock_YN === "Y" ? (
-                      <TakePhoto
-                        title="계단 상하부 점형 블록 설치"
-                        name="p_cr_s_dotBlockImg"
-                        getImage={getImage}
-                        value={value.p_cr_s_dotBlockImg}
-                      />
-                    ) : null}
+                    <TakePhoto
+                      title="계단 손잡이"
+                      name="p_cr_s_handleImg"
+                      getImage={getImage}
+                      value={value.p_cr_s_handleImg}
+                    />
+                    <TakePhoto
+                      title="계단 손잡이 점자"
+                      name="p_cr_s_handleBrailleImg"
+                      getImage={getImage}
+                      value={value.p_cr_s_handleBrailleImg}
+                    />
+                    <TakePhoto
+                      title="계단 상하부 점형 블록 설치"
+                      name="p_cr_s_dotBlockImg"
+                      getImage={getImage}
+                      value={value.p_cr_s_dotBlockImg}
+                    />
                   </>
                 ) : null}
               </View>

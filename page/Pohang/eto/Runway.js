@@ -139,14 +139,13 @@ export default function Runway({ route, navigation }) {
     if (value.eto_r_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.cr_ev_YN === "Y" && value.eto_r_YN === (null || "")) ||
-      (value.cr_ev_YN === "Y" && value.eto_r_handle_YN === (null || "")) ||
-      (value.cr_ev_YN === "Y" && value.eto_r_handle_braille_YN === (null || "")) ||
-      (value.cr_ev_YN === "Y" && value.eto_r_slope === (null || "" || 0)) ||
-      (value.cr_ev_YN === "Y" && value.eto_r_length === (null || "" || 0))
+      (value.eto_r_YN === "Y" && value.eto_r_handle_YN === null) ||
+      (value.eto_r_YN === "Y" && value.eto_r_handle_braille_YN === null) ||
+      (value.eto_r_YN === "Y" && value.eto_r_slope === (null || "" || 0)) ||
+      (value.eto_r_YN === "Y" && value.eto_r_length === (null || "" || 0))
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (yLength !== imageLength) {
+    } else if (value.eto_r_YN === "Y" && imageLength !== 3) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
@@ -211,22 +210,18 @@ export default function Runway({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_eto_r_runwayImg}
                     />
-                    {value.eto_r_handle_YN === "Y" ? (
-                      <TakePhoto
-                        title="경사로 손잡이"
-                        name="p_eto_r_handleImg"
-                        getImage={getImage}
-                        value={value.p_eto_r_handleImg}
-                      />
-                    ) : null}
-                    {value.eto_r_handle_braille_YN === "Y" ? (
-                      <TakePhoto
-                        title="경사로 손잡이 점자"
-                        name="p_eto_r_handleBrailleImg"
-                        getImage={getImage}
-                        value={value.p_eto_r_handleBrailleImg}
-                      />
-                    ) : null}
+                    <TakePhoto
+                      title="경사로 손잡이"
+                      name="p_eto_r_handleImg"
+                      getImage={getImage}
+                      value={value.p_eto_r_handleImg}
+                    />
+                    <TakePhoto
+                      title="경사로 손잡이 점자"
+                      name="p_eto_r_handleBrailleImg"
+                      getImage={getImage}
+                      value={value.p_eto_r_handleBrailleImg}
+                    />
                   </>
                 ) : null}
               </View>

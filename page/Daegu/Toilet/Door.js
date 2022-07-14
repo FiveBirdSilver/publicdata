@@ -21,10 +21,32 @@ export default function Door({ route, navigation }) {
   const [imageLength, setImageLength] = useState([]);
 
   const getCheck = (val, name) => {
-    setValue((value) => ({
-      ...value,
-      [name]: val,
-    }));
+    if (name === "to_door_hinged_YN" && val === "Y") {
+      setValue({
+        ...value,
+        to_door_hinged_YN: "Y",
+        to_door_automatic_YN: "N",
+        to_door_sliding_YN: "N",
+      });
+    } else if (name === "to_door_sliding_YN" && val === "Y") {
+      setValue({
+        ...value,
+        to_door_sliding_YN: "Y",
+        to_door_automatic_YN: "N",
+        to_door_hinged_YN: "N",
+      });
+    } else if (name === "to_door_automatic_YN" && val === "Y") {
+      setValue({
+        ...value,
+        to_door_automatic_YN: "Y",
+        to_door_sliding_YN: "N",
+        to_door_hinged_YN: "N",
+      });
+    } else
+      setValue((value) => ({
+        ...value,
+        [name]: val,
+      }));
   };
   const getImage = (uri, name) => {
     const newArr = [...image];
@@ -120,7 +142,6 @@ export default function Door({ route, navigation }) {
       Alert.alert("반드시 하나의 사진을 추가해 주세요.");
     } else DataSave();
   };
-
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>

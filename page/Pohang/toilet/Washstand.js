@@ -146,7 +146,7 @@ export default function Washstand({ route, navigation }) {
       (value.t_w_YN === "Y" && value.t_w_wheelchair_possible_YN === null)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (yLength !== imageLength) {
+    } else if (value.t_w_YN === "Y" && imageLength !== 5) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
@@ -236,38 +236,30 @@ export default function Washstand({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_t_w_washstandImg}
                     />
-                    {value.t_w_handle_YN === "Y" ? (
-                      <TakePhoto
-                        title="세면대 손잡이"
-                        name="p_t_w_handleImg"
-                        getImage={getImage}
-                        value={value.p_t_w_handleImg}
-                      />
-                    ) : null}
-                    {value.t_w_temperature_braille_YN === "Y" ? (
-                      <TakePhoto
-                        title="냉온수 점자 구분"
-                        name="p_t_w_temperatureBraileImg"
-                        getImage={getImage}
-                        value={value.p_t_w_temperatureBraileImg}
-                      />
-                    ) : null}
-                    {value.t_w_child_washstand_YN === "Y" ? (
-                      <TakePhoto
-                        title="어린이용 세면대"
-                        name="p_t_w_childwashstandImg"
-                        getImage={getImage}
-                        value={value.p_t_w_childwashstandImg}
-                      />
-                    ) : null}
-                    {value.t_w_wheelchair_possible_YN === "Y" ? (
-                      <TakePhoto
-                        title="휠체어 탑승 세면대"
-                        name="p_t_w_childwashstandImg"
-                        getImage={getImage}
-                        value={value.p_t_w_childwashstandImg}
-                      />
-                    ) : null}
+                    <TakePhoto
+                      title="세면대 손잡이"
+                      name="p_t_w_handleImg"
+                      getImage={getImage}
+                      value={value.p_t_w_handleImg}
+                    />
+                    <TakePhoto
+                      title="냉온수 점자 구분"
+                      name="p_t_w_temperatureBraileImg"
+                      getImage={getImage}
+                      value={value.p_t_w_temperatureBraileImg}
+                    />
+                    <TakePhoto
+                      title="어린이용 세면대"
+                      name="p_t_w_childwashstandImg"
+                      getImage={getImage}
+                      value={value.p_t_w_childwashstandImg}
+                    />
+                    <TakePhoto
+                      title="휠체어 탑승 세면대"
+                      name="p_t_w_childwashstandImg"
+                      getImage={getImage}
+                      value={value.p_t_w_childwashstandImg}
+                    />
                   </>
                 ) : null}
               </View>

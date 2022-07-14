@@ -134,7 +134,6 @@ export default function Runway({ route, navigation }) {
         setModalVisible(false);
       });
   };
-
   const handleOnSubmit = async () => {
     if (value.cr_r_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
@@ -145,6 +144,8 @@ export default function Runway({ route, navigation }) {
       (value.cr_r_YN === "Y" && value.cr_r_slope === (null || "" || 0))
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
+    } else if (value.cr_r_YN === "Y" && imageLength !== 3) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
   return (
@@ -207,22 +208,18 @@ export default function Runway({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_cr_f_streetlampImg}
                     />
-                    {value.cr_r_handle_YN === "Y" ? (
-                      <TakePhoto
-                        title="경사로 손잡이"
-                        name="p_cr_r_handleImg"
-                        getImage={getImage}
-                        value={value.p_cr_r_handleImg}
-                      />
-                    ) : null}
-                    {value.cr_r_handle_braille_YN === "Y" ? (
-                      <TakePhoto
-                        title="경사로 손잡이 점자"
-                        name="p_cr_r_handleBrailleImg"
-                        getImage={getImage}
-                        value={value.p_cr_r_handleBrailleImg}
-                      />
-                    ) : null}
+                    <TakePhoto
+                      title="경사로 손잡이"
+                      name="p_cr_r_handleImg"
+                      getImage={getImage}
+                      value={value.p_cr_r_handleImg}
+                    />
+                    <TakePhoto
+                      title="경사로 손잡이 점자"
+                      name="p_cr_r_handleBrailleImg"
+                      getImage={getImage}
+                      value={value.p_cr_r_handleBrailleImg}
+                    />
                   </>
                 ) : null}
               </View>

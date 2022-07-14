@@ -63,9 +63,9 @@ export default function Area({ route, navigation }) {
   };
 
   const flow = {
-    label: ["보행로", "기타", "계단", "경사로", "턱", "승강기"],
-    value: ["Footpath_P", "ETC_P", "Stairs_P", "Runway_P", "Roadchin_P", "Elevator_P"],
-    depth: ["f", "etc", "s", "r", "rh", "ev"],
+    label: ["보행로", "기타", "계단", "경사로", "승강기", "턱"],
+    value: ["Footpath_P", "ETC_P", "Stairs_P", "Runway_P", "Elevator_P", "Roadchin_P"],
+    depth: ["f", "etc", "s", "r", "ev", "rh"],
   };
   const park = {
     label: ["기본정보", "주차구역", "보행로"],
@@ -73,9 +73,9 @@ export default function Area({ route, navigation }) {
     depth: ["basic", "pa", "f"],
   };
   const entry = {
-    label: ["기본정보", "계단", "경사로", "턱", "승강기"],
-    value: ["EtoBasic_P", "EtoStairs_P", "EtoRunway_P", "EtoRoadchin_P", "EtoElevator_P"],
-    depth: ["basic", "s", "r", "rh", "ev"],
+    label: ["기본정보", "계단", "경사로", "승강기", "턱"],
+    value: ["EtoBasic_P", "EtoStairs_P", "EtoRunway_P", "EtoElevator_P", "EtoRoadchin_P"],
+    depth: ["basic", "s", "r", "ev", "rh"],
   };
 
   const toilet = {

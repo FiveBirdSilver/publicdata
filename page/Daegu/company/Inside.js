@@ -19,12 +19,20 @@ export default function Inside({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
   const getCheck = (val, name) => {
-    setValue((value) => ({
-      ...value,
-      [name]: val,
-    }));
+    if (name === "in_table_YN" && val === "N") {
+      setValue((value) => ({
+        in_table_YN: "N",
+        in_table_height: 0,
+        in_table_spacing: 0,
+        in_table_width: 0,
+      }));
+    } else
+      setValue((value) => ({
+        ...value,
+        [name]: val,
+      }));
   };
-
+  console.log(value);
   const getImage = (uri, name) => {
     const newArr = [...image];
     let tmp = [...image];
@@ -89,6 +97,7 @@ export default function Inside({ route, navigation }) {
           .post(`${API}/api/daegu/company/setinside`, {
             team_skey: teamKey,
             list_skey: listKey,
+            in_table_YN: value.in_table_YN,
             in_standing_YN: value.in_standing_YN,
             in_table_spacing: value.in_table_spacing,
             in_table_height: value.in_table_height,
@@ -121,17 +130,19 @@ export default function Inside({ route, navigation }) {
       });
   };
   const handleOnSubmit = async () => {
-    if (
+    if (value.in_table_YN === null) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else if (
       value.in_standing_YN === null ||
-      value.in_table_spacing === null ||
-      value.in_table_spacing === "" ||
-      value.in_table_height === null ||
-      value.in_table_height === "" ||
-      value.in_table_width === null ||
-      value.in_table_width === ""
+      (value.in_table_YN === "Y" && value.in_table_spacing === null) ||
+      (value.in_table_YN === "Y" && value.in_table_spacing === "") ||
+      (value.in_table_YN === "Y" && value.in_table_height === null) ||
+      (value.in_table_YN === "Y" && value.in_table_height === "") ||
+      (value.in_table_YN === "Y" && value.in_table_width === null) ||
+      (value.in_table_YN === "Y" && value.in_table_width === "")
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.in_standing_YN === "Y" && imageLength === 0) {
+    } else if (value.in_table_YN === "Y" && imageLength === 0) {
       Alert.alert("반드시 하나의 사진을 추가해 주세요.");
     } else DataSave();
   };
@@ -163,13 +174,14 @@ export default function Inside({ route, navigation }) {
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
               <RadioBtn
-                title="입식 유무"
+                title="테이블 유무"
                 getCheck={getCheck}
-                name="in_standing_YN"
-                value={value.in_standing_YN}
+                name="in_table_YN"
+                value={value.in_table_YN}
                 yes="있다"
                 no="없다"
               />
+              <RadioBtn title="입식 유무" getCheck={getCheck} name="in_standing_YN" value={value.in_standing_YN} />
               <View style={{ position: "relative" }}>
                 <Input
                   title="테이블 사이의 간격"

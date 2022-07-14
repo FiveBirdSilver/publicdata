@@ -74,13 +74,6 @@ export default function Outside({ route, navigation }) {
       .catch((err) => console.log(err));
   }, []);
 
-  const getText = (text, name) => {
-    setValue((value) => ({
-      ...value,
-      [name]: text,
-    }));
-  };
-
   const DataSave = () => {
     setModalVisible(true);
     uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)

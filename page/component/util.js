@@ -8,7 +8,8 @@ export default async function uploadImgToGcs(imageArr, regionKey, depth1, depth2
       axios({
         method: "POST",
         // url: "http://172.30.1.57:9999/api/upload",
-        url: "http://34.64.101.255/api/upload",
+        // url: "http://34.64.101.255/api/upload",
+        url: "http://211.206.127.137/api/upload",
         data: {
           name: imageArr[i].name,
           img: imageArr[i].url,

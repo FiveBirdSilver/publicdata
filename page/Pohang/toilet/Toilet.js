@@ -17,7 +17,6 @@ export default function Urinal({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "t_toilet_YN" && val === "N") {
@@ -139,6 +138,8 @@ export default function Urinal({ route, navigation }) {
       (value.t_toilet_YN === "Y" && value.t_w_child_washstand_YN === null)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
+    } else if (value.t_toilet_YN === "Y" && imageLength !== 3) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
 
@@ -216,22 +217,18 @@ export default function Urinal({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_t_t_toiletImg}
                     />
-                    {value.t_toilet_handle_YN === "Y" ? (
-                      <TakePhoto
-                        title="대변기 좌우 손잡이"
-                        name="p_t_t_uninalhandleImg"
-                        getImage={getImage}
-                        value={value.p_t_t_uninalhandleImg}
-                      />
-                    ) : null}
-                    {value.t_toilet_automatic_sensor_YN === "Y" ? (
-                      <TakePhoto
-                        title="버튼식/자동센서"
-                        name="p_t_t_automaticsensorImg"
-                        getImage={getImage}
-                        value={value.p_t_t_automaticsensorImg}
-                      />
-                    ) : null}
+                    <TakePhoto
+                      title="대변기 좌우 손잡이"
+                      name="p_t_t_uninalhandleImg"
+                      getImage={getImage}
+                      value={value.p_t_t_uninalhandleImg}
+                    />
+                    <TakePhoto
+                      title="버튼식/자동센서"
+                      name="p_t_t_automaticsensorImg"
+                      getImage={getImage}
+                      value={value.p_t_t_automaticsensorImg}
+                    />
                   </>
                 ) : null}
               </View>

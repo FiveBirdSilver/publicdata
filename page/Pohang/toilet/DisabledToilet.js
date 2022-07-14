@@ -179,7 +179,7 @@ export default function DisabledToilet({ route, navigation }) {
       (value.t_dt_YN === "Y" && value.t_dt_cleandevice_YN === null)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (imageLength - yLength !== 1) {
+    } else if (value.cr_s_YN === "Y" && imageLength !== 8) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
@@ -286,54 +286,42 @@ export default function DisabledToilet({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_t_dt_doortypeImg}
                     />
-                    {value.t_dt_urinal_YN === "Y" ? (
-                      <TakePhoto
-                        title="소변기"
-                        name="p_t_dt_urinaImg"
-                        getImage={getImage}
-                        value={value.p_t_dt_urinaImg}
-                      />
-                    ) : null}
-                    {value.t_dt_toilet_YN === "Y" ? (
-                      <TakePhoto
-                        title="대변기"
-                        name="p_t_dt_toiletImg"
-                        getImage={getImage}
-                        value={value.p_t_dt_toiletImg}
-                      />
-                    ) : null}
-                    {value.t_dt_urinal_handle_YN === "Y" ? (
-                      <TakePhoto
-                        title="소변기 좌우 손잡이 설치"
-                        name="p_t_dt_urinalHandleImg"
-                        getImage={getImage}
-                        value={value.p_t_dt_urinalHandleImg}
-                      />
-                    ) : null}
-                    {value.t_dt_toilet_handle_YN === "Y" ? (
-                      <TakePhoto
-                        title="대변기 좌우 손잡이 설치"
-                        name="p_t_dt_toiletHandleImg"
-                        getImage={getImage}
-                        value={value.p_t_dt_toiletHandleImg}
-                      />
-                    ) : null}
-                    {value.t_dt_urinal_handle_YN === "Y" ? (
-                      <TakePhoto
-                        title="소변기 버튼식/자동센서 물 내림 여부"
-                        name="p_t_dt_urinalautomaticeSensorImg"
-                        getImage={getImage}
-                        value={value.p_t_dt_urinalautomaticeSensorImg}
-                      />
-                    ) : null}
-                    {value.t_dt_urinal_automatic_sensor_YN === "Y" ? (
-                      <TakePhoto
-                        title="대변기 버튼식/자동센서 물 내림 여부"
-                        name="p_t_dt_toiletautomaticeSensorImg"
-                        getImage={getImage}
-                        value={value.p_t_dt_toiletautomaticeSensorImg}
-                      />
-                    ) : null}
+                    <TakePhoto
+                      title="소변기"
+                      name="p_t_dt_urinaImg"
+                      getImage={getImage}
+                      value={value.p_t_dt_urinaImg}
+                    />
+                    <TakePhoto
+                      title="대변기"
+                      name="p_t_dt_toiletImg"
+                      getImage={getImage}
+                      value={value.p_t_dt_toiletImg}
+                    />
+                    <TakePhoto
+                      title="소변기 좌우 손잡이 설치"
+                      name="p_t_dt_urinalHandleImg"
+                      getImage={getImage}
+                      value={value.p_t_dt_urinalHandleImg}
+                    />
+                    <TakePhoto
+                      title="대변기 좌우 손잡이 설치"
+                      name="p_t_dt_toiletHandleImg"
+                      getImage={getImage}
+                      value={value.p_t_dt_toiletHandleImg}
+                    />
+                    <TakePhoto
+                      title="소변기 버튼식/자동센서 물 내림 여부"
+                      name="p_t_dt_urinalautomaticeSensorImg"
+                      getImage={getImage}
+                      value={value.p_t_dt_urinalautomaticeSensorImg}
+                    />
+                    <TakePhoto
+                      title="대변기 버튼식/자동센서 물 내림 여부"
+                      name="p_t_dt_toiletautomaticeSensorImg"
+                      getImage={getImage}
+                      value={value.p_t_dt_toiletautomaticeSensorImg}
+                    />
 
                     <Input
                       title="소변기(좌~벽)"

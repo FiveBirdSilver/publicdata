@@ -71,10 +71,17 @@ export default function Footpath({ route, navigation }) {
           obj[v.name] = v.url;
         });
         setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
       })
       .catch((err) => console.log(err));
   }, []);
-
+  console.log(yLength);
+  console.log(imageLength);
   const DataSave = () => {
     setModalVisible(true);
     uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)

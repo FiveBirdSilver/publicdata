@@ -145,7 +145,7 @@ export default function Basic({ route, navigation }) {
       (value.p_b_YN === "Y" && value.p_b_floor_material === (null || ""))
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (imageLength - yLength !== 1) {
+    } else if (value.p_b_YN === "Y" && imageLength !== 2) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };

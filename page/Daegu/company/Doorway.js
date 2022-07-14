@@ -126,18 +126,14 @@ export default function Doorway({ route, navigation }) {
       value.dw_wheelchair_YN === null ||
       value.dw_act_space_YN === null ||
       value.dw_width === null ||
-      value.dw_width === "" ||
       value.dw_front_distance === null ||
-      value.dw_front_distance === "" ||
-      value.dw_sill_height === null ||
-      value.dw_sill_height === ""
+      value.dw_sill_height === null
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (imageLength === 0) {
       Alert.alert("반드시 하나의 사진을 추가해 주세요.");
     } else DataSave();
   };
-  console.log(value);
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>

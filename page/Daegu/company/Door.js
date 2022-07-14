@@ -48,7 +48,6 @@ export default function Door({ route, navigation }) {
       setImageLength(imageLength - 1);
     }
   };
-
   useEffect(() => {
     axios
       .post(`${API}/api/daegu/company/getdoor`, {

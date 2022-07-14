@@ -15,7 +15,9 @@ export default function Ad({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  console.log(value);
+  const [imageLength, setImageLength] = useState([]);
+  const yLength = Object.values(value).filter((i) => i === "Y").length;
+
   const getCheck = (val, name) => {
     setValue((value) => ({
       ...value,
@@ -41,6 +43,11 @@ export default function Ad({ route, navigation }) {
     }
 
     setImage(tmp);
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
 
   useEffect(() => {
@@ -58,6 +65,12 @@ export default function Ad({ route, navigation }) {
         });
 
         setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
       })
       .catch((err) => console.log(err));
   }, []);
@@ -65,6 +78,8 @@ export default function Ad({ route, navigation }) {
   const handleOnSubmit = async () => {
     if (value.e_ad_wheelchair_YN === null || value.e_ad_stroller_YN === null || value.e_ad_babyChair_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
+    } else if (yLength !== imageLength) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else {
       setModalVisible(true);
       uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data, teamKey)

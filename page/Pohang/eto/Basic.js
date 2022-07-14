@@ -18,7 +18,6 @@ export default function Basic({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "eto_b_YN" && val === "N") {
@@ -138,10 +137,11 @@ export default function Basic({ route, navigation }) {
       (value.eto_b_YN === "Y" && value.eto_b_floor_material === (null || ""))
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (imageLength - yLength !== 1) {
+    } else if (value.eto_b_YN === "Y" && imageLength !== 2) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
+
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>

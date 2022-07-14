@@ -152,7 +152,7 @@ export default function Basic({ route, navigation }) {
       (value.t_b_YN === "Y" && value.t_b_address === (null || ""))
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (yLength !== imageLength) {
+    } else if (value.t_b_YN === "Y" && imageLength !== 6) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
@@ -236,46 +236,36 @@ export default function Basic({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_t_b_toiletImg}
                     />
-                    {value.t_b_genderDivision_YN === "Y" ? (
-                      <TakePhoto
-                        title="남녀별도 사용 가능"
-                        name="p_t_b_genderDivImg"
-                        getImage={getImage}
-                        value={value.p_t_b_genderDivImg}
-                      />
-                    ) : null}
-                    {value.t_b_genderDivisionSign_YN === "Y" ? (
-                      <TakePhoto
-                        title="출입구 남/녀 구분 점자표지판 설치"
-                        name="p_t_b_genderDivSignImg"
-                        getImage={getImage}
-                        value={value.p_t_b_genderDivSignImg}
-                      />
-                    ) : null}
-                    {value.t_b_dotblock_YN === "Y" ? (
-                      <TakePhoto
-                        title="출입구 전면 바닥 점형 블록 설치"
-                        name="p_t_b_dotblockImg"
-                        getImage={getImage}
-                        value={value.p_t_b_dotblockImg}
-                      />
-                    ) : null}
-                    {value.t_b_usesign_YN === "Y" ? (
-                      <TakePhoto
-                        title="화장실 사용 여부 외부 표시 확인 기능"
-                        name="p_t_b_useSignImg"
-                        getImage={getImage}
-                        value={value.p_t_b_useSignImg}
-                      />
-                    ) : null}
-                    {value.t_b_emergencybell_YN === "Y" ? (
-                      <TakePhoto
-                        title="비상벨 설치"
-                        name="p_t_b_emergencybellImg"
-                        getImage={getImage}
-                        value={value.p_t_b_emergencybellImg}
-                      />
-                    ) : null}
+                    <TakePhoto
+                      title="남녀별도 사용 가능"
+                      name="p_t_b_genderDivImg"
+                      getImage={getImage}
+                      value={value.p_t_b_genderDivImg}
+                    />
+                    <TakePhoto
+                      title="출입구 남/녀 구분 점자표지판 설치"
+                      name="p_t_b_genderDivSignImg"
+                      getImage={getImage}
+                      value={value.p_t_b_genderDivSignImg}
+                    />
+                    <TakePhoto
+                      title="출입구 전면 바닥 점형 블록 설치"
+                      name="p_t_b_dotblockImg"
+                      getImage={getImage}
+                      value={value.p_t_b_dotblockImg}
+                    />
+                    <TakePhoto
+                      title="화장실 사용 여부 외부 표시 확인 기능"
+                      name="p_t_b_useSignImg"
+                      getImage={getImage}
+                      value={value.p_t_b_useSignImg}
+                    />
+                    <TakePhoto
+                      title="비상벨 설치"
+                      name="p_t_b_emergencybellImg"
+                      getImage={getImage}
+                      value={value.p_t_b_emergencybellImg}
+                    />
                   </>
                 ) : null}
               </View>

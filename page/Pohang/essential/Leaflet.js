@@ -15,6 +15,8 @@ export default function Leaflet({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [imageLength, setImageLength] = useState([]);
+  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     setValue((value) => ({
@@ -41,6 +43,11 @@ export default function Leaflet({ route, navigation }) {
     }
 
     setImage(tmp);
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
 
   useEffect(() => {
@@ -58,6 +65,12 @@ export default function Leaflet({ route, navigation }) {
         });
 
         setValue(obj);
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
       })
       .catch((err) => console.log(err));
   }, []);
@@ -65,6 +78,8 @@ export default function Leaflet({ route, navigation }) {
   const handleOnSubmit = async () => {
     if (value.e_tl_YN === null || value.e_tl_disabled_facility_YN === null || value.e_tl_dot_leaflet_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
+    } else if (yLength !== imageLength) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else {
       setModalVisible(true);
       uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)

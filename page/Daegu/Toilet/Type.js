@@ -120,7 +120,7 @@ export default function Type({ route, navigation }) {
     } else DataSave();
   };
   // console.log(imageLength); 확인 !!!!!!!!!!!!!!!!!!
-
+  console.log(value);
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>

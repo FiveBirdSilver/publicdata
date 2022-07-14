@@ -21,6 +21,7 @@ export default function Recommend({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [plus, setPlus] = useState("");
+  const [arr, setArr] = useState("");
 
   const getImage = (uri, name) => {
     const newArr = [...image];
@@ -56,6 +57,8 @@ export default function Recommend({ route, navigation }) {
         });
         setValue(obj);
         setPlus(response.picture.filter((i) => i.url !== null || "").length);
+        setArr(obj.e_rc_season);
+        console.log(obj.e_rc_season.includes(2));
       })
       .catch((err) => console.log(err));
   }, []);

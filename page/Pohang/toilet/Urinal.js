@@ -139,7 +139,7 @@ export default function Urinal({ route, navigation }) {
       (value.t_urinal_YN === "Y" && value.t_urinal_automatic_sensor_YN === (null || ""))
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (yLength !== imageLength) {
+    } else if (value.t_urinal_YN === "Y" && imageLength !== 3) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
@@ -217,22 +217,18 @@ export default function Urinal({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_t_u_uninalImg}
                     />
-                    {value.t_urinal_handle_YN === "Y" ? (
-                      <TakePhoto
-                        title="소변기 좌우 손잡이"
-                        name="p_t_u_uninalhandleImg"
-                        getImage={getImage}
-                        value={value.p_t_u_uninalhandleImg}
-                      />
-                    ) : null}
-                    {value.t_urinal_automatic_sensor_YN === "Y" ? (
-                      <TakePhoto
-                        title="버튼식/자동센서"
-                        name="p_t_u_automaticsensorImg"
-                        getImage={getImage}
-                        value={value.p_t_u_automaticsensorImg}
-                      />
-                    ) : null}
+                    <TakePhoto
+                      title="소변기 좌우 손잡이"
+                      name="p_t_u_uninalhandleImg"
+                      getImage={getImage}
+                      value={value.p_t_u_uninalhandleImg}
+                    />
+                    <TakePhoto
+                      title="버튼식/자동센서"
+                      name="p_t_u_automaticsensorImg"
+                      getImage={getImage}
+                      value={value.p_t_u_automaticsensorImg}
+                    />
                   </>
                 ) : null}
               </View>
