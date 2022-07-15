@@ -22,14 +22,13 @@ export default function Area({ route, navigation }) {
         setComplete(JSON.parse(res.data));
       });
   }, []);
-
   const handleOnSubmit = () => {
     const essential = complete.status_list.coreroute.map((i) => i.status);
     const coreroute = complete.status_list.coreroute.map((i) => i.status);
     const eto = complete.status_list.eto.map((i) => i.status);
     const park = complete.status_list.park.map((i) => i.status);
     const toilet = complete.status_list.toilet.map((i) => i.status);
-    const tmpJoin = essential.concat(coreroute).concat(eto).concat(park).concat(toilet);
+    tmpJoin = essential.concat(coreroute).concat(eto).concat(park).concat(toilet);
 
     if (tmpJoin.filter((i) => i === "N").length !== 0) {
       Alert.alert("미수집 항목이 존재합니다. 모든 수집 완료 후 저장해주세요.");
@@ -46,7 +45,6 @@ export default function Area({ route, navigation }) {
           } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
         });
   };
-
   const essential = {
     label: [
       "기본정보",
@@ -103,7 +101,6 @@ export default function Area({ route, navigation }) {
     ],
     depth: ["basic", "er", "ed", "ie", "w", "u", "t", "fc", "dt"],
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.header_container}>

@@ -21,7 +21,7 @@ export default function Recommend({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [plus, setPlus] = useState("");
-  const [arr, setArr] = useState("");
+  const [arr, setArr] = useState(["]"]);
 
   const getImage = (uri, name) => {
     const newArr = [...image];
@@ -57,8 +57,12 @@ export default function Recommend({ route, navigation }) {
         });
         setValue(obj);
         setPlus(response.picture.filter((i) => i.url !== null || "").length);
-        setArr(obj.e_rc_season);
-        console.log(obj.e_rc_season.includes(2));
+        // setArr({
+        //   spring: obj.e_rc_season.includes(0),
+        //   summer: obj.e_rc_season.includes(1),
+        //   fall: obj.e_rc_season.includes(2),
+        //   winter: obj.e_rc_season.includes(3),
+        // });
       })
       .catch((err) => console.log(err));
   }, []);
@@ -126,6 +130,7 @@ export default function Recommend({ route, navigation }) {
         e_rc_course: text,
       });
   };
+
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -156,6 +161,7 @@ export default function Recommend({ route, navigation }) {
                 <Text style={styles.season_title}>추천 계절</Text>
               </View>
               <Text style={styles.season_ps}>* 중복 선택 가능</Text>
+
               <View style={styles.season_container}>
                 <BouncyCheckbox
                   size={15}
@@ -175,6 +181,7 @@ export default function Recommend({ route, navigation }) {
                     textDecorationLine: "none",
                     color: "black",
                   }}
+                  isChecked={arr && arr.includes("0") ? true : false}
                 />
                 <BouncyCheckbox
                   size={15}
@@ -194,6 +201,7 @@ export default function Recommend({ route, navigation }) {
                     textDecorationLine: "none",
                     color: "black",
                   }}
+                  isChecked={arr.includes("1") ? true : false}
                 />
                 <BouncyCheckbox
                   size={15}

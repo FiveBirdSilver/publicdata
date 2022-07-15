@@ -25,20 +25,28 @@ export default function Login({ navigation }) {
   ];
 
   useEffect(() => {
-    // AsyncStorage.getItem("User", (err, result) => {
-    //   if (result) {
-    //     console.log(result);
-    //   }
-    // }); //자동 로그인 시 추후에 아이디 비밀번호 확인하는 과정으로 필요함
-    AsyncStorage.getItem("IsChecked", (err, result) => {
-      if (result) {
-        let AutoLog = JSON.parse(result);
-        if (AutoLog.isChecked) {
-          navigation.push("Home");
-        }
-      }
+    AsyncStorage.getItem("IsChecked", (err, result1) => {
+      AsyncStorage.getItem("User", (err, result2) => {
+        AsyncStorage.getItem("UserInfo", (err, result3) => {
+          let AutoLog = JSON.parse(result1);
+          if (AutoLog.isChecked) {
+            let User = JSON.parse(result2);
+            let UserInfo = JSON.parse(result3);
+            axios
+              .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/login", {
+                org_skey: User.org_skey,
+                team_id: UserInfo.id,
+                team_pw: UserInfo.pw,
+              })
+              .then((res) => {
+                if (res.data !== "") {
+                  navigation.push("Home");
+                }
+              });
+          }
+        });
+      });
     });
-    // axios 타야함!
   }, []);
   const handleOnSubmit = () => {
     if (id === "" || password === "") {
@@ -58,6 +66,7 @@ export default function Login({ navigation }) {
           } else {
             setLoggin(true);
             AsyncStorage.setItem("User", JSON.stringify(JSON.parse(res.data)));
+            AsyncStorage.setItem("UserInfo", JSON.stringify({ id: id, pw: password }));
             AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }));
             AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: loggin }));
             navigation.push("Home");
