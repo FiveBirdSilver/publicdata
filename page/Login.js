@@ -28,8 +28,10 @@ export default function Login({ navigation }) {
     AsyncStorage.getItem("IsChecked", (err, result1) => {
       AsyncStorage.getItem("User", (err, result2) => {
         AsyncStorage.getItem("UserInfo", (err, result3) => {
+          console.log(result1, result2, result3);
+
           let AutoLog = JSON.parse(result1);
-          if (AutoLog.isChecked) {
+          if (AutoLog && AutoLog.isChecked) {
             let User = JSON.parse(result2);
             let UserInfo = JSON.parse(result3);
             axios
