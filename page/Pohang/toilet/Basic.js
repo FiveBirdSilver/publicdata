@@ -19,7 +19,7 @@ export default function Basic({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
   const yLength = Object.values(value).filter((i) => i === "Y").length;
-
+  console.log("test");
   const getCheck = (val, name) => {
     if (name === "t_b_YN" && val === "N") {
       setValue((value) => ({
@@ -143,16 +143,44 @@ export default function Basic({ route, navigation }) {
     if (value.t_b_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.t_b_YN === "Y" && value.t_b_genderDivision_YN === (null || "")) ||
-      (value.t_b_YN === "Y" && value.t_b_genderDivisionSign_YN === (null || "")) ||
-      (value.t_b_YN === "Y" && value.t_b_dotblock_YN === (null || "")) ||
-      (value.t_b_YN === "Y" && value.t_b_usesign_YN === (null || "")) ||
-      (value.t_b_YN === "Y" && value.t_b_emergencybell_YN === (null || "")) ||
-      (value.t_b_YN === "Y" && value.t_b_name === (null || "")) ||
-      (value.t_b_YN === "Y" && value.t_b_address === (null || ""))
+      (value.t_b_YN === "Y" && value.t_b_genderDivision_YN === null) ||
+      (value.t_b_YN === "Y" && value.t_b_genderDivisionSign_YN === null) ||
+      (value.t_b_YN === "Y" && value.t_b_dotblock_YN === null) ||
+      (value.t_b_YN === "Y" && value.t_b_usesign_YN === null) ||
+      (value.t_b_YN === "Y" && value.t_b_emergencybell_YN === null) ||
+      (value.t_b_YN === "Y" && value.t_b_name === null) ||
+      (value.t_b_YN === "Y" && value.t_b_name === "") ||
+      (value.t_b_YN === "Y" && value.t_b_address === null) ||
+      (value.t_b_YN === "Y" && value.t_b_address === "")
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.t_b_YN === "Y" && imageLength !== 6) {
+    } else if (
+      value.t_b_YN === "Y" &&
+      value.t_b_usesign_YN === "N" &&
+      value.t_b_emergencybell_YN === "N" &&
+      imageLength !== 4
+    ) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
+    } else if (
+      value.t_b_YN === "Y" &&
+      value.t_b_usesign_YN === "Y" &&
+      value.t_b_emergencybell_YN === "N" &&
+      imageLength !== 5
+    ) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
+    } else if (
+      value.t_b_YN === "Y" &&
+      value.t_b_usesign_YN === "N" &&
+      value.t_b_emergencybell_YN === "Y" &&
+      imageLength !== 5
+    ) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
+    } else if (
+      value.t_b_YN === "Y" &&
+      value.t_b_usesign_YN === "Y" &&
+      value.t_b_emergencybell_YN === "Y" &&
+      imageLength !== 6
+    ) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
@@ -254,18 +282,22 @@ export default function Basic({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_t_b_dotblockImg}
                     />
-                    <TakePhoto
-                      title="화장실 사용 여부 외부 표시 확인 기능"
-                      name="p_t_b_useSignImg"
-                      getImage={getImage}
-                      value={value.p_t_b_useSignImg}
-                    />
-                    <TakePhoto
-                      title="비상벨 설치"
-                      name="p_t_b_emergencybellImg"
-                      getImage={getImage}
-                      value={value.p_t_b_emergencybellImg}
-                    />
+                    {value.t_b_usesign_YN === "Y" ? (
+                      <TakePhoto
+                        title="화장실 사용 여부 외부 표시 확인 기능"
+                        name="p_t_b_useSignImg"
+                        getImage={getImage}
+                        value={value.p_t_b_useSignImg}
+                      />
+                    ) : null}
+                    {value.t_b_emergencybell_YN === "Y" ? (
+                      <TakePhoto
+                        title="비상벨 설치"
+                        name="p_t_b_emergencybellImg"
+                        getImage={getImage}
+                        value={value.p_t_b_emergencybellImg}
+                      />
+                    ) : null}
                   </>
                 ) : null}
               </View>

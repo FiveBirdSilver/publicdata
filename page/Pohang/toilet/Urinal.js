@@ -17,7 +17,6 @@ export default function Urinal({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "t_urinal_YN" && val === "N") {
@@ -134,9 +133,11 @@ export default function Urinal({ route, navigation }) {
     if (value.t_urinal_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.t_urinal_YN === "Y" && value.t_urinal_count === (null || "" || 0)) ||
-      (value.t_urinal_YN === "Y" && value.t_urinal_handle_YN === (null || "")) ||
-      (value.t_urinal_YN === "Y" && value.t_urinal_automatic_sensor_YN === (null || ""))
+      (value.t_urinal_YN === "Y" && value.t_urinal_count === null) ||
+      (value.t_urinal_YN === "Y" && value.t_urinal_count === "") ||
+      (value.t_urinal_YN === "Y" && value.t_urinal_count === 0) ||
+      (value.t_urinal_YN === "Y" && value.t_urinal_handle_YN === null) ||
+      (value.t_urinal_YN === "Y" && value.t_urinal_automatic_sensor_YN === null)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (value.t_urinal_YN === "Y" && imageLength !== 3) {

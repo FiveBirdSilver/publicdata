@@ -17,7 +17,6 @@ export default function ParkingArea({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     setValue((value) => ({
@@ -50,7 +49,7 @@ export default function ParkingArea({ route, navigation }) {
       setImageLength(imageLength - 1);
     }
   };
-  console.log(value);
+
   useEffect(() => {
     axios
       .post(`${API}/api/pohang/park/getparkingarea`, {
@@ -128,22 +127,31 @@ export default function ParkingArea({ route, navigation }) {
 
   const handleOnSubmit = async () => {
     if (
-      value.p_pa_count === (null || "") ||
-      value.p_pa_disabled_count === (null || "") ||
-      value.p_b_disabled_width === (null || "") ||
-      value.p_b_disabled_length === (null || "") ||
-      value.p_pa_pregnant_count === (null || "") ||
-      value.p_pa_bus_count === (null || "") ||
-      value.p_pa_electric_count === (null || "") ||
-      value.p_pa_disabled_sign_YN === (null || "")
+      value.p_pa_count === null ||
+      value.p_pa_count === "" ||
+      value.p_pa_disabled_count === null ||
+      value.p_pa_disabled_count === "" ||
+      value.p_b_disabled_width === null ||
+      value.p_b_disabled_width === "" ||
+      value.p_b_disabled_length === null ||
+      value.p_b_disabled_length === "" ||
+      value.p_pa_pregnant_count === null ||
+      value.p_pa_pregnant_count === "" ||
+      value.p_pa_bus_count === null ||
+      value.p_pa_bus_count === "" ||
+      value.p_pa_electric_count === null ||
+      value.p_pa_electric_count === "" ||
+      value.p_pa_disabled_sign_YN === null
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.p_pa_disabled_count > 0 && imageLength === 0) {
-      Alert.alert("필수 사진을 모두 추가해 주세요.");
-    } else if (yLength !== imageLength) {
+    } else if (
+      (value.p_pa_disabled_count > 0 && value.p_pa_disabled_sign_YN === "N" && imageLength !== 1) ||
+      (value.p_pa_disabled_count > 0 && value.p_pa_disabled_sign_YN === "Y" && imageLength !== 2)
+    ) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
+
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>

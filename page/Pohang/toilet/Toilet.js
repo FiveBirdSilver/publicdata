@@ -132,10 +132,11 @@ export default function Urinal({ route, navigation }) {
     if (value.t_toilet_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.t_toilet_YN === "Y" && value.t_toilet_count === (null || "" || 0)) ||
+      (value.t_toilet_YN === "Y" && value.t_toilet_count === null) ||
+      (value.t_toilet_YN === "Y" && value.t_toilet_count === "") ||
+      (value.t_toilet_YN === "Y" && value.t_toilet_count === 0) ||
       (value.t_toilet_YN === "Y" && value.t_toilet_handle_YN === null) ||
-      (value.t_toilet_YN === "Y" && value.t_toilet_automatic_sensor_YN === null) ||
-      (value.t_toilet_YN === "Y" && value.t_w_child_washstand_YN === null)
+      (value.t_toilet_YN === "Y" && value.t_toilet_automatic_sensor_YN === null)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (value.t_toilet_YN === "Y" && imageLength !== 3) {

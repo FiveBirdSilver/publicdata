@@ -32,11 +32,18 @@ export default function Elevator({ route, navigation }) {
   };
 
   const handleOnSubmit = () => {
-    if (value.eto_rh_YN === "Y" && (value.eto_rh_height === "" || value.eto_rh_width === ""))
+    if (value.eto_rh_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
-    else if (value.cr_rh_YN === "Y" && (value.eto_rh_height === 0 || value.eto_rh_width === 0))
+    } else if (
+      (value.eto_rh_YN === "Y" && value.eto_rh_height === null) ||
+      (value.eto_rh_YN === "Y" && value.eto_rh_height === "") ||
+      (value.eto_rh_YN === "Y" && value.eto_rh_height === 0) ||
+      (value.eto_rh_YN === "Y" && value.eto_rh_height === null) ||
+      (value.eto_rh_YN === "Y" && value.eto_rh_height === "") ||
+      (value.eto_rh_YN === "Y" && value.eto_rh_height === 0)
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    else
+    } else {
       axios
         .post(`${API}/api/pohang/eto/setroadchin`, {
           team_skey: teamKey,
@@ -56,6 +63,7 @@ export default function Elevator({ route, navigation }) {
           console.log(err);
           Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
         });
+    }
   };
 
   const onValueChange = (val) => {

@@ -18,7 +18,6 @@ export default function Basic({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "p_b_YN" && val === "N") {
@@ -138,11 +137,18 @@ export default function Basic({ route, navigation }) {
     if (value.p_b_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.p_b_YN === "Y" && value.p_b_name === (null || "")) ||
-      (value.p_b_YN === "Y" && value.p_b_parking_address === (null || "")) ||
-      (value.p_b_YN === "Y" && value.p_b_width === (null || "" || 0)) ||
-      (value.p_b_YN === "Y" && value.p_b_length === (null || "" || 0)) ||
-      (value.p_b_YN === "Y" && value.p_b_floor_material === (null || ""))
+      (value.p_b_YN === "Y" && value.p_b_name === null) ||
+      (value.p_b_YN === "Y" && value.p_b_name === "") ||
+      (value.p_b_YN === "Y" && value.p_b_parking_address === null) ||
+      (value.p_b_YN === "Y" && value.p_b_parking_address === "") ||
+      (value.p_b_YN === "Y" && value.p_b_width === null) ||
+      (value.p_b_YN === "Y" && value.p_b_width === "") ||
+      (value.p_b_YN === "Y" && value.p_b_width === 0) ||
+      (value.p_b_YN === "Y" && value.p_b_length === null) ||
+      (value.p_b_YN === "Y" && value.p_b_length === "") ||
+      (value.p_b_YN === "Y" && value.p_b_length === 0) ||
+      (value.p_b_YN === "Y" && value.p_b_floor_material === null) ||
+      (value.p_b_YN === "Y" && value.p_b_floor_material === "")
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (value.p_b_YN === "Y" && imageLength !== 2) {

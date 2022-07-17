@@ -153,33 +153,37 @@ export default function Handle({ route, navigation }) {
                 yes="있다"
                 no="없다"
               />
-              <RadioBtn
-                title="변기 옆 유무"
-                getCheck={getCheck}
-                name="to_handle_toilet_YN"
-                value={value.to_handle_toilet_YN}
-              />
-              <RadioBtn
-                title="세면대 옆 유무"
-                getCheck={getCheck}
-                name="to_handle_basin_YN"
-                value={value.to_handle_basin_YN}
-              />
+              {value.to_handle_YN === "Y" ? (
+                <>
+                  <RadioBtn
+                    title="변기 옆 유무"
+                    getCheck={getCheck}
+                    name="to_handle_toilet_YN"
+                    value={value.to_handle_toilet_YN}
+                  />
+                  <RadioBtn
+                    title="세면대 옆 유무"
+                    getCheck={getCheck}
+                    name="to_handle_basin_YN"
+                    value={value.to_handle_basin_YN}
+                  />
 
-              <View style={styles.img}>
-                <TakePhoto
-                  title="사진 1"
-                  name="d_t_handle_photo1"
-                  getImage={getImage}
-                  value={value.d_t_handle_photo1}
-                />
-                <TakePhoto
-                  title="사진 2"
-                  name="d_t_handle_photo2"
-                  getImage={getImage}
-                  value={value.d_t_handle_photo2}
-                />
-              </View>
+                  <View style={styles.img}>
+                    <TakePhoto
+                      title="사진 1"
+                      name="d_t_handle_photo1"
+                      getImage={getImage}
+                      value={value.d_t_handle_photo1}
+                    />
+                    <TakePhoto
+                      title="사진 2"
+                      name="d_t_handle_photo2"
+                      getImage={getImage}
+                      value={value.d_t_handle_photo2}
+                    />
+                  </View>
+                </>
+              ) : null}
             </View>
           </View>
         </View>

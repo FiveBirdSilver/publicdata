@@ -21,11 +21,11 @@ export default function Washstand({ route, navigation }) {
 
   const getCheck = (val, name) => {
     if (name === "to_basin_YN" && val === "N") {
-      setValue((value) => ({
+      setValue({
         to_basin_YN: "N",
         to_basin_height: 0,
         to_basin_space_height: 0,
-      }));
+      });
     } else
       setValue((value) => ({
         ...value,

@@ -18,6 +18,7 @@ export default function Inside({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
+
   const getCheck = (val, name) => {
     if (name === "in_table_YN" && val === "N") {
       setValue((value) => ({
@@ -181,38 +182,41 @@ export default function Inside({ route, navigation }) {
                 yes="있다"
                 no="없다"
               />
-              <RadioBtn title="입식 유무" getCheck={getCheck} name="in_standing_YN" value={value.in_standing_YN} />
-              <View style={{ position: "relative" }}>
-                <Input
-                  title="테이블 사이의 간격"
-                  getText={getText}
-                  name="in_table_spacing"
-                  value={value.in_table_spacing}
-                  keyboardType={"numeric"}
-                />
-                <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
-                <Input
-                  title="테이블 높이"
-                  getText={getText}
-                  name="in_table_height"
-                  value={value.in_table_height}
-                  keyboardType={"numeric"}
-                />
-                <Text style={{ position: "absolute", top: 63, right: 10 }}>cm</Text>
-                <Input
-                  title="테이블 폭"
-                  getText={getText}
-                  name="in_table_width"
-                  value={value.in_table_width}
-                  keyboardType={"numeric"}
-                />
-                <Text style={{ position: "absolute", top: 113, right: 10 }}>cm</Text>
-              </View>
-
-              <View style={styles.img}>
-                <TakePhoto title="사진 1" name="d_c_in_photo1" getImage={getImage} value={value.d_c_in_photo1} />
-                <TakePhoto title="사진 2" name="d_c_in_photo2" getImage={getImage} value={value.d_c_in_photo2} />
-              </View>
+              {value.in_table_YN === "Y" ? (
+                <>
+                  <RadioBtn title="입식 유무" getCheck={getCheck} name="in_standing_YN" value={value.in_standing_YN} />
+                  <View style={{ position: "relative" }}>
+                    <Input
+                      title="테이블 사이의 간격"
+                      getText={getText}
+                      name="in_table_spacing"
+                      value={value.in_table_spacing}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                    <Input
+                      title="테이블 높이"
+                      getText={getText}
+                      name="in_table_height"
+                      value={value.in_table_height}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 63, right: 10 }}>cm</Text>
+                    <Input
+                      title="테이블 폭"
+                      getText={getText}
+                      name="in_table_width"
+                      value={value.in_table_width}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 113, right: 10 }}>cm</Text>
+                  </View>
+                  <View style={styles.img}>
+                    <TakePhoto title="사진 1" name="d_c_in_photo1" getImage={getImage} value={value.d_c_in_photo1} />
+                    <TakePhoto title="사진 2" name="d_c_in_photo2" getImage={getImage} value={value.d_c_in_photo2} />
+                  </View>
+                </>
+              ) : null}
             </View>
           </View>
         </View>

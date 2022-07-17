@@ -1,11 +1,22 @@
 import { useState, useEffect } from "react";
-import { Text, TextInput, View, Image, TouchableOpacity, Alert, ScrollView } from "react-native";
+import {
+  Modal,
+  ActivityIndicator,
+  Text,
+  TextInput,
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+} from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
+import { color } from "../assets/styles/color";
 import { styles } from "../assets/styles/login.js";
 import logo from "../assets/img/gp_logo.png";
 
@@ -15,6 +26,7 @@ export default function Login({ navigation }) {
   const [location, setLoaction] = useState(null);
   const [idfocus, setIdFocus] = useState(false);
   const [pwfocus, setPwFocus] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const [isChecked, setIsChecked] = useState(false);
   const [loggin, setLoggin] = useState(false);
@@ -25,6 +37,8 @@ export default function Login({ navigation }) {
   ];
 
   useEffect(() => {
+    setModalVisible(true);
+
     AsyncStorage.getItem("IsChecked", (err, result1) => {
       AsyncStorage.getItem("User", (err, result2) => {
         AsyncStorage.getItem("UserInfo", (err, result3) => {
@@ -40,6 +54,8 @@ export default function Login({ navigation }) {
               })
               .then((res) => {
                 if (res.data !== "") {
+                  setModalVisible(false);
+
                   navigation.push("Home");
                 }
               });
@@ -153,6 +169,17 @@ export default function Login({ navigation }) {
       <View style={styles.logo}>
         <Image source={logo} style={{ width: 150, height: 40 }} />
       </View>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={[styles.modal, styles.horizontal]}>
+          <ActivityIndicator size="large" color={color.blue} />
+        </View>
+      </Modal>
     </View>
   );
 }

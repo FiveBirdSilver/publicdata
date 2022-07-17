@@ -62,7 +62,6 @@ export default function Staris({ route, navigation }) {
       })
       .catch((err) => console.log(err));
   }, []);
-
   const getImage = (uri, name) => {
     const newArr = [...image];
     let tmp = [...image];
@@ -138,6 +137,7 @@ export default function Staris({ route, navigation }) {
         Alert.alert("저장에 실패했습니다. 필수 사진이 추가되었는지 확인해 주세요.");
       });
   };
+
   const handleOnSubmit = async () => {
     if (value.cr_s_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
@@ -147,10 +147,13 @@ export default function Staris({ route, navigation }) {
       (value.cr_s_YN === "Y" && value.cr_s_dotblock_YN === null) ||
       (value.cr_s_YN === "Y" && value.cr_s_count === null) ||
       (value.cr_s_YN === "Y" && value.cr_s_count === 0) ||
+      (value.cr_s_YN === "Y" && value.cr_s_count === "") ||
       (value.cr_s_YN === "Y" && value.cr_s_width === null) ||
       (value.cr_s_YN === "Y" && value.cr_s_width === 0) ||
+      (value.cr_s_YN === "Y" && value.cr_s_width === "") ||
       (value.cr_s_YN === "Y" && value.cr_s_height === null) ||
       (value.cr_s_YN === "Y" && value.cr_s_height === 0) ||
+      (value.cr_s_YN === "Y" && value.cr_s_height === "") ||
       (value.cr_s_YN === "Y" && value.cr_s_handle_structure === null)
     ) {
       Alert.alert("모든 항목을 입력해 주세요.");

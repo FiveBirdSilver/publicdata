@@ -18,7 +18,6 @@ export default function Runway({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "eto_r_YN" && val === "N") {
@@ -141,8 +140,12 @@ export default function Runway({ route, navigation }) {
     } else if (
       (value.eto_r_YN === "Y" && value.eto_r_handle_YN === null) ||
       (value.eto_r_YN === "Y" && value.eto_r_handle_braille_YN === null) ||
-      (value.eto_r_YN === "Y" && value.eto_r_slope === (null || "" || 0)) ||
-      (value.eto_r_YN === "Y" && value.eto_r_length === (null || "" || 0))
+      (value.eto_r_YN === "Y" && value.eto_r_slope === null) ||
+      (value.eto_r_YN === "Y" && value.eto_r_slope === "") ||
+      (value.eto_r_YN === "Y" && value.eto_r_slope === 0) ||
+      (value.eto_r_YN === "Y" && value.eto_r_length === null) ||
+      (value.eto_r_YN === "Y" && value.eto_r_length === "") ||
+      (value.eto_r_YN === "Y" && value.eto_r_length === 0)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (value.eto_r_YN === "Y" && imageLength !== 3) {

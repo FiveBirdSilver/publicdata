@@ -19,7 +19,6 @@ export default function Staris({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "eto_s_YN" && val === "N") {
@@ -148,10 +147,16 @@ export default function Staris({ route, navigation }) {
       (value.eto_s_YN === "Y" && value.eto_s_handle_YN === null) ||
       (value.eto_s_YN === "Y" && value.eto_s_handle_braille_YN === null) ||
       (value.eto_s_YN === "Y" && value.eto_s_dotblock_YN === null) ||
-      (value.eto_s_YN === "Y" && value.eto_s_count === (null || "" || 0)) ||
-      (value.eto_s_YN === "Y" && value.eto_s_width === (null || "" || 0)) ||
-      (value.eto_s_YN === "Y" && value.eto_s_height === (null || "" || 0)) ||
-      (value.eto_s_YN === "Y" && value.eto_s_handle_structure === (null || ""))
+      (value.eto_s_YN === "Y" && value.eto_s_count === null) ||
+      (value.eto_s_YN === "Y" && value.eto_s_count === "") ||
+      (value.eto_s_YN === "Y" && value.eto_s_count === 0) ||
+      (value.eto_s_YN === "Y" && value.eto_s_width === null) ||
+      (value.eto_s_YN === "Y" && value.eto_s_width === "") ||
+      (value.eto_s_YN === "Y" && value.eto_s_width === 0) ||
+      (value.eto_s_YN === "Y" && value.eto_s_height === null) ||
+      (value.eto_s_YN === "Y" && value.eto_s_height === "") ||
+      (value.eto_s_YN === "Y" && value.eto_s_height === 0) ||
+      (value.eto_s_YN === "Y" && value.eto_s_handle_structure === null)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (value.eto_s_YN === "Y" && imageLength !== 4) {

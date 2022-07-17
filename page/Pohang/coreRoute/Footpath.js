@@ -17,9 +17,11 @@ export default function Footpath({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
+    if (val === "N") {
+      setImageLength(imageLength - 1);
+    }
     setValue((value) => ({
       ...value,
       [name]: val,
@@ -71,6 +73,7 @@ export default function Footpath({ route, navigation }) {
           obj[v.name] = v.url;
         });
         setValue(obj);
+
         setImageLength(
           response.picture
             .map((i) => i.url)
@@ -80,8 +83,7 @@ export default function Footpath({ route, navigation }) {
       })
       .catch((err) => console.log(err));
   }, []);
-  console.log(yLength);
-  console.log(imageLength);
+
   const DataSave = () => {
     setModalVisible(true);
     uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
@@ -122,18 +124,72 @@ export default function Footpath({ route, navigation }) {
         navigation.goBack();
       });
   };
-
   const handleOnSubmit = async () => {
-    if (
-      value.cr_f_street_lamp_YN === null ||
-      value.cr_f_wheelchair_accessible_YN === null ||
-      value.cr_f_floor_material === "" ||
-      value.cr_f_waterspout_width === ""
-    ) {
+    if (value.cr_f_street_lamp_YN === null || value.cr_f_wheelchair_accessible_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (yLength !== imageLength) {
-      Alert.alert("필수 사진을 모두 추가해 주세요.");
-    } else DataSave();
+    } else if (value.cr_f_wheelchair_accessible_YN !== null && imageLength === 0) {
+      Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+    } else if (value.cr_f_wheelchair_accessible_YN !== null) {
+      if (value.cr_f_street_lamp_YN === "Y" && imageLength !== 2) {
+        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+      } else if (
+        value.cr_f_street_lamp_YN === "N" &&
+        value.cr_f_floor_material === "" &&
+        value.cr_f_waterspout_width === "" &&
+        imageLength !== 1
+      ) {
+        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+      } else if (
+        value.cr_f_street_lamp_YN === "N" &&
+        value.cr_f_floor_material !== "" &&
+        value.cr_f_waterspout_width === "" &&
+        imageLength !== 2
+      ) {
+        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+      } else if (
+        value.cr_f_street_lamp_YN === "N" &&
+        value.cr_f_floor_material === "" &&
+        value.cr_f_waterspout_width !== "" &&
+        imageLength !== 2
+      ) {
+        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+      } else if (
+        value.cr_f_street_lamp_YN === "N" &&
+        value.cr_f_floor_material !== "" &&
+        value.cr_f_waterspout_width !== "" &&
+        imageLength !== 3
+      ) {
+        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+      } else if (
+        value.cr_f_street_lamp_YN === "Y" &&
+        value.cr_f_floor_material === "" &&
+        value.cr_f_waterspout_width === "" &&
+        imageLength !== 2
+      ) {
+        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+      } else if (
+        value.cr_f_street_lamp_YN === "Y" &&
+        value.cr_f_floor_material !== "" &&
+        value.cr_f_waterspout_width === "" &&
+        imageLength !== 3
+      ) {
+        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+      } else if (
+        value.cr_f_street_lamp_YN === "Y" &&
+        value.cr_f_floor_material === "" &&
+        value.cr_f_waterspout_width !== "" &&
+        imageLength !== 3
+      ) {
+        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+      } else if (
+        value.cr_f_street_lamp_YN === "Y" &&
+        value.cr_f_floor_material !== "" &&
+        value.cr_f_waterspout_width !== "" &&
+        imageLength !== 4
+      ) {
+        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+      } else DataSave();
+    }
   };
 
   return (
@@ -176,25 +232,6 @@ export default function Footpath({ route, navigation }) {
                 name="cr_f_street_lamp_YN"
                 value={value.cr_f_street_lamp_YN}
               />
-
-              <View style={styles.img}>
-                {value.cr_f_wheelchair_accessible_YN === "Y" ? (
-                  <TakePhoto
-                    title="휠체어 이동 가능"
-                    name="p_cr_f_footpathMoveImg"
-                    getImage={getImage}
-                    value={value.p_cr_f_footpathMoveImg}
-                  />
-                ) : null}
-                {value.cr_f_street_lamp_YN === "Y" ? (
-                  <TakePhoto
-                    title="야간 조명"
-                    name="p_cr_f_streetlampImg"
-                    getImage={getImage}
-                    value={value.p_cr_f_streetlampImg}
-                  />
-                ) : null}
-              </View>
               <View
                 style={{
                   position: "relative",
@@ -215,6 +252,38 @@ export default function Footpath({ route, navigation }) {
                   keyboardType={"numeric"}
                 />
                 <Text style={{ position: "absolute", top: 63, right: 10 }}>cm</Text>
+              </View>
+              <View style={styles.img}>
+                <TakePhoto
+                  title="휠체어 이동 가능"
+                  name="p_cr_f_footpathMoveImg"
+                  getImage={getImage}
+                  value={value.p_cr_f_footpathMoveImg}
+                />
+                {value.cr_f_street_lamp_YN === "Y" ? (
+                  <TakePhoto
+                    title="야간 조명"
+                    name="p_cr_f_streetlampImg"
+                    getImage={getImage}
+                    value={value.p_cr_f_streetlampImg}
+                  />
+                ) : null}
+                {value.cr_f_floor_material !== "" ? (
+                  <TakePhoto
+                    title="바닥 재질"
+                    name="p_cr_f_materialImg"
+                    getImage={getImage}
+                    value={value.p_cr_f_materialImg}
+                  />
+                ) : null}
+                {value.cr_f_waterspout_width !== "" ? (
+                  <TakePhoto
+                    title="배수 트렌치"
+                    name="p_cr_f_waterspoutImg"
+                    getImage={getImage}
+                    value={value.p_cr_f_waterspoutImg}
+                  />
+                ) : null}
               </View>
             </View>
           </View>

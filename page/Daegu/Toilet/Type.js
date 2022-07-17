@@ -155,17 +155,20 @@ export default function Type({ route, navigation }) {
                 yes="있다"
                 no="없다"
               />
-              <RadioBtn
-                title="장애인 화장실 남녀 분리 유무"
-                getCheck={getCheck}
-                name="to_gender_YN"
-                value={value.to_gender_YN}
-              />
-
-              <View style={styles.img}>
-                <TakePhoto title="사진 1" name="d_t_t_photo1" getImage={getImage} value={value.d_t_t_photo1} />
-                <TakePhoto title="사진 2" name="d_t_t_photo2" getImage={getImage} value={value.d_t_t_photo2} />
-              </View>
+              {value.to_disabled_YN === "Y" ? (
+                <>
+                  <RadioBtn
+                    title="장애인 화장실 남녀 분리 유무"
+                    getCheck={getCheck}
+                    name="to_gender_YN"
+                    value={value.to_gender_YN}
+                  />
+                  <View style={styles.img}>
+                    <TakePhoto title="사진 1" name="d_t_t_photo1" getImage={getImage} value={value.d_t_t_photo1} />
+                    <TakePhoto title="사진 2" name="d_t_t_photo2" getImage={getImage} value={value.d_t_t_photo2} />
+                  </View>
+                </>
+              ) : null}
             </View>
           </View>
         </View>

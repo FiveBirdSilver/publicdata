@@ -152,20 +152,22 @@ export default function Backrest({ route, navigation }) {
                 yes="있다"
                 no="없다"
               />
-              <View style={styles.img}>
-                <TakePhoto
-                  title="사진 1"
-                  name="d_t_toilet_photo1"
-                  getImage={getImage}
-                  value={value.d_t_toilet_photo1}
-                />
-                <TakePhoto
-                  title="사진 2"
-                  name="d_t_toilet_photo2"
-                  getImage={getImage}
-                  value={value.d_t_toilet_photo2}
-                />
-              </View>
+              {value.to_toilet_backrest_YN === "Y" ? (
+                <View style={styles.img}>
+                  <TakePhoto
+                    title="사진 1"
+                    name="d_t_toilet_photo1"
+                    getImage={getImage}
+                    value={value.d_t_toilet_photo1}
+                  />
+                  <TakePhoto
+                    title="사진 2"
+                    name="d_t_toilet_photo2"
+                    getImage={getImage}
+                    value={value.d_t_toilet_photo2}
+                  />
+                </View>
+              ) : null}
             </View>
           </View>
         </View>

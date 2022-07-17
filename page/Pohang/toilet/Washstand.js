@@ -139,18 +139,22 @@ export default function Washstand({ route, navigation }) {
     if (value.t_w_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.t_w_YN === "Y" && value.t_w_height === (null || "" || 0)) ||
+      (value.t_w_YN === "Y" && value.t_w_height === null) ||
+      (value.t_w_YN === "Y" && value.t_w_height === "") ||
+      (value.t_w_YN === "Y" && value.t_w_height === 0) ||
       (value.t_w_YN === "Y" && value.t_w_handle_YN === null) ||
       (value.t_w_YN === "Y" && value.t_w_temperature_braille_YN === null) ||
       (value.t_w_YN === "Y" && value.t_w_child_washstand_YN === null) ||
       (value.t_w_YN === "Y" && value.t_w_wheelchair_possible_YN === null)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.t_w_YN === "Y" && imageLength !== 5) {
+    } else if (
+      (value.t_w_YN === "Y" && value.t_w_child_washstand_YN === "N" && imageLength !== 4) ||
+      (value.t_w_YN === "Y" && value.t_w_child_washstand_YN === "Y" && imageLength !== 5)
+    ) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
-
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -248,12 +252,15 @@ export default function Washstand({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_t_w_temperatureBraileImg}
                     />
-                    <TakePhoto
-                      title="어린이용 세면대"
-                      name="p_t_w_childwashstandImg"
-                      getImage={getImage}
-                      value={value.p_t_w_childwashstandImg}
-                    />
+                    {value.t_w_child_washstand_YN === "Y" ? (
+                      <TakePhoto
+                        title="어린이용 세면대"
+                        name="p_t_w_childwashstandImg"
+                        getImage={getImage}
+                        value={value.p_t_w_childwashstandImg}
+                      />
+                    ) : null}
+
                     <TakePhoto
                       title="휠체어 탑승 세면대"
                       name="p_t_w_childwashstandImg"
