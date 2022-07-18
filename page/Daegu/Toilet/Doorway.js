@@ -90,7 +90,7 @@ export default function Doorway({ route, navigation }) {
       })
       .catch((err) => console.log(err));
   }, []);
-  console.log(value);
+
   const DataSave = () => {
     setModalVisible(true);
     uploadImgToGcs(image, regionKey, region, listKey, dataCollection, data)
@@ -129,6 +129,7 @@ export default function Doorway({ route, navigation }) {
         Alert.alert("저장에 실패했습니다. 필수 사진이 추가되었는지 확인해 주세요.");
       });
   };
+
   const handleOnSubmit = async () => {
     if (
       value.to_dw_sill_YN === null ||
@@ -142,6 +143,7 @@ export default function Doorway({ route, navigation }) {
       Alert.alert("반드시 하나의 사진을 추가해 주세요.");
     } else DataSave();
   };
+
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>

@@ -18,7 +18,6 @@ export default function Washstand({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "t_w_YN" && val === "N") {
@@ -155,6 +154,7 @@ export default function Washstand({ route, navigation }) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
+  console.log(value);
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -263,9 +263,9 @@ export default function Washstand({ route, navigation }) {
 
                     <TakePhoto
                       title="휠체어 탑승 세면대"
-                      name="p_t_w_childwashstandImg"
+                      name="p_t_w_wheelchairPossibleImg"
                       getImage={getImage}
-                      value={value.p_t_w_childwashstandImg}
+                      value={value.p_t_w_wheelchairPossibleImg}
                     />
                   </>
                 ) : null}

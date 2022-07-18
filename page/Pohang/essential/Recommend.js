@@ -20,6 +20,7 @@ export default function Recommend({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [plus, setPlus] = useState(0);
+  const [len, setLen] = useState([]);
   const [imageLength, setImageLength] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -120,6 +121,8 @@ export default function Recommend({ route, navigation }) {
       Alert.alert("모든 항목을 입력해 주세요.");
     } else if (plus === 0 || imageLength === 0) {
       Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+    } else if (len.length !== imageLength) {
+      Alert.alert("추천 코스의 개수와 사진의 개수는 동일해야 합니다.");
     } else DataSave();
   };
   const handleOnPlus = () => {
@@ -138,8 +141,9 @@ export default function Recommend({ route, navigation }) {
   };
 
   const getText = (text) => {
-    let arr = text.split(",");
-    if (arr.length > 10) {
+    let TmpArr = text.split(",");
+    setLen(TmpArr.filter((i) => i !== ""));
+    if (TmpArr.length > 10) {
       Alert.alert("추천 코스 입력은 최대 10개까지 가능합니다.");
     } else
       setValue({

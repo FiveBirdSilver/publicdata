@@ -27,9 +27,6 @@ export default function Door({ route, navigation }) {
           .map((i) => i.status)
           .concat(Response.status_list.toilet.map((i) => i.status));
         setJoin(TmpJoin);
-        if (TmpJoin.filter((i) => i === "N").length === 0) {
-          Alert.alert("모든 항목이 수집되었습니다. 위의 저장 버튼을 눌러 완료해주세요.");
-        }
       });
   }, [isFocused]);
 
@@ -72,6 +69,13 @@ export default function Door({ route, navigation }) {
           </View>
           <Text>저장</Text>
         </View>
+      </View>
+      <View>
+        {join.filter((i) => i === "N").length === 0 ? (
+          <Text style={styles.completeAlert}>
+            🚨 모든 항목이 수집되었습니다. 위의 저장 버튼을 눌러 완료해 주세요. 🚨
+          </Text>
+        ) : null}
       </View>
       <View style={styles.area}>
         <Text style={styles.area_title}>{listName}</Text>

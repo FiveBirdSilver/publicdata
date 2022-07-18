@@ -66,7 +66,7 @@ export default function Home({ navigation }) {
         </View>
       </View>
       <View style={styles.today}>
-        <Text style={styles.today_title}>오늘의 구역</Text>
+        <Text style={styles.today_title}>오늘의 장소</Text>
         <ScrollView>
           <View style={styles.today_item}>
             {listSkey.length !== 0

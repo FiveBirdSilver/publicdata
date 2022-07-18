@@ -13,6 +13,7 @@ export default function Area({ route, navigation }) {
   const [complete, setComplete] = useState([]);
   const [join, setJoin] = useState([]);
   const isFocused = useIsFocused();
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     axios
@@ -31,7 +32,7 @@ export default function Area({ route, navigation }) {
           .concat(Response.status_list.toilet.map((i) => i.status));
         setJoin(TmpJoin);
         if (TmpJoin.filter((i) => i === "N").length === 0) {
-          Alert.alert("모든 항목이 수집되었습니다. 위의 저장 버튼을 눌러 완료해주세요.");
+          setModalVisible(true);
         }
       });
   }, [isFocused]);
@@ -119,8 +120,15 @@ export default function Area({ route, navigation }) {
               <AntDesign style={styles.icon} color="orange" name="upload" size={30} />
             </TouchableOpacity>
           </View>
-          <Text>저장</Text>
+          <Text style={{ fontSize: 16 }}>저장</Text>
         </View>
+      </View>
+      <View>
+        {join.filter((i) => i === "N").length === 0 ? (
+          <Text style={styles.completeAlert}>
+            🚨 모든 항목이 수집되었습니다. 위의 저장 버튼을 눌러 완료해 주세요. 🚨
+          </Text>
+        ) : null}
       </View>
 
       <View style={styles.area}>

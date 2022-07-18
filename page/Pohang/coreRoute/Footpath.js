@@ -19,9 +19,6 @@ export default function Footpath({ route, navigation }) {
   const [imageLength, setImageLength] = useState([]);
 
   const getCheck = (val, name) => {
-    if (val === "N") {
-      setImageLength(imageLength - 1);
-    }
     setValue((value) => ({
       ...value,
       [name]: val,
@@ -29,12 +26,17 @@ export default function Footpath({ route, navigation }) {
   };
 
   const getText = (text, name) => {
-    setValue((value) => ({
-      ...value,
-      [name]: text,
-    }));
+    if (name === "cr_f_waterspout_width" && text === "") {
+      setValue((value) => ({
+        ...value,
+        cr_f_waterspout_width: 0,
+      }));
+    } else
+      setValue((value) => ({
+        ...value,
+        [name]: text,
+      }));
   };
-
   const getImage = (uri, name) => {
     const newArr = [...image];
     let tmp = [...image];
@@ -125,73 +127,23 @@ export default function Footpath({ route, navigation }) {
       });
   };
   const handleOnSubmit = async () => {
-    if (value.cr_f_street_lamp_YN === null || value.cr_f_wheelchair_accessible_YN === null) {
+    if (
+      value.cr_f_street_lamp_YN === null ||
+      value.cr_f_wheelchair_accessible_YN === null ||
+      value.cr_f_floor_material === null ||
+      value.cr_f_floor_material === ""
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.cr_f_wheelchair_accessible_YN !== null && imageLength === 0) {
+    } else if (value.cr_f_street_lamp_YN === "N" && value.cr_f_waterspout_width === 0 && imageLength !== 2) {
       Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-    } else if (value.cr_f_wheelchair_accessible_YN !== null) {
-      if (value.cr_f_street_lamp_YN === "Y" && imageLength !== 2) {
-        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-      } else if (
-        value.cr_f_street_lamp_YN === "N" &&
-        value.cr_f_floor_material === "" &&
-        value.cr_f_waterspout_width === "" &&
-        imageLength !== 1
-      ) {
-        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-      } else if (
-        value.cr_f_street_lamp_YN === "N" &&
-        value.cr_f_floor_material !== "" &&
-        value.cr_f_waterspout_width === "" &&
-        imageLength !== 2
-      ) {
-        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-      } else if (
-        value.cr_f_street_lamp_YN === "N" &&
-        value.cr_f_floor_material === "" &&
-        value.cr_f_waterspout_width !== "" &&
-        imageLength !== 2
-      ) {
-        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-      } else if (
-        value.cr_f_street_lamp_YN === "N" &&
-        value.cr_f_floor_material !== "" &&
-        value.cr_f_waterspout_width !== "" &&
-        imageLength !== 3
-      ) {
-        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-      } else if (
-        value.cr_f_street_lamp_YN === "Y" &&
-        value.cr_f_floor_material === "" &&
-        value.cr_f_waterspout_width === "" &&
-        imageLength !== 2
-      ) {
-        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-      } else if (
-        value.cr_f_street_lamp_YN === "Y" &&
-        value.cr_f_floor_material !== "" &&
-        value.cr_f_waterspout_width === "" &&
-        imageLength !== 3
-      ) {
-        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-      } else if (
-        value.cr_f_street_lamp_YN === "Y" &&
-        value.cr_f_floor_material === "" &&
-        value.cr_f_waterspout_width !== "" &&
-        imageLength !== 3
-      ) {
-        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-      } else if (
-        value.cr_f_street_lamp_YN === "Y" &&
-        value.cr_f_floor_material !== "" &&
-        value.cr_f_waterspout_width !== "" &&
-        imageLength !== 4
-      ) {
-        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-      } else DataSave();
-    }
+    } else if (value.cr_f_street_lamp_YN === "N" && value.cr_f_waterspout_width !== 0 && imageLength !== 3) {
+      Alert.alert("사진을 추가해 주세요.");
+    } else if (value.cr_f_street_lamp_YN === "Y" && value.cr_f_waterspout_width === 0 && imageLength !== 3) {
+      Alert.alert("사진을 추가해 주세요.");
+    } else if (value.cr_f_street_lamp_YN === "Y" && value.cr_f_waterspout_width !== 0 && imageLength !== 4) {
+      Alert.alert("사진을 추가해 주세요.");
+    } else DataSave();
   };
-
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -268,15 +220,15 @@ export default function Footpath({ route, navigation }) {
                     value={value.p_cr_f_streetlampImg}
                   />
                 ) : null}
-                {value.cr_f_floor_material !== "" ? (
-                  <TakePhoto
-                    title="바닥 재질"
-                    name="p_cr_f_materialImg"
-                    getImage={getImage}
-                    value={value.p_cr_f_materialImg}
-                  />
-                ) : null}
-                {value.cr_f_waterspout_width !== "" ? (
+                <TakePhoto
+                  title="바닥 재질"
+                  name="p_cr_f_materialImg"
+                  getImage={getImage}
+                  value={value.p_cr_f_materialImg}
+                />
+                {value.cr_f_waterspout_width !== null &&
+                value.cr_f_waterspout_width !== "" &&
+                value.cr_f_waterspout_width !== 0 ? (
                   <TakePhoto
                     title="배수 트렌치"
                     name="p_cr_f_waterspoutImg"

@@ -104,25 +104,12 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   completeAlert: {
-    fontSize: 24,
-    fontWeight: "bold",
-    padding: 10,
-  },
-  completeBtn: {
-    width: "30%",
-    height: 50,
-    backgroundColor: color.blue,
-    marginTop: 20,
-    margin: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-  },
-  completeBtnText: {
-    color: "white",
+    color: "red",
     fontSize: 20,
     fontWeight: "bold",
+    padding: 15,
   },
+
   modal: {
     flex: 1,
     justifyContent: "center",
