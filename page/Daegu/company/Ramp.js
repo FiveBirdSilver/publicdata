@@ -20,10 +20,20 @@ export default function Ramp({ route, navigation }) {
   const [imageLength, setImageLength] = useState([]);
 
   const getCheck = (val, name) => {
-    setValue((value) => ({
-      ...value,
-      [name]: val,
-    }));
+    if (name === "dw_ramp_YN" && val === "N") {
+      setValue({
+        dw_ramp_YN: "N",
+        dw_ramp_handle_YN: "N",
+        dw_ramp_braille_YN: "N",
+        dw_ramp_antislip_YN: "N",
+        dw_ramp_width: 0,
+        dw_ramp_angle: 0,
+      });
+    } else
+      setValue((value) => ({
+        ...value,
+        [name]: val,
+      }));
   };
 
   const getImage = (uri, name) => {
@@ -123,19 +133,22 @@ export default function Ramp({ route, navigation }) {
         Alert.alert("저장에 실패했습니다. 필수 사진이 추가되었는지 확인해 주세요.");
       });
   };
+  console.log(value);
   const handleOnSubmit = async () => {
+    if (value.dw_ramp_YN === null) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    }
     if (
-      value.dw_ramp_YN === null ||
-      value.dw_ramp_handle_YN === null ||
-      value.dw_ramp_braille_YN === null ||
-      value.dw_ramp_antislip_YN === null ||
-      value.dw_ramp_width === null ||
-      value.dw_ramp_width === "" ||
-      value.dw_ramp_angle === null ||
-      value.dw_ramp_angle === ""
+      (value.dw_ramp_YN === "Y" && value.dw_ramp_handle_YN === null) ||
+      (value.dw_ramp_YN === "Y" && value.dw_ramp_braille_YN === null) ||
+      (value.dw_ramp_YN === "Y" && value.dw_ramp_antislip_YN === null) ||
+      (value.dw_ramp_YN === "Y" && value.dw_ramp_width === null) ||
+      (value.dw_ramp_YN === "Y" && value.dw_ramp_width === 0) ||
+      (value.dw_ramp_YN === "Y" && value.dw_ramp_angle === null) ||
+      (value.dw_ramp_YN === "Y" && value.dw_ramp_angle === 0)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (imageLength === 0) {
+    } else if (value.dw_ramp_YN === "Y" && imageLength === 0) {
       Alert.alert("반드시 하나의 사진을 추가해 주세요.");
     } else DataSave();
   };

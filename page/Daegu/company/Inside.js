@@ -21,19 +21,18 @@ export default function Inside({ route, navigation }) {
 
   const getCheck = (val, name) => {
     if (name === "in_table_YN" && val === "N") {
-      setValue((value) => ({
+      setValue({
         in_table_YN: "N",
         in_table_height: 0,
         in_table_spacing: 0,
         in_table_width: 0,
-      }));
+      });
     } else
       setValue((value) => ({
         ...value,
         [name]: val,
       }));
   };
-  console.log(value);
   const getImage = (uri, name) => {
     const newArr = [...image];
     let tmp = [...image];
@@ -134,13 +133,16 @@ export default function Inside({ route, navigation }) {
     if (value.in_table_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      value.in_standing_YN === null ||
+      (value.in_table_YN === "Y" && value.in_standing_YN === null) ||
       (value.in_table_YN === "Y" && value.in_table_spacing === null) ||
       (value.in_table_YN === "Y" && value.in_table_spacing === "") ||
+      (value.in_table_YN === "Y" && value.in_table_spacing === 0) ||
       (value.in_table_YN === "Y" && value.in_table_height === null) ||
       (value.in_table_YN === "Y" && value.in_table_height === "") ||
+      (value.in_table_YN === "Y" && value.in_table_height === 0) ||
       (value.in_table_YN === "Y" && value.in_table_width === null) ||
-      (value.in_table_YN === "Y" && value.in_table_width === "")
+      (value.in_table_YN === "Y" && value.in_table_width === "") ||
+      (value.in_table_YN === "Y" && value.in_table_width === 0)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (value.in_table_YN === "Y" && imageLength === 0) {

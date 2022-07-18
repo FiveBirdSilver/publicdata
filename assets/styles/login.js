@@ -113,4 +113,14 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
   },
+  modal: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  horizontal: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    // padding: 10,
+  },
 });

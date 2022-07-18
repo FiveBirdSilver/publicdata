@@ -19,7 +19,7 @@ export default function Recommend({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [plus, setPlus] = useState(1);
+  const [plus, setPlus] = useState(0);
   const [imageLength, setImageLength] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -52,8 +52,6 @@ export default function Recommend({ route, navigation }) {
       .post(`${API}/api/pohang/essential/getrecommand`, {
         team_skey: teamKey,
         list_skey: listKey,
-        // team_skey: "T002",
-        // list_skey: 4999,
       })
       .then((res) => {
         const response = JSON.parse(res.data);
@@ -62,6 +60,7 @@ export default function Recommend({ route, navigation }) {
         response.picture.forEach((v) => {
           obj[v.name] = v.url;
         });
+
         setValue(obj);
         setPlus(response.picture.filter((i) => i.url !== null || "").length);
         setImageLength(
@@ -70,7 +69,11 @@ export default function Recommend({ route, navigation }) {
             .filter((v) => v !== "")
             .filter((o) => o !== null).length
         );
-        setSeason(response.e_rc_season.replace(/[^0-9]/g, "").split(""));
+        if (response.e_rc_season === null) {
+          setSeason("");
+        } else {
+          setSeason(response.e_rc_season.replace(/[^0-9]/g, "").split(""));
+        }
         setLoading(false);
       })
       .catch((err) => console.log(err));
@@ -82,8 +85,6 @@ export default function Recommend({ route, navigation }) {
       .then((result) => {
         axios
           .post(`${API}/api/pohang/essential/setrecommand`, {
-            // team_skey: "T002",
-            // list_skey: 4999,
             team_skey: teamKey,
             list_skey: listKey,
             e_rc_course: value.e_rc_course,
@@ -115,13 +116,12 @@ export default function Recommend({ route, navigation }) {
       });
   };
   const handleOnSubmit = async () => {
-    if (value.e_rc_course === "" || value.e_rc_course === null || value.e_rc_season === null || season.length === 0) {
+    if (value.e_rc_course === "" || value.e_rc_course === null || season.length === 0) {
       Alert.alert("모든 항목을 입력해 주세요.");
     } else if (plus === 0 || imageLength === 0) {
       Alert.alert("반드시 하나의 사진을 추가해 주세요.");
     } else DataSave();
   };
-
   const handleOnPlus = () => {
     setPlus(plus + 1);
     if (plus === 10) {

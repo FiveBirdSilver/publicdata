@@ -8,13 +8,13 @@ import Header from "../page/component/Header";
 
 export default function Home({ navigation }) {
   const [userInfo, setUserInfo] = useState("");
-  const [isChecked, setIsChecked] = useState(null);
   const [listSkey, setListSkey] = useState([]);
 
   const data = [
     { label: "대구", value: 3001 },
     { label: "포항", value: 3002 },
   ];
+
   useEffect(() => {
     AsyncStorage.getItem("User", (err, result) => {
       if (result) {
@@ -22,19 +22,16 @@ export default function Home({ navigation }) {
         setListSkey(JSON.parse(result).list.map((i) => i.list_skey));
       }
     });
-    AsyncStorage.getItem("IsChecked", (err, result) => {
-      if (result) {
-        setIsChecked(JSON.parse(result));
-      }
-    });
+    AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: true }));
   }, []);
-  console.log(listSkey);
+
   const handleOnLogOut = () => {
     Alert.alert("알림", "로그아웃 하시겠습니까?", [
       {
         text: "예",
         onPress: () => {
           AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: false }));
+          AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: false }));
           navigation.push("Login");
         },
       },
@@ -73,7 +70,7 @@ export default function Home({ navigation }) {
         <ScrollView>
           <View style={styles.today_item}>
             {listSkey.length !== 0
-              ? listSkey.map((i) => (
+              ? listSkey.map((i, index) => (
                   <TouchableOpacity
                     style={styles.home_btn}
                     key={i}

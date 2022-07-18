@@ -87,6 +87,10 @@ export const styles = StyleSheet.create({
   today_item_title: {
     fontSize: 20,
   },
+  today_item_comp_title: {
+    color: color.darkgray,
+    fontSize: 20,
+  },
   item_text: {
     fontSize: 20,
     marginBottom: 5,
@@ -136,5 +140,15 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  home_comp_btn: {
+    width: "100%",
+    padding: 12,
+    marginTop: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: color.gray,
+    borderRadius: 5,
+    marginBottom: 10,
   },
 });

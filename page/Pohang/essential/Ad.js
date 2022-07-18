@@ -99,6 +99,7 @@ export default function Ad({ route, navigation }) {
                 console.log("실행2");
                 setModalVisible(false);
                 Alert.alert("저장되었습니다.");
+
                 navigation.goBack();
               } else {
                 setModalVisible(false);

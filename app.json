@@ -1,30 +1,28 @@
 {
   "expo": {
-    "name": "public_data",
+    "name": "공공데이터 수집",
     "slug": "public_data",
     "version": "1.0.0",
+    "platforms": ["android"],
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "primaryColor": "#00acb1",
+    "icon": "./assets/adaptive.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash1.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#f1f3f5"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
+    "assetBundlePatterns": ["**/*"],
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "foregroundImage": "./assets/adaptive.png",
+        "backgroundColor": "#00acb1"
+      },
+      "package": "com.goldenplanet.public_data"
     },
     "web": {
       "favicon": "./assets/favicon.png"

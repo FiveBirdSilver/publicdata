@@ -1,6 +1,7 @@
 import { Text, View, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useEffect, useState } from "react";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { useIsFocused } from "@react-navigation/native";
 import axios from "axios";
 
 import Header from "../component/Header";
@@ -9,8 +10,9 @@ import { styles } from "../../assets/styles/area";
 export default function Door({ route, navigation }) {
   const { listName, listKey, teamKey, region, regionKey } = route.params;
   const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
-
+  const [join, setJoin] = useState([]);
   const [complete, setComplete] = useState([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     axios
@@ -19,9 +21,17 @@ export default function Door({ route, navigation }) {
         list_skey: listKey,
       })
       .then((res) => {
-        setComplete(JSON.parse(res.data));
+        const Response = JSON.parse(res.data);
+        setComplete(Response);
+        const TmpJoin = Response.status_list.company
+          .map((i) => i.status)
+          .concat(Response.status_list.toilet.map((i) => i.status));
+        setJoin(TmpJoin);
+        if (TmpJoin.filter((i) => i === "N").length === 0) {
+          Alert.alert("모든 항목이 수집되었습니다. 위의 저장 버튼을 눌러 완료해주세요.");
+        }
       });
-  }, []);
+  }, [isFocused]);
 
   const company = {
     label: ["기본정보", "출입문", "출입구", "출입구 경사로", "내부", "외부"],
@@ -34,11 +44,7 @@ export default function Door({ route, navigation }) {
     depth: ["type", "door", "dw", "ramp", "basin", "h", "tb"],
   };
   const handleOnSubmit = () => {
-    const company = complete.status_list.company.map((i) => i.status);
-    const toilet = complete.status_list.toilet.map((i) => i.status);
-    const tmpJoin = company.concat(toilet);
-
-    if (tmpJoin.filter((i) => i === "N").length !== 0) {
+    if (join.filter((i) => i === "N").length !== 0) {
       Alert.alert("미수집 항목이 존재합니다. 모든 수집 완료 후 저장해주세요.");
     } else
       axios
@@ -53,14 +59,18 @@ export default function Door({ route, navigation }) {
           } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
         });
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.header_container}>
         <Header title="데이터 수집" subtitle="데이터 만들기" />
-        <View style={styles.icon_wrap}>
-          <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
-            <AntDesign style={styles.icon} color="orange" name="upload" size={30} />
-          </TouchableOpacity>
+        <View style={{ alignItems: "center" }}>
+          <View style={styles.icon_wrap}>
+            <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+              <AntDesign style={styles.icon} color="orange" name="upload" size={30} />
+            </TouchableOpacity>
+          </View>
+          <Text>저장</Text>
         </View>
       </View>
       <View style={styles.area}>

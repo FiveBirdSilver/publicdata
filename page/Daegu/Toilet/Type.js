@@ -21,10 +21,16 @@ export default function Type({ route, navigation }) {
   const [imageLength, setImageLength] = useState([]);
 
   const getCheck = (val, name) => {
-    setValue((value) => ({
-      ...value,
-      [name]: val,
-    }));
+    if (name === "to_disabled_YN" && val === "N") {
+      setValue({
+        to_disabled_YN: "N",
+        to_gender_YN: "N",
+      });
+    } else
+      setValue((value) => ({
+        ...value,
+        [name]: val,
+      }));
   };
   const getImage = (uri, name) => {
     const newArr = [...image];
@@ -115,11 +121,10 @@ export default function Type({ route, navigation }) {
   const handleOnSubmit = async () => {
     if (value.to_disabled_YN === null || value.to_gender_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (imageLength === 0) {
+    } else if (value.to_disabled_YN === "Y" && imageLength === 0) {
       Alert.alert("반드시 하나의 사진을 추가해 주세요.");
     } else DataSave();
   };
-  // console.log(imageLength); 확인 !!!!!!!!!!!!!!!!!!
   console.log(value);
   return (
     <ScrollView style={styles.scrollview}>

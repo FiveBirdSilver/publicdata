@@ -18,6 +18,13 @@ export default function Handle({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
   const getCheck = (val, name) => {
+    if (name === "to_handle_YN" && val === "N") {
+      setValue({
+        to_handle_YN: "N",
+        to_handle_toilet_YN: "N",
+        to_handle_basin_YN: "N",
+      });
+    }
     setValue((value) => ({
       ...value,
       [name]: val,

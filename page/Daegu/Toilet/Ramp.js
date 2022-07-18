@@ -20,6 +20,16 @@ export default function Ramp({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
   const getCheck = (val, name) => {
+    if (name === "to_ramp_YN" && val === "N") {
+      setValue({
+        ...value,
+        to_ramp_YN: "N",
+        to_ramp_handle_YN: "N",
+        to_ramp_antislip_YN: "N",
+        to_ramp_width: 0,
+        to_ramp_angle: 0,
+      });
+    }
     setValue((value) => ({
       ...value,
       [name]: val,
@@ -122,14 +132,16 @@ export default function Ramp({ route, navigation }) {
       });
   };
   const handleOnSubmit = async () => {
+    if (value.to_ramp_YN === null) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    }
     if (
-      value.to_ramp_YN === null ||
-      value.to_ramp_handle_YN === null ||
-      value.to_ramp_antislip_YN === null ||
-      value.to_ramp_width === null ||
-      value.to_ramp_width === 0 ||
-      value.to_ramp_angle === null ||
-      value.to_ramp_width === 0
+      (value.to_ramp_YN === "Y" && value.to_ramp_handle_YN === null) ||
+      (value.to_ramp_YN === "Y" && value.to_ramp_antislip_YN === null) ||
+      (value.to_ramp_YN === "Y" && value.to_ramp_width === null) ||
+      (value.to_ramp_YN === "Y" && value.to_ramp_width === 0) ||
+      (value.to_ramp_YN === "Y" && value.to_ramp_angle === null) ||
+      (value.to_ramp_YN === "Y" && value.to_ramp_width === 0)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (value.to_ramp_YN === "Y" && imageLength === 0) {
