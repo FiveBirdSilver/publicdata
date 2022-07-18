@@ -103,4 +103,34 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
   },
+  completeAlert: {
+    fontSize: 24,
+    fontWeight: "bold",
+    padding: 10,
+  },
+  completeBtn: {
+    width: "30%",
+    height: 50,
+    backgroundColor: color.blue,
+    marginTop: 20,
+    margin: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+  },
+  completeBtnText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  modal: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  horizontal: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    // padding: 10,
+  },
 });

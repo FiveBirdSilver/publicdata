@@ -161,25 +161,68 @@ export default function DisabledToilet({ route, navigation }) {
     if (value.t_dt_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.t_dt_YN === "Y" && value.t_dt_doortype === (null || "")) ||
+      (value.t_dt_YN === "Y" && value.t_dt_doortype === null) ||
+      (value.t_dt_YN === "Y" && value.t_dt_doortype === "") ||
       (value.t_dt_YN === "Y" && value.t_dt_urinal_YN === null) ||
       (value.t_dt_YN === "Y" && value.t_dt_toilet_YN === null) ||
       (value.t_dt_YN === "Y" && value.t_dt_urinal_handle_YN === null) ||
       (value.t_dt_YN === "Y" && value.t_dt_toilet_handle_YN === null) ||
       (value.t_dt_YN === "Y" && value.t_dt_urinal_automatic_sensor_YN === null) ||
       (value.t_dt_YN === "Y" && value.t_dt_toilet_automatic_sensor_YN === null) ||
-      (value.t_dt_YN === "Y" && value.t_dt_urinal_left_width === (null || 0)) ||
-      (value.t_dt_YN === "Y" && value.t_dt_urinal_right_width === (null || 0)) ||
-      (value.t_dt_YN === "Y" && value.t_dt_urinal_back_width === (null || 0)) ||
-      (value.t_dt_YN === "Y" && value.t_dt_urinal_front_width === (null || 0)) ||
-      (value.t_dt_YN === "Y" && value.t_dt_left_width === (null || 0)) ||
-      (value.t_dt_YN === "Y" && value.t_dt_right_width === (null || 0)) ||
-      (value.t_dt_YN === "Y" && value.t_dt_back_width === (null || 0)) ||
-      (value.t_dt_YN === "Y" && value.t_dt_front_width === (null || 0)) ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_left_width === null) ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_left_width === 0) ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_left_width === "") ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_right_width === null) ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_right_width === 0) ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_right_width === "") ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_back_width === null) ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_back_width === 0) ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_back_width === "") ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_front_width === null) ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_front_width === 0) ||
+      (value.t_dt_YN === "Y" && value.t_dt_urinal_front_width === "") ||
+      (value.t_dt_YN === "Y" && value.t_dt_left_width === null) ||
+      (value.t_dt_YN === "Y" && value.t_dt_left_width === 0) ||
+      (value.t_dt_YN === "Y" && value.t_dt_left_width === "") ||
+      (value.t_dt_YN === "Y" && value.t_dt_right_width === null) ||
+      (value.t_dt_YN === "Y" && value.t_dt_right_width === "") ||
+      (value.t_dt_YN === "Y" && value.t_dt_right_width === 0) ||
+      (value.t_dt_YN === "Y" && value.t_dt_back_width === null) ||
+      (value.t_dt_YN === "Y" && value.t_dt_back_width === "") ||
+      (value.t_dt_YN === "Y" && value.t_dt_back_width === 0) ||
+      (value.t_dt_YN === "Y" && value.t_dt_front_width === null) ||
+      (value.t_dt_YN === "Y" && value.t_dt_front_width === "") ||
+      (value.t_dt_YN === "Y" && value.t_dt_front_width === 0) ||
       (value.t_dt_YN === "Y" && value.t_dt_cleandevice_YN === null)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.cr_s_YN === "Y" && imageLength !== 8) {
+    } else if (
+      value.t_dt_YN === "Y" &&
+      value.t_dt_urinal_YN === "N" &&
+      value.t_dt_toilet_YN === "N" &&
+      imageLength !== 6
+    ) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
+    } else if (
+      value.t_dt_YN === "Y" &&
+      value.t_dt_urinal_YN === "Y" &&
+      value.t_dt_toilet_YN === "N" &&
+      imageLength !== 7
+    ) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
+    } else if (
+      value.t_dt_YN === "Y" &&
+      value.t_dt_urinal_YN === "N" &&
+      value.t_dt_toilet_YN === "Y" &&
+      imageLength !== 7
+    ) {
+      Alert.alert("필수 사진을 모두 추가해 주세요.");
+    } else if (
+      value.t_dt_YN === "Y" &&
+      value.t_dt_urinal_YN === "Y" &&
+      value.t_dt_toilet_YN === "Y" &&
+      imageLength !== 8
+    ) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
@@ -286,18 +329,23 @@ export default function DisabledToilet({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_t_dt_doortypeImg}
                     />
-                    <TakePhoto
-                      title="소변기"
-                      name="p_t_dt_urinaImg"
-                      getImage={getImage}
-                      value={value.p_t_dt_urinaImg}
-                    />
-                    <TakePhoto
-                      title="대변기"
-                      name="p_t_dt_toiletImg"
-                      getImage={getImage}
-                      value={value.p_t_dt_toiletImg}
-                    />
+                    {value.t_dt_urinal_YN === "Y" ? (
+                      <TakePhoto
+                        title="소변기"
+                        name="p_t_dt_urinaImg"
+                        getImage={getImage}
+                        value={value.p_t_dt_urinaImg}
+                      />
+                    ) : null}
+                    {value.t_dt_toilet_YN === "Y" ? (
+                      <TakePhoto
+                        title="대변기"
+                        name="p_t_dt_toiletImg"
+                        getImage={getImage}
+                        value={value.p_t_dt_toiletImg}
+                      />
+                    ) : null}
+
                     <TakePhoto
                       title="소변기 좌우 손잡이 설치"
                       name="p_t_dt_urinalHandleImg"
@@ -322,7 +370,17 @@ export default function DisabledToilet({ route, navigation }) {
                       getImage={getImage}
                       value={value.p_t_dt_toiletautomaticeSensorImg}
                     />
+                  </>
+                ) : null}
+              </View>
 
+              {value.t_dt_YN === "Y" ? (
+                <>
+                  <View
+                    style={{
+                      position: "relative",
+                    }}
+                  >
                     <Input
                       title="소변기(좌~벽)"
                       getText={getText}
@@ -330,7 +388,13 @@ export default function DisabledToilet({ route, navigation }) {
                       name="t_dt_urinal_left_width"
                       value={value.t_dt_urinal_left_width}
                     />
-
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                  </View>
+                  <View
+                    style={{
+                      position: "relative",
+                    }}
+                  >
                     <Input
                       title="소변기(우~벽)"
                       getText={getText}
@@ -338,7 +402,13 @@ export default function DisabledToilet({ route, navigation }) {
                       name="t_dt_urinal_right_width"
                       value={value.t_dt_urinal_right_width}
                     />
-
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                  </View>
+                  <View
+                    style={{
+                      position: "relative",
+                    }}
+                  >
                     <Input
                       title="소변기(~벽)"
                       getText={getText}
@@ -346,6 +416,13 @@ export default function DisabledToilet({ route, navigation }) {
                       name="t_dt_urinal_back_width"
                       value={value.t_dt_urinal_back_width}
                     />
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                  </View>
+                  <View
+                    style={{
+                      position: "relative",
+                    }}
+                  >
                     <Input
                       title="소변기(~출입문)"
                       getText={getText}
@@ -353,6 +430,13 @@ export default function DisabledToilet({ route, navigation }) {
                       name="t_dt_urinal_front_width"
                       value={value.t_dt_urinal_front_width}
                     />
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                  </View>
+                  <View
+                    style={{
+                      position: "relative",
+                    }}
+                  >
                     <Input
                       title="대변기(좌~벽)"
                       getText={getText}
@@ -360,6 +444,13 @@ export default function DisabledToilet({ route, navigation }) {
                       name="t_dt_left_width"
                       value={value.t_dt_left_width}
                     />
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                  </View>
+                  <View
+                    style={{
+                      position: "relative",
+                    }}
+                  >
                     <Input
                       title="대변기(우~벽)"
                       getText={getText}
@@ -367,7 +458,13 @@ export default function DisabledToilet({ route, navigation }) {
                       name="t_dt_right_width"
                       value={value.t_dt_right_width}
                     />
-
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                  </View>
+                  <View
+                    style={{
+                      position: "relative",
+                    }}
+                  >
                     <Input
                       title="대변기(~벽)"
                       getText={getText}
@@ -375,6 +472,13 @@ export default function DisabledToilet({ route, navigation }) {
                       name="t_dt_back_width"
                       value={value.t_dt_back_width}
                     />
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                  </View>
+                  <View
+                    style={{
+                      position: "relative",
+                    }}
+                  >
                     <Input
                       title="대변기(~출입문)"
                       getText={getText}
@@ -382,9 +486,10 @@ export default function DisabledToilet({ route, navigation }) {
                       name="t_dt_front_width"
                       value={value.t_dt_front_width}
                     />
-                  </>
-                ) : null}
-              </View>
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                  </View>
+                </>
+              ) : null}
             </View>
           </View>
         </View>

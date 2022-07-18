@@ -21,11 +21,11 @@ export default function Washstand({ route, navigation }) {
 
   const getCheck = (val, name) => {
     if (name === "to_basin_YN" && val === "N") {
-      setValue((value) => ({
+      setValue({
         to_basin_YN: "N",
         to_basin_height: 0,
         to_basin_space_height: 0,
-      }));
+      });
     } else
       setValue((value) => ({
         ...value,
@@ -128,7 +128,9 @@ export default function Washstand({ route, navigation }) {
       });
   };
   const handleOnSubmit = async () => {
-    if (
+    if (value.to_basin_YN === null) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    } else if (
       (value.to_basin_YN === "Y" && value.to_basin_height === null) ||
       (value.to_basin_YN === "Y" && value.to_basin_height === 0) ||
       (value.to_basin_YN === "Y" && value.to_basin_height === "") ||

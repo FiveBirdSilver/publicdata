@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { Text, View, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal } from "react-native";
 import axios from "axios";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { useIsFocused } from "@react-navigation/native";
 
 import { styles } from "../../assets/styles/area";
-
 import Header from "../component/Header";
 
 export default function Area({ route, navigation }) {
   const { listName, listKey, teamKey, region, regionKey } = route.params;
   const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
   const [complete, setComplete] = useState([]);
+  const [join, setJoin] = useState([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     axios
@@ -19,18 +21,23 @@ export default function Area({ route, navigation }) {
         list_skey: listKey,
       })
       .then((res) => {
-        setComplete(JSON.parse(res.data));
+        const Response = JSON.parse(res.data);
+        setComplete(Response);
+        const TmpJoin = Response.status_list.coreroute
+          .map((i) => i.status)
+          .concat(Response.status_list.coreroute.map((i) => i.status))
+          .concat(Response.status_list.eto.map((i) => i.status))
+          .concat(Response.status_list.park.map((i) => i.status))
+          .concat(Response.status_list.toilet.map((i) => i.status));
+        setJoin(TmpJoin);
+        if (TmpJoin.filter((i) => i === "N").length === 0) {
+          Alert.alert("모든 항목이 수집되었습니다. 위의 저장 버튼을 눌러 완료해주세요.");
+        }
       });
-  }, []);
-  const handleOnSubmit = () => {
-    const essential = complete.status_list.coreroute.map((i) => i.status);
-    const coreroute = complete.status_list.coreroute.map((i) => i.status);
-    const eto = complete.status_list.eto.map((i) => i.status);
-    const park = complete.status_list.park.map((i) => i.status);
-    const toilet = complete.status_list.toilet.map((i) => i.status);
-    tmpJoin = essential.concat(coreroute).concat(eto).concat(park).concat(toilet);
+  }, [isFocused]);
 
-    if (tmpJoin.filter((i) => i === "N").length !== 0) {
+  const handleOnSubmit = () => {
+    if (join.filter((i) => i === "N").length !== 0) {
       Alert.alert("미수집 항목이 존재합니다. 모든 수집 완료 후 저장해주세요.");
     } else
       axios
@@ -45,6 +52,7 @@ export default function Area({ route, navigation }) {
           } else Alert.alert("저장에 실패했습니다. 다시 시도해주세요.");
         });
   };
+
   const essential = {
     label: [
       "기본정보",
@@ -61,9 +69,9 @@ export default function Area({ route, navigation }) {
   };
 
   const flow = {
-    label: ["보행로", "기타", "계단", "경사로", "승강기", "턱"],
-    value: ["Footpath_P", "ETC_P", "Stairs_P", "Runway_P", "Elevator_P", "Roadchin_P"],
-    depth: ["f", "etc", "s", "r", "ev", "rh"],
+    label: ["보행로", "기타", "계단", "경사로", "턱", "승강기"],
+    value: ["Footpath_P", "ETC_P", "Stairs_P", "Runway_P", "Roadchin_P", "Elevator_P"],
+    depth: ["f", "etc", "s", "r", "rh", "ev"],
   };
   const park = {
     label: ["기본정보", "주차구역", "보행로"],
@@ -85,8 +93,8 @@ export default function Area({ route, navigation }) {
       "세면대",
       "소변기",
       "대변기",
-      "편의시설",
       "장애인 화장실",
+      "편의시설",
     ],
     value: [
       "TBasic_P",
@@ -96,21 +104,25 @@ export default function Area({ route, navigation }) {
       "Washstand_P",
       "Urinal_P",
       "Toilet_P",
-      "Facilities_P",
       "DisabledToilet_P",
+      "Facilities_P",
     ],
-    depth: ["basic", "er", "ed", "ie", "w", "u", "t", "fc", "dt"],
+    depth: ["basic", "er", "ed", "ie", "w", "u", "t", "dt", "fc"],
   };
   return (
     <View style={styles.container}>
       <View style={styles.header_container}>
         <Header title="데이터 수집" subtitle="데이터 만들기" />
-        <View style={styles.icon_wrap}>
-          <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
-            <AntDesign style={styles.icon} color="orange" name="upload" size={30} />
-          </TouchableOpacity>
+        <View style={{ alignItems: "center" }}>
+          <View style={styles.icon_wrap}>
+            <TouchableOpacity style={styles.footer_title} onPress={() => handleOnSubmit()}>
+              <AntDesign style={styles.icon} color="orange" name="upload" size={30} />
+            </TouchableOpacity>
+          </View>
+          <Text>저장</Text>
         </View>
       </View>
+
       <View style={styles.area}>
         <Text style={styles.area_title}>{listName}</Text>
       </View>
@@ -316,7 +328,6 @@ export default function Area({ route, navigation }) {
           </View>
         </View>
       </ScrollView>
-      <View style={{ flex: 1 }}></View>
     </View>
   );
 }

@@ -34,7 +34,6 @@ export default function EntranceDoorWay({ route, navigation }) {
       [name]: text,
     }));
   };
-  console.log(value);
   useEffect(() => {
     axios
       .post(`${API}/api/pohang/toilet/getentrancedoorway`, {
@@ -70,9 +69,19 @@ export default function EntranceDoorWay({ route, navigation }) {
       });
   };
   const handleOnSubmit = async () => {
-    if (value.t_ed_road_chin_YN === null || value.t_ed_width === (null || "") || value.t_ed_doortype === (null || "")) {
+    if (
+      value.t_ed_road_chin_YN === null ||
+      value.t_ed_width === null ||
+      value.t_ed_width === "" ||
+      value.t_ed_doortype === null ||
+      value.t_ed_doortype === ""
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.t_ed_road_chin_YN === "Y" && value.t_ed_road_chin_height === (null || "" || 0)) {
+    } else if (
+      (value.t_ed_road_chin_YN === "Y" && value.t_ed_road_chin_height === null) ||
+      (value.t_ed_road_chin_YN === "Y" && value.t_ed_road_chin_height === "") ||
+      (value.t_ed_road_chin_YN === "Y" && value.t_ed_road_chin_height === 0)
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else DataSave();
   };

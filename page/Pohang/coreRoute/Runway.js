@@ -18,7 +18,6 @@ export default function Runway({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
-  const yLength = Object.values(value).filter((i) => i === "Y").length;
 
   const getCheck = (val, name) => {
     if (name === "cr_r_YN" && val === "N") {
@@ -134,20 +133,23 @@ export default function Runway({ route, navigation }) {
         setModalVisible(false);
       });
   };
+
   const handleOnSubmit = async () => {
     if (value.cr_r_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.cr_r_YN === "Y" && value.cr_r_YN === (null || "")) ||
-      (value.cr_r_YN === "Y" && value.cr_r_handle_YN === (null || "")) ||
-      (value.cr_r_YN === "Y" && value.cr_r_handle_braille_YN === (null || "")) ||
-      (value.cr_r_YN === "Y" && value.cr_r_slope === (null || "" || 0))
+      (value.cr_r_YN === "Y" && value.cr_r_handle_YN === null) ||
+      (value.cr_r_YN === "Y" && value.cr_r_handle_braille_YN === null) ||
+      (value.cr_r_YN === "Y" && value.cr_r_slope === null) ||
+      (value.cr_r_YN === "Y" && value.cr_r_slope === "") ||
+      (value.cr_r_YN === "Y" && value.cr_r_slope === 0)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (value.cr_r_YN === "Y" && imageLength !== 3) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
+
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>

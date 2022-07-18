@@ -9,7 +9,6 @@ export default function Basic({ route, navigation }) {
   const { listName, listKey, teamKey } = route.params;
   const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
   const [value, setValue] = useState([]);
-
   useEffect(() => {
     axios
       .post(`${API}/api/pohang/essential/getbasic`, {
@@ -28,15 +27,10 @@ export default function Basic({ route, navigation }) {
       [name]: text,
     }));
   };
-
   const handleOnSubmit = () => {
     if (
-      value.e_b_touristDestination === "" ||
-      value.e_b_address === "" ||
-      value.e_b_travelTime === "" ||
-      value.e_b_fee === "" ||
-      value.e_b_openingHours === "" ||
-      value.e_b_holiday === ""
+      Object.values(value).filter((i) => i === null).length !== 0 ||
+      Object.values(value).filter((i) => i === "").length !== 0
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else {

@@ -152,11 +152,12 @@ export default function Outside({ route, navigation }) {
                 yes="있다"
                 no="없다"
               />
-
-              <View style={styles.img}>
-                <TakePhoto title="사진 1" name="d_c_out_photo1" getImage={getImage} value={value.d_c_out_photo1} />
-                <TakePhoto title="사진 2" name="d_c_out_photo2" getImage={getImage} value={value.d_c_out_photo2} />
-              </View>
+              {value.out_parking_YN === "Y" ? (
+                <View style={styles.img}>
+                  <TakePhoto title="사진 1" name="d_c_out_photo1" getImage={getImage} value={value.d_c_out_photo1} />
+                  <TakePhoto title="사진 2" name="d_c_out_photo2" getImage={getImage} value={value.d_c_out_photo2} />
+                </View>
+              ) : null}
             </View>
           </View>
         </View>

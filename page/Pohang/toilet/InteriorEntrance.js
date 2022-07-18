@@ -73,15 +73,20 @@ export default function InteriorEntrance({ route, navigation }) {
 
   const handleOnSubmit = async () => {
     if (
-      value.t_ie_doortype === (null || "") ||
-      value.t_ie_widthe === (null || "") ||
+      value.t_ie_doortype === null ||
+      value.t_ie_doortype === "" ||
+      value.t_ie_width === null ||
+      value.t_ie_width === "" ||
       value.t_ie_lock_YN === null ||
       value.t_ie_silhouette_YN === null ||
-      value.t_ie_road_chin_YN === null ||
-      value.t_ie_road_chin_height === (null || "")
+      value.t_ie_road_chin_YN === null
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.t_ie_road_chin_YN === "Y" && value.t_ie_road_chin_height === (null || "" || 0)) {
+    } else if (
+      (value.t_ie_road_chin_YN === "Y" && value.t_ie_road_chin_height === null) ||
+      (value.t_ie_road_chin_YN === "Y" && value.t_ie_road_chin_height === "") ||
+      (value.t_ie_road_chin_YN === "Y" && value.t_ie_road_chin_height === 0)
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else DataSave();
   };

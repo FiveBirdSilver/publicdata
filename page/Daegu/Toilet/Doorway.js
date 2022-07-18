@@ -130,24 +130,18 @@ export default function Doorway({ route, navigation }) {
       });
   };
   const handleOnSubmit = async () => {
-    if (value.to_dw_sill_YN === null) {
+    if (
+      value.to_dw_sill_YN === null ||
+      value.to_dw_width === 0 ||
+      value.to_dw_width === null ||
+      value.to_dw_sill_height === 0 ||
+      value.to_dw_sill_height === null
+    ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (value.to_dw_sill_YN === "Y") {
-      if (
-        value.to_dw_width === 0 ||
-        value.to_dw_width === null ||
-        value.to_dw_sill_height === 0 ||
-        value.to_dw_sill_height === null
-      ) {
-        {
-          Alert.alert("모든 항목을 입력해주세요.");
-        }
-      } else if (value.to_dw_sill_YN === "Y" && imageLength === 0) {
-        Alert.alert("반드시 하나의 사진을 추가해 주세요.");
-      } else DataSave();
-    }
+    } else if (value.to_dw_sill_YN === "Y" && imageLength === 0) {
+      Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+    } else DataSave();
   };
-  console.log(value);
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>

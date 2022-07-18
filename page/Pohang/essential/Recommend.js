@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal, TextInput } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { RadioButton } from "react-native-paper";
 import axios from "axios";
+import { RadioButton } from "react-native-paper";
+
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import { styles } from "../../../assets/styles/add";
 import { color } from "../../../assets/styles/color";
-import Input from "../../component/Input";
 
 import TakePhoto from "../../component/TakePhoto";
 import uploadImgToGcs from "../../component/util";
-import RadioBtn from "../../component/RadioBtn";
 
 export default function Recommend({ route, navigation }) {
   const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
@@ -20,8 +19,9 @@ export default function Recommend({ route, navigation }) {
   const [value, setValue] = useState([]);
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [plus, setPlus] = useState("");
-  const [arr, setArr] = useState(["]"]);
+  const [plus, setPlus] = useState(0);
+  const [imageLength, setImageLength] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const getImage = (uri, name) => {
     const newArr = [...image];
@@ -40,9 +40,14 @@ export default function Recommend({ route, navigation }) {
       });
     }
     setImage(tmp);
+    if (uri !== "") {
+      setImageLength(imageLength + 1);
+    } else if (uri === "") {
+      setImageLength(imageLength - 1);
+    }
   };
-
   useEffect(() => {
+    setLoading(true);
     axios
       .post(`${API}/api/pohang/essential/getrecommand`, {
         team_skey: teamKey,
@@ -55,14 +60,21 @@ export default function Recommend({ route, navigation }) {
         response.picture.forEach((v) => {
           obj[v.name] = v.url;
         });
+
         setValue(obj);
         setPlus(response.picture.filter((i) => i.url !== null || "").length);
-        // setArr({
-        //   spring: obj.e_rc_season.includes(0),
-        //   summer: obj.e_rc_season.includes(1),
-        //   fall: obj.e_rc_season.includes(2),
-        //   winter: obj.e_rc_season.includes(3),
-        // });
+        setImageLength(
+          response.picture
+            .map((i) => i.url)
+            .filter((v) => v !== "")
+            .filter((o) => o !== null).length
+        );
+        if (response.e_rc_season === null) {
+          setSeason("");
+        } else {
+          setSeason(response.e_rc_season.replace(/[^0-9]/g, "").split(""));
+        }
+        setLoading(false);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -106,9 +118,10 @@ export default function Recommend({ route, navigation }) {
   const handleOnSubmit = async () => {
     if (value.e_rc_course === "" || value.e_rc_course === null || season.length === 0) {
       Alert.alert("모든 항목을 입력해 주세요.");
+    } else if (plus === 0 || imageLength === 0) {
+      Alert.alert("반드시 하나의 사진을 추가해 주세요.");
     } else DataSave();
   };
-
   const handleOnPlus = () => {
     setPlus(plus + 1);
     if (plus === 10) {
@@ -118,6 +131,10 @@ export default function Recommend({ route, navigation }) {
   };
   const handleOnMinus = () => {
     setPlus(plus - 1);
+    if (plus === 1) {
+      Alert.alert("반드시 하나의 사진을 추가해 주세요.");
+      setPlus(value.picture.filter((i) => i.url !== null || "").length);
+    }
   };
 
   const getText = (text) => {
@@ -130,7 +147,6 @@ export default function Recommend({ route, navigation }) {
         e_rc_course: text,
       });
   };
-
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
@@ -161,86 +177,83 @@ export default function Recommend({ route, navigation }) {
                 <Text style={styles.season_title}>추천 계절</Text>
               </View>
               <Text style={styles.season_ps}>* 중복 선택 가능</Text>
-
               <View style={styles.season_container}>
-                <BouncyCheckbox
-                  size={15}
-                  fillColor="#00acb1"
-                  onPress={(v) =>
-                    v
-                      ? setSeason((prev) => {
-                          return [...prev, 0];
-                        })
-                      : setSeason((prev) => {
-                          return prev.filter((i) => i !== 0);
-                        })
-                  }
-                  text="봄"
-                  iconStyle={{ borderRadius: 0 }}
-                  textStyle={{
-                    textDecorationLine: "none",
-                    color: "black",
-                  }}
-                  isChecked={arr && arr.includes("0") ? true : false}
-                />
-                <BouncyCheckbox
-                  size={15}
-                  fillColor="#00acb1"
-                  onPress={(v) =>
-                    v
-                      ? setSeason((prev) => {
-                          return [...prev, 1];
-                        })
-                      : setSeason((prev) => {
-                          return prev.filter((i) => i !== 1);
-                        })
-                  }
-                  text="여름"
-                  iconStyle={{ borderRadius: 0 }}
-                  textStyle={{
-                    textDecorationLine: "none",
-                    color: "black",
-                  }}
-                  isChecked={arr.includes("1") ? true : false}
-                />
-                <BouncyCheckbox
-                  size={15}
-                  fillColor="#00acb1"
-                  onPress={(v) =>
-                    v
-                      ? setSeason((prev) => {
-                          return [...prev, 2];
-                        })
-                      : setSeason((prev) => {
-                          return prev.filter((i) => i !== 2);
-                        })
-                  }
-                  text="가을"
-                  iconStyle={{ borderRadius: 0 }}
-                  textStyle={{
-                    textDecorationLine: "none",
-                    color: "black",
-                  }}
-                />
-                <BouncyCheckbox
-                  size={15}
-                  fillColor="#00acb1"
-                  onPress={(v) =>
-                    v
-                      ? setSeason((prev) => {
-                          return [...prev, 3];
-                        })
-                      : setSeason((prev) => {
-                          return prev.filter((i) => i !== 3);
-                        })
-                  }
-                  text="겨울"
-                  iconStyle={{ borderRadius: 0 }}
-                  textStyle={{
-                    textDecorationLine: "none",
-                    color: "black",
-                  }}
-                />
+                {!loading ? (
+                  <>
+                    <BouncyCheckbox
+                      size={15}
+                      fillColor="#00acb1"
+                      onPress={(v) =>
+                        v
+                          ? setSeason((prev) => {
+                              return [...prev, 0];
+                            })
+                          : setSeason((prev) => prev.filter((i) => i !== "0"))
+                      }
+                      text="봄"
+                      iconStyle={{ borderRadius: 0 }}
+                      textStyle={{
+                        textDecorationLine: "none",
+                        color: "black",
+                      }}
+                      isChecked={season.includes("0")}
+                    />
+                    <BouncyCheckbox
+                      size={15}
+                      fillColor="#00acb1"
+                      onPress={(v) =>
+                        v
+                          ? setSeason((prev) => {
+                              return [...prev, 1];
+                            })
+                          : setSeason((prev) => prev.filter((i) => i !== "1"))
+                      }
+                      text="여름"
+                      iconStyle={{ borderRadius: 0 }}
+                      textStyle={{
+                        textDecorationLine: "none",
+                        color: "black",
+                      }}
+                      isChecked={season.includes("1")}
+                    />
+                    <BouncyCheckbox
+                      size={15}
+                      fillColor="#00acb1"
+                      onPress={(v) =>
+                        v
+                          ? setSeason((prev) => {
+                              return [...prev, 2];
+                            })
+                          : setSeason((prev) => prev.filter((i) => i !== "2"))
+                      }
+                      text="가을"
+                      iconStyle={{ borderRadius: 0 }}
+                      textStyle={{
+                        textDecorationLine: "none",
+                        color: "black",
+                      }}
+                      isChecked={season.includes("2")}
+                    />
+                    <BouncyCheckbox
+                      size={15}
+                      fillColor="#00acb1"
+                      onPress={(v) =>
+                        v
+                          ? setSeason((prev) => {
+                              return [...prev, 3];
+                            })
+                          : setSeason((prev) => prev.filter((i) => i !== "3"))
+                      }
+                      text="겨울"
+                      iconStyle={{ borderRadius: 0 }}
+                      textStyle={{
+                        textDecorationLine: "none",
+                        color: "black",
+                      }}
+                      isChecked={season.includes("3")}
+                    />
+                  </>
+                ) : null}
               </View>
 
               <View style={styles.resubTitle}>

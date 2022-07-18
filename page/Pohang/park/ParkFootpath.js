@@ -5,11 +5,10 @@ import axios from "axios";
 
 import { styles } from "../../../assets/styles/add";
 import { color } from "../../../assets/styles/color";
-import uploadImgToGcs from "../../component/util";
 import RadioBtn from "../../component/RadioBtn";
 
 export default function ParkFootpath({ route, navigation }) {
-  const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
+  const { listName, listKey, teamKey } = route.params;
   const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
   const [value, setValue] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);

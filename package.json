@@ -32,6 +32,7 @@
     "react-native-sectioned-multi-select": "^0.9.1",
     "react-native-select-multiple": "^2.1.0",
     "react-native-web": "0.17.7",
+    "react-navigation": "^4.4.4",
     "rn-option-select": "^0.1.0",
     "expo-updates": "~0.13.3"
   },

@@ -18,11 +18,45 @@ export default function Door({ route, navigation }) {
   const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
+
   const getCheck = (val, name) => {
-    setValue((value) => ({
-      ...value,
-      [name]: val,
-    }));
+    if (name === "door_sliding_YN" && val === "Y") {
+      setValue({
+        ...value,
+        door_sliding_YN: "Y",
+        door_hinged_YN: "N",
+        door_automatic_YN: "N",
+        door_revolving_YN: "N",
+      });
+    } else if (name === "door_hinged_YN" && val === "Y") {
+      setValue({
+        ...value,
+        door_hinged_YN: "Y",
+        door_sliding_YN: "N",
+        to_door_automatic_YN: "N",
+        door_revolving_YN: "N",
+      });
+    } else if (name === "door_automatic_YN" && val === "Y") {
+      setValue({
+        ...value,
+        door_automatic_YN: "Y",
+        door_sliding_YN: "N",
+        door_hinged_YN: "N",
+        door_revolving_YN: "N",
+      });
+    } else if (name === "door_revolving_YN" && val === "Y") {
+      setValue({
+        ...value,
+        door_revolving_YN: "Y",
+        door_sliding_YN: "N",
+        door_hinged_YN: "N",
+        door_automatic_YN: "N",
+      });
+    } else
+      setValue((value) => ({
+        ...value,
+        [name]: val,
+      }));
   };
 
   const getImage = (uri, name) => {
@@ -120,6 +154,7 @@ export default function Door({ route, navigation }) {
         Alert.alert("저장에 실패했습니다. 필수 사진이 추가되었는지 확인해 주세요.");
       });
   };
+
   const handleOnSubmit = async () => {
     if (
       value.door_sliding_YN === null ||
@@ -180,13 +215,7 @@ export default function Door({ route, navigation }) {
                 name="door_revolving_YN"
                 value={value.door_revolving_YN}
               />
-              <Input
-                title="기타 기재"
-                getText={getText}
-                name="cr_s_count"
-                value={value.cr_s_count}
-                keyboardType={"numeric"}
-              />
+              <Input title="기타 기재" getText={getText} name="door_etc_desc" value={value.door_etc_desc} />
 
               <View style={styles.img}>
                 <TakePhoto title="사진 1" name="d_c_door_photo1" getImage={getImage} value={value.d_c_door_photo1} />

@@ -133,8 +133,10 @@ export default function Basic({ route, navigation }) {
     if (value.eto_b_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.eto_b_YN === "Y" && value.eto_b_name === (null || "")) ||
-      (value.eto_b_YN === "Y" && value.eto_b_floor_material === (null || ""))
+      (value.eto_b_YN === "Y" && value.eto_b_name === null) ||
+      (value.eto_b_YN === "Y" && value.eto_b_name === "") ||
+      (value.eto_b_YN === "Y" && value.eto_b_floor_material === null) ||
+      (value.eto_b_YN === "Y" && value.eto_b_floor_material === "")
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (value.eto_b_YN === "Y" && imageLength !== 2) {

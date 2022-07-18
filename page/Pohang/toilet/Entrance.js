@@ -143,13 +143,21 @@ export default function Entrance({ route, navigation }) {
     if (value.t_er_YN === null || value.t_er_road_chin_YN === null) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (
-      (value.t_er_YN === "Y" && value.t_er_slope === (null || "" || 0)) ||
-      (value.t_er_YN === "Y" && value.t_er_length === (null || "" || 0)) ||
-      (value.t_er_YN === "Y" && value.t_er_width === (null || "" || 0)) ||
-      (value.t_er_road_chin_YN === "Y" && value.t_er_road_chin_height === (null || "" || 0))
+      (value.t_er_YN === "Y" && value.t_er_slope === null) ||
+      (value.t_er_YN === "Y" && value.t_er_slope === "") ||
+      (value.t_er_YN === "Y" && value.t_er_slope === 0) ||
+      (value.t_er_YN === "Y" && value.t_er_length === null) ||
+      (value.t_er_YN === "Y" && value.t_er_length === "") ||
+      (value.t_er_YN === "Y" && value.t_er_length === 0) ||
+      (value.t_er_YN === "Y" && value.t_er_width === null) ||
+      (value.t_er_YN === "Y" && value.t_er_width === "") ||
+      (value.t_er_YN === "Y" && value.t_er_width === 0) ||
+      (value.t_er_road_chin_YN === "Y" && value.t_er_road_chin_height === null) ||
+      (value.t_er_road_chin_YN === "Y" && value.t_er_road_chin_height === "") ||
+      (value.t_er_road_chin_YN === "Y" && value.t_er_road_chin_height === 0)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
-    } else if (yLength !== imageLength) {
+    } else if (value.t_er_YN === "Y" && imageLength !== 1) {
       Alert.alert("필수 사진을 모두 추가해 주세요.");
     } else DataSave();
   };
@@ -252,14 +260,6 @@ export default function Entrance({ route, navigation }) {
                     name="p_t_er_entranceImg"
                     getImage={getImage}
                     value={value.p_t_er_entranceImg}
-                  />
-                ) : null}
-                {value.t_er_road_chin_YN === "Y" ? (
-                  <TakePhoto
-                    title="턱"
-                    name="p_t_er_roadchinImg"
-                    getImage={getImage}
-                    value={value.p_t_er_roadchinImg}
                   />
                 ) : null}
               </View>

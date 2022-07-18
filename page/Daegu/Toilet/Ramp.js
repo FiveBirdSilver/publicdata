@@ -20,6 +20,16 @@ export default function Ramp({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLength, setImageLength] = useState([]);
   const getCheck = (val, name) => {
+    if (name === "to_ramp_YN" && val === "N") {
+      setValue({
+        ...value,
+        to_ramp_YN: "N",
+        to_ramp_handle_YN: "N",
+        to_ramp_antislip_YN: "N",
+        to_ramp_width: 0,
+        to_ramp_angle: 0,
+      });
+    }
     setValue((value) => ({
       ...value,
       [name]: val,
@@ -122,14 +132,16 @@ export default function Ramp({ route, navigation }) {
       });
   };
   const handleOnSubmit = async () => {
+    if (value.to_ramp_YN === null) {
+      Alert.alert("모든 항목을 입력해주세요.");
+    }
     if (
-      value.to_ramp_YN === null ||
-      value.to_ramp_handle_YN === null ||
-      value.to_ramp_antislip_YN === null ||
-      value.to_ramp_width === null ||
-      value.to_ramp_width === 0 ||
-      value.to_ramp_angle === null ||
-      value.to_ramp_width === 0
+      (value.to_ramp_YN === "Y" && value.to_ramp_handle_YN === null) ||
+      (value.to_ramp_YN === "Y" && value.to_ramp_antislip_YN === null) ||
+      (value.to_ramp_YN === "Y" && value.to_ramp_width === null) ||
+      (value.to_ramp_YN === "Y" && value.to_ramp_width === 0) ||
+      (value.to_ramp_YN === "Y" && value.to_ramp_angle === null) ||
+      (value.to_ramp_YN === "Y" && value.to_ramp_width === 0)
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (value.to_ramp_YN === "Y" && imageLength === 0) {
@@ -171,42 +183,56 @@ export default function Ramp({ route, navigation }) {
                 yes="있다"
                 no="없다"
               />
-              <RadioBtn
-                title="손잡이 유무"
-                getCheck={getCheck}
-                name="to_ramp_handle_YN"
-                value={value.to_ramp_handle_YN}
-              />
-              <RadioBtn
-                title="미끄럼 방지판 유무"
-                getCheck={getCheck}
-                name="to_ramp_antislip_YN"
-                value={value.to_ramp_antislip_YN}
-              />
-              <View style={{ position: "relative" }}>
-                <Input
-                  title="가로 폭"
-                  getText={getText}
-                  name="to_ramp_width"
-                  value={value.to_ramp_width}
-                  keyboardType={"numeric"}
-                />
-                <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
-              </View>
-              <View style={{ position: "relative" }}>
-                <Input
-                  title="경사면 각도"
-                  getText={getText}
-                  name="to_ramp_angle"
-                  value={value.to_ramp_angle}
-                  keyboardType={"numeric"}
-                />
-                <Text style={{ position: "absolute", top: 13, right: 10 }}>◦</Text>
-              </View>
-              <View style={styles.img}>
-                <TakePhoto title="사진 1" name="d_t_ramp_photo1" getImage={getImage} value={value.d_t_ramp_photo1} />
-                <TakePhoto title="사진 2" name="d_t_ramp_photo2" getImage={getImage} value={value.d_t_ramp_photo2} />
-              </View>
+              {value.to_ramp_YN === "Y" ? (
+                <>
+                  <RadioBtn
+                    title="손잡이 유무"
+                    getCheck={getCheck}
+                    name="to_ramp_handle_YN"
+                    value={value.to_ramp_handle_YN}
+                  />
+                  <RadioBtn
+                    title="미끄럼 방지판 유무"
+                    getCheck={getCheck}
+                    name="to_ramp_antislip_YN"
+                    value={value.to_ramp_antislip_YN}
+                  />
+                  <View style={{ position: "relative" }}>
+                    <Input
+                      title="가로 폭"
+                      getText={getText}
+                      name="to_ramp_width"
+                      value={value.to_ramp_width}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>cm</Text>
+                  </View>
+                  <View style={{ position: "relative" }}>
+                    <Input
+                      title="경사면 각도"
+                      getText={getText}
+                      name="to_ramp_angle"
+                      value={value.to_ramp_angle}
+                      keyboardType={"numeric"}
+                    />
+                    <Text style={{ position: "absolute", top: 13, right: 10 }}>◦</Text>
+                  </View>
+                  <View style={styles.img}>
+                    <TakePhoto
+                      title="사진 1"
+                      name="d_t_ramp_photo1"
+                      getImage={getImage}
+                      value={value.d_t_ramp_photo1}
+                    />
+                    <TakePhoto
+                      title="사진 2"
+                      name="d_t_ramp_photo2"
+                      getImage={getImage}
+                      value={value.d_t_ramp_photo2}
+                    />
+                  </View>
+                </>
+              ) : null}
             </View>
           </View>
         </View>
