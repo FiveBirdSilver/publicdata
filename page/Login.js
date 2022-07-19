@@ -47,6 +47,8 @@ export default function Login({ navigation }) {
               if (AutoLog.isChecked) {
                 let User = JSON.parse(result2);
                 let UserInfo = JSON.parse(result3);
+                console.log(User);
+                console.log(UserInfo);
                 axios
                   .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/login", {
                     org_skey: User.org_skey,
@@ -55,11 +57,12 @@ export default function Login({ navigation }) {
                   })
                   .then((res) => {
                     if (res.data !== "") {
+                      console.log("success");
                       setModalVisible(false);
                       navigation.push("Home");
                     }
                   });
-              }
+              } else setModalVisible(false);
             });
           });
         });
