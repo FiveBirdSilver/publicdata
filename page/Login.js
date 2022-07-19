@@ -29,7 +29,6 @@ export default function Login({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [isChecked, setIsChecked] = useState(false);
-  const [loggin, setLoggin] = useState(false);
 
   const data = [
     { label: "대구", value: 3001 },
@@ -47,8 +46,6 @@ export default function Login({ navigation }) {
               if (AutoLog.isChecked) {
                 let User = JSON.parse(result2);
                 let UserInfo = JSON.parse(result3);
-                console.log(User);
-                console.log(UserInfo);
                 axios
                   .post("http://gw.tousflux.com:10307/PublicDataAppService.svc/api/login", {
                     org_skey: User.org_skey,
@@ -57,7 +54,8 @@ export default function Login({ navigation }) {
                   })
                   .then((res) => {
                     if (res.data !== "") {
-                      console.log("success");
+                      AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: true }));
+                      AsyncStorage.setItem("User", JSON.stringify(JSON.parse(res.data)));
                       setModalVisible(false);
                       navigation.push("Home");
                     }
@@ -67,6 +65,11 @@ export default function Login({ navigation }) {
           });
         });
       }
+    });
+  }, []);
+  useEffect(() => {
+    AsyncStorage.getItem("Loggin", (err, result1) => {
+      console.log("Log ", result1);
     });
   }, []);
   const handleOnSubmit = () => {
@@ -85,11 +88,10 @@ export default function Login({ navigation }) {
           if (res.data === "") {
             Alert.alert("아이디와 비밀번호를 다시 확인해주세요");
           } else {
-            setLoggin(true);
             AsyncStorage.setItem("User", JSON.stringify(JSON.parse(res.data)));
             AsyncStorage.setItem("UserInfo", JSON.stringify({ id: id, pw: password }));
             AsyncStorage.setItem("IsChecked", JSON.stringify({ isChecked: isChecked }));
-            AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: loggin }));
+            AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: true }));
             navigation.push("Home");
           }
         })

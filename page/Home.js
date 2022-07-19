@@ -14,7 +14,6 @@ export default function Home({ navigation }) {
     { label: "대구", value: 3001 },
     { label: "포항", value: 3002 },
   ];
-
   useEffect(() => {
     AsyncStorage.getItem("User", (err, result) => {
       if (result) {
@@ -22,7 +21,6 @@ export default function Home({ navigation }) {
         setListSkey(JSON.parse(result).list.map((i) => i.list_skey));
       }
     });
-    AsyncStorage.setItem("Loggin", JSON.stringify({ loggin: true }));
   }, []);
 
   const handleOnLogOut = () => {
