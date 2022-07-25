@@ -190,7 +190,7 @@ export default function Door({ route, navigation }) {
               />
               <View style={styles.img}>
                 <TakePhoto title="사진 1" name="d_t_door_photo1" getImage={getImage} value={value.d_t_door_photo1} />
-                <TakePhoto title="사진 1" name="d_t_door_photo2" getImage={getImage} value={value.d_t_door_photo2} />
+                <TakePhoto title="사진 2" name="d_t_door_photo2" getImage={getImage} value={value.d_t_door_photo2} />
               </View>
             </View>
           </View>

@@ -53,7 +53,6 @@ export default function Basic({ route, navigation }) {
   const getImage = (uri, name) => {
     const newArr = [...image];
     let tmp = [...image];
-    console.log(name);
     if (newArr.findIndex((v) => v.name === name) !== -1) {
       tmp.forEach((v) => {
         if (v.name === name) {
@@ -66,7 +65,6 @@ export default function Basic({ route, navigation }) {
         url: uri,
       });
     }
-    console.log(tmp);
     setImage(tmp);
     if (uri !== "") {
       setImageLength(imageLength + 1);
@@ -88,7 +86,9 @@ export default function Basic({ route, navigation }) {
       value.e_b_fee === "" ||
       value.e_b_holiday === "" ||
       value.e_b_openingHours === "" ||
-      value.e_b_travelTime === ""
+      value.e_b_travelTime === "" ||
+      value.e_b_discount === null ||
+      value.e_b_discount === ""
     ) {
       Alert.alert("모든 항목을 입력해주세요.");
     } else if (imageLength === 0) {
@@ -107,6 +107,7 @@ export default function Basic({ route, navigation }) {
             e_b_fee: value.e_b_fee,
             e_b_openingHours: value.e_b_openingHours,
             e_b_holiday: value.e_b_holiday,
+            e_b_discount: value.e_b_discount,
           })
           .then((res) => {
             const response = JSON.parse(res.data);
@@ -170,13 +171,20 @@ export default function Basic({ route, navigation }) {
                 placeholder="EX. 1시간 30분 => 1.5"
                 keyboardType={"numeric"}
               />
+
               <Input
                 title="관람료"
                 getText={getText}
                 name="e_b_fee"
                 value={value.e_b_fee}
-                placeholder="EX. 15,000원 => 15000"
-                keyboardType={"numeric"}
+                placeholder="EX. 성인 15,000원"
+              />
+              <Input
+                title="할인 정보"
+                getText={getText}
+                name="e_b_discount"
+                value={value.e_b_discount}
+                placeholder="EX. 장애인 00% 군인 00%"
               />
               <Input
                 title="영업시간"
@@ -199,6 +207,7 @@ export default function Basic({ route, navigation }) {
                   getImage={getImage}
                   value={value.p_e_basic_touristDestinationImg}
                 />
+                <TakePhoto title="관람료" name="p_e_basic_feeImg" getImage={getImage} value={value.p_e_basic_feeImg} />
               </View>
             </View>
           </View>

@@ -1,15 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Modal,
-  ActivityIndicator,
-  Text,
-  TextInput,
-  View,
-  Image,
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-} from "react-native";
+import { Modal, ActivityIndicator, Text, TextInput, View, Image, TouchableOpacity, Alert } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "react-native-vector-icons/AntDesign";

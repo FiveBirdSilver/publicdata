@@ -10,6 +10,7 @@ import Input from "../../component/Input";
 import TakePhoto from "../../component/TakePhoto";
 import uploadImgToGcs from "../../component/util";
 import RadioBtn from "../../component/RadioBtn";
+
 export default function ParkingArea({ route, navigation }) {
   const { listName, listKey, region, regionKey, dataCollection, data, teamKey } = route.params;
   const API = "http://gw.tousflux.com:10307/PublicDataAppService.svc";
