@@ -56,6 +56,7 @@ export default function Basic({ route, navigation }) {
         });
 
         setValue(obj);
+        console.log(obj);
         setImageLength(
           response.picture
             .map((i) => i.url)
@@ -152,6 +153,7 @@ export default function Basic({ route, navigation }) {
         <View style={styles.content}>
           <View style={styles.add}>
             <View style={styles.add_wrapper}>
+              <Input title="구분" name="b_ds_name" value={value.b_ds_name} edit={true} />
               <Input title="업체명" getText={getText} name="b_store_name" value={value.b_store_name} />
               <Input title="업체 주소" getText={getText} name="b_store_address" value={value.b_store_address} />
               <Input

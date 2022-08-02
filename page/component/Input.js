@@ -20,6 +20,7 @@ export default function Input(props) {
             }}
             keyboardType={props.keyboardType}
             style={styles.input}
+            editable={props.edit ? false : true}
           ></TextInput>
         </View>
       </View>
